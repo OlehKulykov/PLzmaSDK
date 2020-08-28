@@ -1,0 +1,50 @@
+buildscript {  
+    repositories {
+        google() // For Gradle 4.0+
+        mavenCentral()
+        jcenter()
+    }
+    
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.3.2'
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 26
+    defaultConfig {
+        applicationId "com.ok.clzma"
+        minSdkVersion 21
+        targetSdkVersion 26
+        versionCode 1
+        versionName "0.0.4"
+        externalNativeBuild {
+            cmake {
+                arguments "-DANDROID_STL=c++_static", "-DANDROID_TOOLCHAIN=clang", "-DLIBCLZMA_OPT_ANDROID:BOOL=ON", "-DLIBCLZMA_OPT_STATIC:BOOL=OFF", "-DLIBCLZMA_OPT_TESTS:BOOL=OFF", "-DLIBCLZMA_OPT_BUILD_NUMBER=1"
+                cppFlags "-fexceptions"
+            }
+        }
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+        }
+    }
+    
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+}

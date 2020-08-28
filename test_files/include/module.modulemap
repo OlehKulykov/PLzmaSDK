@@ -1,0 +1,4 @@
+module plzma_test_files {
+   header "../plzma_test_files.h"
+   export *
+}

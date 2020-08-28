@@ -1,0 +1,54 @@
+language: cpp
+
+git:
+  submodules: true
+
+os:
+  - linux
+  - osx
+
+compiler:
+  - gcc
+  - clang
+
+#install:
+#  - gem install xcpretty
+#  - gem install jazzy
+
+before_script:
+  - mkdir build
+#  - g++ -dM -E -x c++ - < /dev/null
+
+script:
+  - cd build
+  - rm -rf *
+  - cmake -DCMAKE_INSTALL_PREFIX:PATH=~/libplzma-install-dir -DCMAKE_BUILD_TYPE=Release -DLIBPLZMA_OPT_BUILD_NUMBER=${TRAVIS_BUILD_NUMBER} ..
+  - make -j4
+  - ctest --verbose
+  - make install
+  - rm -rf *
+  - cmake -DLIBPLZMA_OPT_NO_C_BINDINGS:BOOL=ON -DCMAKE_BUILD_TYPE=Debug -DLIBPLZMA_OPT_BUILD_NUMBER=${TRAVIS_BUILD_NUMBER} ..
+  - make -j4
+  - ctest --verbose
+  - rm -rf *
+  - cmake -DLIBPLZMA_OPT_NO_TAR:BOOL=ON -DCMAKE_BUILD_TYPE=Debug -DLIBPLZMA_OPT_BUILD_NUMBER=${TRAVIS_BUILD_NUMBER} ..
+  - make -j4
+  - ctest --verbose
+  - cd ..
+  - if [ -n "$(which swift)" ]; then swift -version; fi
+  #- if [ -n "$(which swift)" ]; then swift build; fi
+  #- if [ -n "$(which swift)" ]; then swift test; fi
+  - nvm install 13
+  - nvm use 13
+  - npm run install
+  - npm run test
+  - nvm install 14
+  - nvm use 14
+  - npm run install
+  - npm run test
+
+branches:
+  only:
+    - master
+    - dev
+    - tmp

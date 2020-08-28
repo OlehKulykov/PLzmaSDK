@@ -1,0 +1,4 @@
+module libplzma {
+   header "../../libplzma.h"
+   export * 
+}

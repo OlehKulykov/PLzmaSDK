@@ -1,0 +1,15 @@
+(Portable, Patched, Package, cross-P-latform) Lzma SDK, libplzma
+
+ Changes on version 0.0.4 (current):
+ - Swift 'Path': added 'writable' getter.
+
+ Changes on version 0.0.3:
+ - Swift 'Item': added lazy, throwable 'path' getter.
+ - PLzmaSDK.podspec: added Swift 5.3.
+
+Changes on version 0.0.2:
+- Self-retain the encoder and decoder during long-time operations like opening, extracting,
+  testing and compressing.
+
+Version 0.0.1:
+- Initial implementation.

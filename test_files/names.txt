@@ -1,0 +1,17 @@
+﻿1.  7z  Store
+2.  7z  Normal LZMA2 
+3.  7z  Ultra  LZMA2
+4.  7z  Ultra  LZMA
+5.  7z  Ultra  LZMA2 1234
+6.  7z  Ultra  LZMA  1234
+7.  7z  Ultra  LZMA2 1234 enc file names
+8.  7z  Ultra  LZMA  1234 enc file names
+9.  7z  Ultra  PPMd
+10. 7z  Ultra  PPMd  1234
+11. 7z  Ultra  PPMd  1234 enc file names
+12. 7z  Ultra  BZip2
+13. 7z  Ultra  BZip2 1234
+14. 7z  Ultra  BZip2 1234 enc file names
+15. tar Store
+16. tar.xz Ultra LZMA2 only, nopass only 
+17. shutuptakemoney.jpg.xz Ultra LZMA2 only, nopass only
