@@ -16,7 +16,7 @@
     "url": "https://github.com/OlehKulykov/PLzmaSDK.git"
   },
   "engines": {
-    "node": ">=13.0.§0",
+    "node": ">=13.0.0",
     "npm": ">=6.0.0"
   },
   "dependencies": {},
