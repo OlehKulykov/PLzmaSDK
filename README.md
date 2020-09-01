@@ -1,11 +1,11 @@
 Travis CI: macOS, Linux | AppVeyor: Windows
 ----------------------- | -----------------
-[![Build Status](https://travis-ci.org/OlehKulykov/PLzmaSDK.svg?branch=master)](https://travis-ci.org/OlehKulykov/PLzmaSDK) | [![Build status](https://ci.appveyor.com/api/projects/status/2rnk4gv4ca5y5u1k/branch/master?svg=true)](https://ci.appveyor.com/project/OlehKulykov/plzmasdk/branch/master)
+[![Build Status](https://travis-ci.org/OlehKulykov/PLzmaSDK.svg?branch=master)](https://travis-ci.org/OlehKulykov/PLzmaSDK) | [![Build status](https://ci.appveyor.com/api/projects/status/1mb5w6nlht1ar2p8/branch/master?svg=true)](https://ci.appveyor.com/project/OlehKulykov/plzmasdk/branch/master)
 
 
 **P**LzmaSDK is (**P**ortable, **P**atched, **P**ackage, cross-**P**-latform) Lzma SDK.
 Based on original [LZMA SDK] version 19.00 (1900 - latest for now) and patched for unix platforms.
-Available for all Apple's platforms(iOS, macOS, tvOS, watchOS), Android, Windows and any unix'es with [C++11] compiller.
+Available for all Apple's platforms(iOS, macOS, tvOS, watchOS), Android, Windows and any unix'es.
 
 
 ### Features / detailed description
