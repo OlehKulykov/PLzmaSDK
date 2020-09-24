@@ -33,6 +33,12 @@
 #include <cstddef>
 #include "../libplzma.h"
 
+
+#if !defined(LIBPLZMA_HAVE_STD) && defined(SWIFT_PACKAGE)
+#define LIBPLZMA_HAVE_STD 1
+#endif
+
+
 // Creating
 
 #define LIBPLZMA_C_BINDINGS_CREATE_OBJECT_TRY(OBJ_TYPE) \
@@ -50,6 +56,16 @@ try { \
 
 
 
+#if defined(LIBPLZMA_HAVE_STD)
+#define LIBPLZMA_C_BINDINGS_CREATE_OBJECT_CATCH \
+} catch (const Exception & exception) { \
+    createdCObject.exception = static_cast<void *>(exception.moveToHeapCopy()); \
+} catch (const std::exception & exception) { \
+    createdCObject.exception = static_cast<void *>(Exception::create(plzma_error_code_internal, exception.what(), __FILE__, __LINE__)); \
+} \
+return createdCObject; \
+
+#else
 #define LIBPLZMA_C_BINDINGS_CREATE_OBJECT_CATCH \
 } catch (const Exception & exception) { \
     createdCObject.exception = static_cast<void *>(exception.moveToHeapCopy()); \
@@ -57,6 +73,8 @@ try { \
     createdCObject.exception = static_cast<void *>(Exception::create(plzma_error_code_unknown, nullptr, __FILE__, __LINE__)); \
 } \
 return createdCObject; \
+
+#endif // LIBPLZMA_HAVE_STD
 
 
 // Executing
@@ -85,6 +103,16 @@ try { \
 
 
 
+#if defined(LIBPLZMA_HAVE_STD)
+#define LIBPLZMA_C_BINDINGS_OBJECT_EXEC_CATCH_RETURN(OBJ_PTR, FAIL_RES) \
+} catch (const Exception & exception) { \
+    OBJ_PTR->exception = static_cast<void *>(exception.moveToHeapCopy()); \
+} catch (const std::exception & exception) { \
+    OBJ_PTR->exception = static_cast<void *>(Exception::create(plzma_error_code_internal, exception.what(), __FILE__, __LINE__)); \
+} \
+return FAIL_RES; \
+
+#else
 #define LIBPLZMA_C_BINDINGS_OBJECT_EXEC_CATCH_RETURN(OBJ_PTR, FAIL_RES) \
 } catch (const Exception & exception) { \
     OBJ_PTR->exception = static_cast<void *>(exception.moveToHeapCopy()); \
@@ -93,8 +121,18 @@ try { \
 } \
 return FAIL_RES; \
 
+#endif // LIBPLZMA_HAVE_STD
 
 
+#if defined(LIBPLZMA_HAVE_STD)
+#define LIBPLZMA_C_BINDINGS_OBJECT_EXEC_CATCH(OBJ_PTR) \
+} catch (const Exception & exception) { \
+    OBJ_PTR->exception = static_cast<void *>(exception.moveToHeapCopy()); \
+} catch (const std::exception & exception) { \
+    OBJ_PTR->exception = static_cast<void *>(Exception::create(plzma_error_code_internal, exception.what(), __FILE__, __LINE__)); \
+} \
+
+#else
 #define LIBPLZMA_C_BINDINGS_OBJECT_EXEC_CATCH(OBJ_PTR) \
 } catch (const Exception & exception) { \
     OBJ_PTR->exception = static_cast<void *>(exception.moveToHeapCopy()); \
@@ -102,6 +140,7 @@ return FAIL_RES; \
     OBJ_PTR->exception = static_cast<void *>(Exception::create(plzma_error_code_unknown, nullptr, __FILE__, __LINE__)); \
 } \
 
+#endif // LIBPLZMA_HAVE_STD
 
 
 #endif // !LIBPLZMA_NO_C_BINDINGS

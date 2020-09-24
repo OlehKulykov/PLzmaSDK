@@ -12,6 +12,7 @@ Available for all Apple's platforms(iOS, macOS, tvOS, watchOS), Android, Windows
 -----------
 - The SDK is available for the next programming languages:
   * [Swift](https://swift.org/) via [Swift Package Manager] or [CocoaPods].
+  * JavaScript via [npm].
   * C/C++ via git+CMake.
 - Supports next archives:
   * [7z]. Both, encrypted/password-protected and unencrypted. [Lzma] and [Lzma2] compression methods.
@@ -45,7 +46,7 @@ All optional features are enabled by default, but might be disabled during the b
 <summary>Swift Package Manager</summary>
 
 ```swift
-.package(url: "https://github.com/OlehKulykov/PLzmaSDK.git", .exact("0.0.4"))
+.package(url: "https://github.com/OlehKulykov/PLzmaSDK.git", .exact("0.0.5"))
 ```
 
 </details>
@@ -66,7 +67,7 @@ end
 <summary>Android NDK</summary>
   
 ```bash
-cd <PATH_TO_ANDROID_NDK>/android-ndk-r20/
+cd <PATH_TO_ANDROID_NDK>
 ./ndk-build NDK_PROJECT_PATH=<PATH_TO_PLZMASDK>/PLzmaSDK/android
 ```
 
@@ -347,3 +348,4 @@ THE SOFTWARE.
 [libplzma.hpp]:https://github.com/OlehKulykov/PLzmaSDK/blob/master/libplzma.hpp
 [Swift Package Manager]:https://swift.org/package-manager
 [CocoaPods]:https://cocoapods.org/pods/PLzmaSDK
+[npm]:https://www.npmjs.com/package/plzmasdk

@@ -46,7 +46,14 @@ namespace plzma {
         } catch (const Exception & exception) {
             _exception = exception.moveToHeapCopy();
             return E_FAIL;
-        } catch (...) {
+        }
+#if defined(LIBPLZMA_HAVE_STD)
+        catch (const std::exception & exception) {
+            _exception = Exception::create(plzma_error_code_internal, exception.what(), __FILE__, __LINE__);
+            return E_FAIL;
+        }
+#endif
+        catch (...) {
             _exception = Exception::create(plzma_error_code_not_enough_memory, "Can't convert string to a binary string.", __FILE__, __LINE__);
             return E_FAIL;
         }
@@ -63,7 +70,14 @@ namespace plzma {
         } catch (const Exception & exception) {
             _exception = exception.moveToHeapCopy();
             return E_FAIL;
-        } catch (...) {
+        }
+#if defined(LIBPLZMA_HAVE_STD)
+        catch (const std::exception & exception) {
+            _exception = Exception::create(plzma_error_code_internal, exception.what(), __FILE__, __LINE__);
+            return E_FAIL;
+        }
+#endif
+        catch (...) {
             _exception = Exception::create(plzma_error_code_internal, "Can't set progress total.", __FILE__, __LINE__);
             return E_FAIL;
         }
@@ -80,7 +94,14 @@ namespace plzma {
         } catch (const Exception & exception) {
             _exception = exception.moveToHeapCopy();
             return E_FAIL;
-        } catch (...) {
+        }
+#if defined(LIBPLZMA_HAVE_STD)
+        catch (const std::exception & exception) {
+            _exception = Exception::create(plzma_error_code_internal, exception.what(), __FILE__, __LINE__);
+            return E_FAIL;
+        }
+#endif
+        catch (...) {
             _exception = Exception::create(plzma_error_code_internal, "Can't set progress completed.", __FILE__, __LINE__);
             return E_FAIL;
         }
@@ -124,7 +145,7 @@ namespace plzma {
             }
             case plzma_file_type_tar: {
 #if defined(LIBPLZMA_NO_TAR)
-                throw Exception(plzma_error_code_invalid_arguments, "The tar(tarball) support was explicitly disabled.", __FILE__, __LINE__);
+                throw Exception(plzma_error_code_invalid_arguments, "The tar(tarball) support was explicitly disabled. Use cmake option 'LIBPLZMA_OPT_NO_TAR' or 'LIBPLZMA_NO_TAR' preprocessor definition to enable tar(tarball) support.", __FILE__, __LINE__);
 #else
                 const GUID clsidTar = CLSIDTypeTar();
                 res = CreateObject(&clsidTar, archiveGUID, reinterpret_cast<void**>(&ptr));

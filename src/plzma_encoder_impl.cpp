@@ -77,7 +77,14 @@ namespace plzma {
         } catch (const Exception & exception) {
             _exception = exception.moveToHeapCopy();
             return E_FAIL;
-        } catch (...) {
+        }
+#if defined(LIBPLZMA_HAVE_STD)
+        catch (const std::exception & exception) {
+            _exception = Exception::create(plzma_error_code_internal, exception.what(), __FILE__, __LINE__);
+            return E_FAIL;
+        }
+#endif
+        catch (...) {
             _exception = Exception::create(plzma_error_code_not_enough_memory, "Can't setup next item source.", __FILE__, __LINE__);
             return E_FAIL;
         }
@@ -122,7 +129,14 @@ namespace plzma {
         } catch (const Exception & exception) {
             _exception = exception.moveToHeapCopy();
             return E_FAIL;
-        } catch (...) {
+        }
+#if defined(LIBPLZMA_HAVE_STD)
+        catch (const std::exception & exception) {
+            _exception = Exception::create(plzma_error_code_internal, exception.what(), __FILE__, __LINE__);
+            return E_FAIL;
+        }
+#endif
+        catch (...) {
             _exception = Exception::create(plzma_error_code_not_enough_memory, "Can't provide item property.", __FILE__, __LINE__);
             return E_FAIL;
         }
@@ -153,7 +167,14 @@ namespace plzma {
         } catch (const Exception & exception) {
             _exception = exception.moveToHeapCopy();
             return E_FAIL;
-        } catch (...) {
+        }
+#if defined(LIBPLZMA_HAVE_STD)
+        catch (const std::exception & exception) {
+            _exception = Exception::create(plzma_error_code_internal, exception.what(), __FILE__, __LINE__);
+            return E_FAIL;
+        }
+#endif
+        catch (...) {
             _exception = Exception::create(plzma_error_code_not_enough_memory, "Can't create input file stream.", __FILE__, __LINE__);
             return E_FAIL;
         }
@@ -178,7 +199,14 @@ namespace plzma {
         } catch (const Exception & exception) {
             _exception = exception.moveToHeapCopy();
             return E_FAIL;
-        } catch (...) {
+        }
+#if defined(LIBPLZMA_HAVE_STD)
+        catch (const std::exception & exception) {
+            _exception = Exception::create(plzma_error_code_internal, exception.what(), __FILE__, __LINE__);
+            return E_FAIL;
+        }
+#endif
+        catch (...) {
             _exception = Exception::create(plzma_error_code_unknown, "Can't process compress operation result.", __FILE__, __LINE__);
             return E_FAIL;
         }

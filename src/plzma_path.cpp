@@ -504,7 +504,7 @@ namespace plzma {
         return (_size > 0) ? pathWritable<char>(utf8()) : false;
 #endif
     }
-
+    
     bool Path::readableAndWritable() const {
 #if defined(LIBPLZMA_MSC)
         return (_size > 0) ? pathReadableAndWritable<wchar_t>(wide()) : false;

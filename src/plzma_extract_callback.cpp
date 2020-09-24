@@ -200,7 +200,14 @@ namespace plzma {
         } catch (const Exception & exception) {
             _exception = exception.moveToHeapCopy();
             return E_FAIL;
-        } catch (...) {
+        }
+#if defined(LIBPLZMA_HAVE_STD)
+        catch (const std::exception & exception) {
+            _exception = Exception::create(plzma_error_code_internal, exception.what(), __FILE__, __LINE__);
+            return E_FAIL;
+        }
+#endif
+        catch (...) {
             _exception = Exception::create(plzma_error_code_unknown, "Can't create extract stream.", __FILE__, __LINE__);
             return E_FAIL;
         }
@@ -217,7 +224,14 @@ namespace plzma {
         } catch (const Exception & exception) {
             _exception = exception.moveToHeapCopy();
             return E_FAIL;
-        } catch (...) {
+        }
+#if defined(LIBPLZMA_HAVE_STD)
+        catch (const std::exception & exception) {
+            _exception = Exception::create(plzma_error_code_internal, exception.what(), __FILE__, __LINE__);
+            return E_FAIL;
+        }
+#endif
+        catch (...) {
             _exception = Exception::create(plzma_error_code_unknown, "Can't prepare extract operation.", __FILE__, __LINE__);
             return E_FAIL;
         }
@@ -245,7 +259,14 @@ namespace plzma {
         } catch (const Exception & exception) {
             _exception = exception.moveToHeapCopy();
             return E_FAIL;
-        } catch (...) {
+        }
+#if defined(LIBPLZMA_HAVE_STD)
+        catch (const std::exception & exception) {
+            _exception = Exception::create(plzma_error_code_internal, exception.what(), __FILE__, __LINE__);
+            return E_FAIL;
+        }
+#endif
+        catch (...) {
             _exception = Exception::create(plzma_error_code_unknown, "Can't process extract operation result.", __FILE__, __LINE__);
             return E_FAIL;
         }

@@ -61,13 +61,8 @@ namespace nplzma {
         oss << "\nversion: " << plzma_version();
         return oss.str();
     }
-    
-    std::string exceptionToString(void) {
-        std::ostringstream oss;
-        oss << "code: 0\nwhat: Unknown exception.\nversion: " << plzma_version();
-        return oss.str();
-    }
 }
+
 
 #define NPLZMA_CATCH_RET(ISOLATE) \
 } catch (const plzma::Exception & e) { \
@@ -75,9 +70,6 @@ namespace nplzma {
     ISOLATE->ThrowException(Exception::Error(String::NewFromUtf8(isolate, estr.c_str()).ToLocalChecked())); return; \
 } catch (const std::exception & e) { \
     const auto estr = nplzma::exceptionToString(e); \
-    ISOLATE->ThrowException(Exception::Error(String::NewFromUtf8(isolate, estr.c_str()).ToLocalChecked())); return; \
-} catch (...) { \
-    const auto estr = nplzma::exceptionToString(); \
     ISOLATE->ThrowException(Exception::Error(String::NewFromUtf8(isolate, estr.c_str()).ToLocalChecked())); return; \
 } \
 
@@ -87,8 +79,6 @@ namespace nplzma {
     STR = nplzma::exceptionToString(e); \
 } catch (const std::exception & e) { \
     STR = nplzma::exceptionToString(e); \
-} catch (...) { \
-    STR = nplzma::exceptionToString(); \
 } \
 
 
@@ -1179,21 +1169,23 @@ namespace nplzma {
                 itemsMap = plzma::makeShared<plzma::ItemOutStreamArray>(static_cast<plzma_size_t>(mapObject->Size()));
                 NPLZMA_CATCH_RET(isolate)
                 for (uint32_t i = 0, n = mapArray->Length(); i < n; i += 2) {
-                    Local<Value> keyValue = mapArray->Get(context, i).ToLocalChecked();
-                    Local<Value> valueValue = mapArray->Get(context, i + 1).ToLocalChecked();
                     bool invalidArg1 = true, invalidArg2 = true;
-                    if (keyValue->IsObject() && valueValue->IsObject()) {
-                        Local<Object> keyObject = keyValue->ToObject(context).ToLocalChecked();
-                        Item * item = Item::TypedUnwrap(keyObject);
-                        if (item) {
-                            invalidArg1 = false;
-                            Local<Object> valueObject = valueValue->ToObject(context).ToLocalChecked();
-                            OutStream * stream = OutStream::TypedUnwrap(valueObject);
-                            if (stream) {
-                                invalidArg2 = false;
-                                NPLZMA_TRY
-                                itemsMap->push(plzma::ItemOutStreamArray::ElementType(item->_item, stream->_stream));
-                                NPLZMA_CATCH_RET(isolate)
+                    Local<Value> keyValue = mapArray->Get(context, i).ToLocalChecked();
+                    if (keyValue->IsObject()) {
+                        Local<Value> valueValue = mapArray->Get(context, i + 1).ToLocalChecked();
+                        if (valueValue->IsObject()) {
+                            Local<Object> keyObject = keyValue->ToObject(context).ToLocalChecked();
+                            Item * item = Item::TypedUnwrap(keyObject);
+                            if (item) {
+                                invalidArg1 = false;
+                                Local<Object> valueObject = valueValue->ToObject(context).ToLocalChecked();
+                                OutStream * stream = OutStream::TypedUnwrap(valueObject);
+                                if (stream) {
+                                    invalidArg2 = false;
+                                    NPLZMA_TRY
+                                    itemsMap->push(plzma::ItemOutStreamArray::ElementType(item->_item, stream->_stream));
+                                    NPLZMA_CATCH_RET(isolate)
+                                }
                             }
                         }
                     }
@@ -1345,11 +1337,11 @@ namespace nplzma {
         plzma::SharedPtr<plzma::ItemArray> items;
         if (args.Length() > 0 && args[0]->IsArray()) {
             Local<Array> arr = Local<Array>::Cast(args[0]);
-            uint32_t n = arr->Length();
+            const uint32_t arrLen = arr->Length();
             NPLZMA_TRY
-            items = plzma::makeShared<plzma::ItemArray>(static_cast<plzma_size_t>(n));
+            items = plzma::makeShared<plzma::ItemArray>(static_cast<plzma_size_t>(arrLen));
             NPLZMA_CATCH_RET(isolate)
-            for (uint32_t i = 0; i < n; i++) {
+            for (uint32_t i = 0; i < arrLen; i++) {
                 bool invalidItem = true;
                 Local<Value> val = arr->Get(context, i).ToLocalChecked();
                 if (val->IsObject()) {
@@ -2345,13 +2337,13 @@ namespace nplzma {
         Local<ObjectTemplate> tpl = ObjectTemplate::New(isolate);
         tpl->SetInternalFieldCount(1);
         
+        tpl->Set(String::NewFromUtf8(isolate, "next").ToLocalChecked(), FunctionTemplate::New(isolate, PathIterator::Next), static_cast<PropertyAttribute>(ReadOnly | DontEnum | DontDelete));
+        tpl->Set(String::NewFromUtf8(isolate, "close").ToLocalChecked(), FunctionTemplate::New(isolate, PathIterator::Close), static_cast<PropertyAttribute>(ReadOnly | DontEnum | DontDelete));
+        
         tpl->SetAccessor(String::NewFromUtf8(isolate, "path").ToLocalChecked(), PathIterator::GetPath, nullptr, Local<Value>(), DEFAULT, static_cast<PropertyAttribute>(ReadOnly | DontEnum | DontDelete));
         tpl->SetAccessor(String::NewFromUtf8(isolate, "component").ToLocalChecked(), PathIterator::Component, nullptr, Local<Value>(), DEFAULT, static_cast<PropertyAttribute>(ReadOnly | DontEnum | DontDelete));
         tpl->SetAccessor(String::NewFromUtf8(isolate, "fullPath").ToLocalChecked(), PathIterator::FullPath, nullptr, Local<Value>(), DEFAULT, static_cast<PropertyAttribute>(ReadOnly | DontEnum | DontDelete));
         tpl->SetAccessor(String::NewFromUtf8(isolate, "isDir").ToLocalChecked(), PathIterator::IsDir, nullptr, Local<Value>(), DEFAULT, static_cast<PropertyAttribute>(ReadOnly | DontEnum | DontDelete));
-        
-        tpl->Set(String::NewFromUtf8(isolate, "next").ToLocalChecked(), FunctionTemplate::New(isolate, PathIterator::Next), static_cast<PropertyAttribute>(ReadOnly | DontEnum | DontDelete));
-        tpl->Set(String::NewFromUtf8(isolate, "close").ToLocalChecked(), FunctionTemplate::New(isolate, PathIterator::Close), static_cast<PropertyAttribute>(ReadOnly | DontEnum | DontDelete));
         
         Local<Object> iteratorObject = tpl->NewInstance(context).ToLocalChecked();
         Path * path = ObjectWrap::Unwrap<Path>(args.Holder());
@@ -2661,6 +2653,8 @@ namespace nplzma {
                         unsupportedArg = false;
                         NPLZMA_CATCH_RET(isolate)
                     }
+                } else if (args[0]->IsUndefined() || args[0]->IsNull()) {
+                    unsupportedArg = false;
                 }
                 if (unsupportedArg) {
                     NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "Path(?)")

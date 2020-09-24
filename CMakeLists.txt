@@ -33,11 +33,11 @@ set(PACKAGE "libplzma")
 set(CPACK_PACKAGE_NAME "${PACKAGE}")
 set(CPACK_PACKAGE_VERSION_MAJOR "0")
 set(CPACK_PACKAGE_VERSION_MINOR "0")
-set(CPACK_PACKAGE_VERSION_PATCH "4")
+set(CPACK_PACKAGE_VERSION_PATCH "5")
 set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}")
 set(CPACK_PACKAGE_VENDOR "olehkulykov@gmail.com")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PACKAGE} ${PACKAGE_VERSION}")
-set(SOVERSION "0.0.4")
+set(SOVERSION "0.0.5")
 set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
 set(VERSION "${CPACK_PACKAGE_VERSION}")
 
@@ -57,6 +57,12 @@ option(LIBPLZMA_OPT_BUILD_NUMBER "Number of the libplzma build." 0)
 option(LIBPLZMA_OPT_ANDROID "Build for Android." OFF)
 option(LIBPLZMA_OPT_NO_C_BINDINGS "Do not build C bindings.
 The library can't be fully used in C environment." OFF)
+
+option(LIBPLZMA_OPT_HAVE_STD "Use std in a private part of the library.
+This option will not affects to the public exported interface.
+It's recommented to use this option only in a case of building the dynamic library or any other bindings.
+This option wiil enable the 'LIBPLZMA_HAVE_STD' preprocessor definition as 'LIBPLZMA_HAVE_STD=1'
+and might be enabled automatically depending on the build type and/or platform" OFF)
 
 option(LIBPLZMA_OPT_NO_TAR "Do not build tar(tarball) specific sources.
 Accessing to the Tar archive type will throw an exception. No Tar support." OFF)
@@ -153,6 +159,10 @@ endif()
 
 if(LIBPLZMA_OPT_NO_C_BINDINGS)
   add_definitions(-DLIBPLZMA_NO_C_BINDINGS=1)
+endif()
+
+if(LIBPLZMA_OPT_HAVE_STD)
+  add_definitions(-DLIBPLZMA_HAVE_STD=1)
 endif()
 
 if(LIBPLZMA_OPT_NO_TAR)

@@ -44,11 +44,11 @@
 /// Everything what you need to use this library in C | Objective-C | Swift env. is here.
 
 
-/// @brief Manualy defined required version parts of the library. 0.0.4
+/// @brief Manualy defined required version parts of the library. 0.0.5
 /// The optinal `LIBPLZMA_VERSION_BUILD` might be befined by the CI or via cmake during the configuration.
 #define LIBPLZMA_VERSION_MAJOR 0
 #define LIBPLZMA_VERSION_MINOR 0
-#define LIBPLZMA_VERSION_PATCH 4
+#define LIBPLZMA_VERSION_PATCH 5
 
 // check windows
 #if defined(WIN32) || defined(_WIN32) || defined(WIN32_LEAN_AND_MEAN) || defined(_WIN64) || defined(WIN64)
@@ -166,7 +166,7 @@ typedef enum plzma_file_type {
     /// @brief TAR type.
     ///
     /// All archive items are combined and stored as one continuous stream without compression.
-    /// For this type, the \a plzma_method is ignored.
+    /// @note For this type, the \a plzma_method is ignored.
     /// @link https://en.wikipedia.org/wiki/Tar_(computing)
     plzma_file_type_tar         = 3
 } plzma_file_type;
@@ -178,7 +178,7 @@ typedef enum plzma_method {
     /// @link https://www.7-zip.org/7z.html
     plzma_method_LZMA =     1,
     
-    /// @brief Improved version of LZMA
+    /// @brief Improved version of LZMA.
     /// @link https://www.7-zip.org/7z.html
     plzma_method_LZMA2 =    2,
     

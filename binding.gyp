@@ -5,7 +5,8 @@
       'defines': [
         'LIBPLZMA_VERSION_BUILD=1',
         'LIBPLZMA_SHARED=1',
-        'LIBPLZMA_NO_C_BINDINGS=1'
+        'LIBPLZMA_NO_C_BINDINGS=1',
+        'LIBPLZMA_HAVE_STD=1'
       ],
       'sources': [
         'node/plzma_module_main.cpp',
