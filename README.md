@@ -10,7 +10,7 @@ Available for all Apple's platforms(iOS, macOS, tvOS, watchOS), Android, Windows
 
 ### Features / detailed description
 -----------
-- The SDK is available for the next programming languages:
+- The SDK available for the next programming languages:
   * [Swift](https://swift.org/) via [Swift Package Manager] or [CocoaPods].
   * JavaScript via [npm].
   * C/C++ via git+CMake.
