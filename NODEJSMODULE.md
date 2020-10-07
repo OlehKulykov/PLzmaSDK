@@ -327,7 +327,7 @@ Read-Write property: receives or updates the item's index inside the archive.
 #### <a name="class_item_packsize"></a>Item.packSize ⇒ BigInt, ⇐ BigInt|Number
 Read-Write property: receives or updates the packed size in bytes of the item.
 
-#### <a name="class_item_crc32"></a>Item.crc32 ⇒ Number, ⇐ Number
+#### <a name="class_item_crc32"></a>Item.crc32 ⇔ Number
 Read-Write property: receives or updates the CRC-32 checksum of the items content.
 
 #### <a name="class_item_creationdate"></a>Item.creationDate ⇒ Date, ⇐ Date|Number
@@ -339,10 +339,10 @@ Read-Write property: receives or updates the access date of the item.
 #### <a name="class_item_modificationdate"></a>Item.modificationDate ⇒ Date, ⇐ Date|Number
 Read-Write property: receives or updates the modification date of the item.
 
-#### <a name="class_item_encrypted"></a>Item.encrypted ⇒ Boolean, ⇐ Boolean
+#### <a name="class_item_encrypted"></a>Item.encrypted ⇔ Boolean
 Read-Write property: receives or updates the item is encrypted.
 
-#### <a name="class_item_isdir"></a>Item.isDir ⇒ Boolean, ⇐ Boolean
+#### <a name="class_item_isdir"></a>Item.isDir ⇔ Boolean
 Read-Write property: receives or updates the item is directory or file.
 
 

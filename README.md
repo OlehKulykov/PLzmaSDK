@@ -28,11 +28,11 @@ Available for all Apple's platforms(iOS, macOS, tvOS, watchOS), Android, Windows
 - No external dependencies also no [STL].
 - The SDK is organized as C **and** C++ library at the same time. Supports static and dynamic linking.
   * The [libplzma.h] - the library header for a pure C environment. Contains generic functions, types and bindings to the whole functionality of the library. Currently uses with [Swift Package Manager] and [CocoaPods].
-  * The [libplzma.hpp] - the library header for a C++ environment and must be used together with [libplzma.h] header.
+  * The [libplzma.hpp] - the library header for a C++ environment and must be used together with [libplzma.h] header. Currently uses with [npm] native module.
   * The [swift](https://github.com/OlehKulykov/PLzmaSDK/tree/master/swift) directory contains Swift part of the SDK and available via the [Swift Package Manager] and [CocoaPods], see ```Installation``` section.
 
 ### Optional features
-All optional features are enabled by default, but might be disabled during the build to reduce the binary size if you are not planning to use them.
+All optional features are enabled by default, but they might be disabled during the build process to reduce the binary size, if you are not planning to use them.
 
 - [tar]/[tarball] archive support. To disable use CMake boolean option `LIBPLZMA_OPT_NO_TAR:BOOL=YES` or preprocessor definition `LIBPLZMA_NO_TAR=1`
 - Thread safety. To disable use CMake boolean option `LIBPLZMA_OPT_THREAD_UNSAFE:BOOL=YES` or preprocessor definition `LIBPLZMA_THREAD_UNSAFE=1`
@@ -60,6 +60,22 @@ platform :ios, '8.0'
 target '<REPLACE_WITH_YOUR_TARGET>' do
     pod 'PLzmaSDK', :inhibit_warnings => true
 end
+```
+
+</details>
+<details>
+<summary>npm package.json</summary>
+
+```json
+{
+  "engines": {
+    "node": ">=13.0.0",
+    "npm": ">=6.0.0"
+  },
+  "dependencies": {
+    "plzmasdk": "^0.0.5"
+  }
+}
 ```
 
 </details>
@@ -113,7 +129,7 @@ The process consists of three steps:
    2. The archive's file content in memory.
    3. The custom read/seek callbacks(C/C++ only).
 2. Create decoder with source input stream, type of archive and optional delegate.
-   1. Optionaly provide the password to open the archive.
+   1. Optionaly provide the password to open/list encrypted archive and for a future extracting/testing.
 3. Select archive items for extracting or testing.
    1. Select all archive items.
    2. Get the number of items, iterate items by index, filter and select items.
@@ -125,7 +141,7 @@ The process consists of three steps:
 do {
     // 1. Create a source input stream for reading archive file content.
     //  1.1. Create a source input stream with the path to an archive file.
-    let archivePath = try Path("path/to/archive")
+    let archivePath = try Path("path/to/archive.7z")
     let archivePathInStream = try InStream(path: archivePath)
 
     //  1.2. Create a source input stream with the file content in memory.
@@ -135,7 +151,7 @@ do {
     // 2. Create decoder with source input stream, type of archive and optional delegate.
     let decoder = try Decoder(stream: archiveDataInStream /* archivePathInStream */, fileType: .sevenZ, delegate: self)
     
-    //  2.1. Optionaly provide the password to open/list/test/extract the archive items.
+    //  2.1. Optionaly provide the password to open/list/test/extract encrypted archive items.
     try decoder.setPassword("1234")
     
     let opened = try decoder.open()
@@ -159,13 +175,55 @@ do {
 
 </details>
 <details>
+<summary>JavaScript</summary>
+
+```javascript
+const plzma = require('plzmasdk');
+
+try {
+    // 1. Create a source input stream for reading archive file content.
+    //  1.1. Create a source input stream with the path to an archive file.
+    const archivePath = plzma.Path(__dirname).append('path/to/archive.7z');
+    const archivePathInStream = new plzma.InStream(archivePath /* 'path/to/archive.7z' */);
+
+    //  1.2. Create a source input stream with the file content in memory.
+    const archiveData = new ArrayBuffer(...);
+    const archiveDataInStream = new plzma.InStream(archiveData);
+
+    // 2. Create decoder with source input stream, type of archive and optional delegate.
+    const decoder = new plzma.Decoder(archivePathInStream, plzma.FileType.sevenZ);
+    decoder.setProgressDelegate((path, progress) => console.log(`Delegating progress, path: ${path}, progress: ${progress}`) );
+
+    //  2.1. Optionaly provide the password to open/list/test/extract encrypted archive items.
+    decoder.setPassword('1234');
+
+    const opened = await decoder.openAsync(); // also available sync. version 'decoder.open()'
+
+    // 3. Select archive items for extracting or testing.
+    //  3.1. Select all archive items.
+    const allArchiveItems = decoder.items;
+
+    //  3.2. Get the number of items, iterate items by index, filter and select items.
+    const selectedItemsDuringIteration = [];
+    for (let itemIndex = 0, numberOfArchiveItems = decoder.count; itemIndex <  numberOfArchiveItems; itemIndex++) {
+        const item = decoder.itemAt(itemIndex);
+        selectedItemsDuringIteration.push(item);
+    }
+    ...
+} catch (error) {
+    console.log(`Exception: ${error}`);
+}
+```
+
+</details>
+<details>
 <summary>C++</summary>
 
 ```cpp
 try {
     // 1. Create a source input stream for reading archive file content.
     //  1.1. Create a source input stream with the path to an archive file.
-    Path archivePath("path/to/archive"); // Path(L"C:\\\\path\\to\\archive");
+    Path archivePath("path/to/archive.7z"); // Path(L"C:\\\\path\\to\\archive.7z");
     auto archivePathInStream = makeSharedInStream(archivePath /* std::move(archivePath) */);
     
     //  1.2. Create a source input stream with the file content in memory.
@@ -175,7 +233,7 @@ try {
     auto decoder = makeSharedDecoder(archiveDataInStream, plzma_file_type_7z);
     decoder->setProgressDelegate(this);
     
-    //  2.1. Optionaly provide the password to open/list/test/extract the archive items.
+    //  2.1. Optionaly provide the password to open/list/test/extract encrypted archive items.
     decoder->setPassword("1234"); // decoder->setPassword(L"1234");
         
     bool opened = decoder->open();
@@ -204,7 +262,7 @@ try {
 ```c
 // 1. Create a source input stream for reading archive file content.
 //  1.1. Create a source input stream with the path to an archive file.
-plzma_path archivePath = plzma_path_create_with_utf8_string("path/to/archive"); // plzma_path_create_with_wide_string(L"C:\\\\path\\to\\archive");
+plzma_path archivePath = plzma_path_create_with_utf8_string("path/to/archive.7z"); // plzma_path_create_with_wide_string(L"C:\\\\path\\to\\archive.7z");
 plzma_in_stream archivePathInStream = plzma_in_stream_create_with_path(&archivePath); // plzma_in_stream_create_with_pathm(...);
 plzma_path_release(&archivePath);
 plzma_in_stream_release(&archivePathInStream); // when no longer needed
@@ -218,7 +276,7 @@ plzma_in_stream_release(&archiveDataInStream); // when no longer needed
 
 plzma_decoder_set_progress_delegate_utf8_callback(&decoder, <UTF8 C CALLBACK>);  // plzma_decoder_set_progress_delegate_wide_callback(...);
 
-//  2.1. Optionaly provide the password to open/list/test/extract the archive items.
+//  2.1. Optionaly provide the password to open/list/test/extract encrypted archive items.
 plzma_decoder_set_password_utf8_string(&decoder, "1234"); // plzma_decoder_set_password_wide_string(&decoder, L"1234");
 
 bool opened = plzma_decoder_open(&decoder);    

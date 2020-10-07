@@ -1,7 +1,7 @@
 
 'use strict';
 
-var plzma = require('./../build/Release/plzma');
+const plzma = require('./../build/Release/plzma');
 
 console.log('plzma export:', plzma);
 console.log('typeof plzma.ErrorCode.io:', typeof plzma.ErrorCode.io);
@@ -140,7 +140,47 @@ async function decoderAsyncTest1() {
     console.log(`${t}. extractRes1: ${extractRes1}`);
 }
 
-decoderAsyncTest1();
+//decoderAsyncTest1();
+
+test++; // decoder.open
+async function decoderAsyncExample1() {
+    const t = test;
+    console.log(`${t}. decoderAsyncExample1 enter`);
+    try {
+        // 1. Create a source input stream for reading archive file content.
+        //  1.1. Create a source input stream with the path to an archive file.
+        const archivePath = plzma.Path(__dirname).append('../test_files/1.7z');
+        const archivePathInStream = new plzma.InStream(archivePath);
+
+        //  1.2. Create a source input stream with the file content in memory.
+        const archiveData = new ArrayBuffer(8);
+        const archiveDataInStream = new plzma.InStream(archiveData);
+
+        // 2. Create decoder with source input stream, type of archive and optional delegate.
+        const decoder = new plzma.Decoder(archivePathInStream, plzma.FileType.sevenZ);
+        decoder.setProgressDelegate((path, progress) => console.log(`Delegating progress, path: ${path}, progress: ${progress}`) );
+
+        //  2.1. Optionaly provide the password to open/list/test/extract the archive items.
+        decoder.setPassword('1234');
+
+        const opened = await decoder.openAsync(); // also available sync. version 'decoder.open()'
+
+        // 3. Select archive items for extracting or testing.
+        //  3.1. Select all archive items.
+        const allArchiveItems = decoder.items;
+
+        //  3.2. Get the number of items, iterate items by index, filter and select items.
+        const selectedItemsDuringIteration = [];
+        for (let itemIndex = 0, numberOfArchiveItems = decoder.count; itemIndex <  numberOfArchiveItems; itemIndex++) {
+            const item = decoder.itemAt(itemIndex);
+            selectedItemsDuringIteration.push(item);
+        }
+    } catch (error) {
+        console.log(`Exception: ${error}`);
+    }
+}
+
+decoderAsyncExample1();
 
 test++; // encoder.open
 async function encoderAsyncTest1() {
@@ -150,7 +190,7 @@ async function encoderAsyncTest1() {
     encoder.setProgressDelegate((path, progress) => console.log(`compressing: ${path} progress: ${progress}`) );
 }
 
-encoderAsyncTest1();
+//encoderAsyncTest1();
 
 // let decoder = plzma.Decoder(plzma.InStream('/tmp/7z1900-src.7z'), plzma.FileType.sevenZ);
 // if (decoder.open() !== true) throw '';
