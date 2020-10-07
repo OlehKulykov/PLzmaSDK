@@ -27,20 +27,13 @@
 
 #include <limits>
 #include <sstream>
-
 #include <iostream> // std::cout
-
 #include <node.h>
 #include <node_object_wrap.h>
 #include <uv.h>
-
 #include "../libplzma.hpp"
 
 using namespace v8;
-
-#define NPLZMA_TRY \
-try { \
-
 
 namespace nplzma {
     std::string exceptionToString(const plzma::Exception & e) {
@@ -63,6 +56,9 @@ namespace nplzma {
     }
 }
 
+#define NPLZMA_TRY \
+try { \
+
 
 #define NPLZMA_CATCH_RET(ISOLATE) \
 } catch (const plzma::Exception & e) { \
@@ -83,13 +79,13 @@ namespace nplzma {
 
 
 #define NPLZMA_THROW_ARG_TYPE_ERROR_RET(ISOLATE, PROP) \
-static const char * ecsutf8 = "Unsupported argument of type or its value for '" PROP "' property/method."; \
+static const char * ecsutf8 = "Unsupported argument type or its value for '" PROP "' property/method."; \
 ISOLATE->ThrowException(Exception::TypeError(String::NewFromUtf8(ISOLATE, ecsutf8).ToLocalChecked())); \
 return; \
 
 
 #define NPLZMA_THROW_ARG1_TYPE_ERROR_RET(ISOLATE, FORMT, ARG1) \
-static const char * ecsutf8Format = "Unsupported argument of type or its value for '" FORMT "' property/method."; \
+static const char * ecsutf8Format = "Unsupported argument type or its value for '" FORMT "' property/method."; \
 char ecsutf8[128] = { 0 }; \
 sprintf(ecsutf8, ecsutf8Format, ARG1); \
 ISOLATE->ThrowException(Exception::TypeError(String::NewFromUtf8(ISOLATE, ecsutf8).ToLocalChecked())); \
@@ -280,12 +276,12 @@ namespace nplzma {
         static void SetShouldEncryptContent(Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> & info);
         static void ShouldEncryptHeader(Local<String> property, const PropertyCallbackInfo<Value> & info);
         static void SetShouldEncryptHeader(Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> & info);
-        static void ShouldStoreCreationTime(Local<String> property, const PropertyCallbackInfo<Value> & info);
-        static void SetShouldStoreCreationTime(Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> & info);
-        static void ShouldStoreAccessTime(Local<String> property, const PropertyCallbackInfo<Value> & info);
-        static void SetShouldStoreAccessTime(Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> & info);
-        static void ShouldStoreModificationTime(Local<String> property, const PropertyCallbackInfo<Value> & info);
-        static void SetShouldStoreModificationTime(Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> & info);
+        static void ShouldStoreCreationDate(Local<String> property, const PropertyCallbackInfo<Value> & info);
+        static void SetShouldStoreCreationDate(Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> & info);
+        static void ShouldStoreAccessDate(Local<String> property, const PropertyCallbackInfo<Value> & info);
+        static void SetShouldStoreAccessDate(Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> & info);
+        static void ShouldStoreModificationDate(Local<String> property, const PropertyCallbackInfo<Value> & info);
+        static void SetShouldStoreModificationDate(Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> & info);
         static void New(const FunctionCallbackInfo<Value> & args);
     public:
         Encoder(plzma::SharedPtr<plzma::Encoder> && encoder) : node::ObjectWrap(),
@@ -837,57 +833,57 @@ namespace nplzma {
         }
     }
     
-    void Encoder::ShouldStoreCreationTime(Local<String> property, const PropertyCallbackInfo<Value> & info) {
+    void Encoder::ShouldStoreCreationDate(Local<String> property, const PropertyCallbackInfo<Value> & info) {
         Isolate * isolate = info.GetIsolate();
         HandleScope handleScope(isolate);
         Encoder * encoder = ObjectWrap::Unwrap<Encoder>(info.Holder());
         info.GetReturnValue().Set(Boolean::New(isolate, encoder->_encoder->shouldStoreCreationTime()));
     }
     
-    void Encoder::SetShouldStoreCreationTime(Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> & info) {
+    void Encoder::SetShouldStoreCreationDate(Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> & info) {
         Isolate * isolate = info.GetIsolate();
         HandleScope handleScope(isolate);
         Encoder * encoder = ObjectWrap::Unwrap<Encoder>(info.Holder());
         if (value->IsBoolean()) {
             encoder->_encoder->setShouldStoreCreationTime(value->BooleanValue(isolate));
         } else {
-            NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "shouldStoreCreationTime")
+            NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "shouldStoreCreationDate")
         }
     }
     
-    void Encoder::ShouldStoreAccessTime(Local<String> property, const PropertyCallbackInfo<Value> & info) {
+    void Encoder::ShouldStoreAccessDate(Local<String> property, const PropertyCallbackInfo<Value> & info) {
         Isolate * isolate = info.GetIsolate();
         HandleScope handleScope(isolate);
         Encoder * encoder = ObjectWrap::Unwrap<Encoder>(info.Holder());
         info.GetReturnValue().Set(Boolean::New(isolate, encoder->_encoder->shouldStoreAccessTime()));
     }
     
-    void Encoder::SetShouldStoreAccessTime(Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> & info) {
+    void Encoder::SetShouldStoreAccessDate(Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> & info) {
         Isolate * isolate = info.GetIsolate();
         HandleScope handleScope(isolate);
         Encoder * encoder = ObjectWrap::Unwrap<Encoder>(info.Holder());
         if (value->IsBoolean()) {
             encoder->_encoder->setShouldStoreAccessTime(value->BooleanValue(isolate));
         } else {
-            NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "shouldStoreAccessTime")
+            NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "shouldStoreAccessDate")
         }
     }
     
-    void Encoder::ShouldStoreModificationTime(Local<String> property, const PropertyCallbackInfo<Value> & info) {
+    void Encoder::ShouldStoreModificationDate(Local<String> property, const PropertyCallbackInfo<Value> & info) {
         Isolate * isolate = info.GetIsolate();
         HandleScope handleScope(isolate);
         Encoder * encoder = ObjectWrap::Unwrap<Encoder>(info.Holder());
         info.GetReturnValue().Set(Boolean::New(isolate, encoder->_encoder->shouldStoreModificationTime()));
     }
     
-    void Encoder::SetShouldStoreModificationTime(Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> & info) {
+    void Encoder::SetShouldStoreModificationDate(Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> & info) {
         Isolate * isolate = info.GetIsolate();
         HandleScope handleScope(isolate);
         Encoder * encoder = ObjectWrap::Unwrap<Encoder>(info.Holder());
         if (value->IsBoolean()) {
             encoder->_encoder->setShouldStoreModificationTime(value->BooleanValue(isolate));
         } else {
-            NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "shouldStoreModificationTime")
+            NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "shouldStoreModificationDate")
         }
     }
     
@@ -924,9 +920,9 @@ namespace nplzma {
         ctorInstTpl->SetAccessor(String::NewFromUtf8(isolate, "shouldCompressHeaderFull").ToLocalChecked(), Encoder::ShouldCompressHeaderFull, Encoder::SetShouldCompressHeaderFull, Local<Value>(), DEFAULT, static_cast<PropertyAttribute>(DontDelete | DontEnum));
         ctorInstTpl->SetAccessor(String::NewFromUtf8(isolate, "shouldEncryptContent").ToLocalChecked(), Encoder::ShouldEncryptContent, Encoder::SetShouldEncryptContent, Local<Value>(), DEFAULT, static_cast<PropertyAttribute>(DontDelete | DontEnum));
         ctorInstTpl->SetAccessor(String::NewFromUtf8(isolate, "shouldEncryptHeader").ToLocalChecked(), Encoder::ShouldEncryptHeader, Encoder::SetShouldEncryptHeader, Local<Value>(), DEFAULT, static_cast<PropertyAttribute>(DontDelete | DontEnum));
-        ctorInstTpl->SetAccessor(String::NewFromUtf8(isolate, "shouldStoreCreationTime").ToLocalChecked(), Encoder::ShouldStoreCreationTime, Encoder::SetShouldStoreCreationTime, Local<Value>(), DEFAULT, static_cast<PropertyAttribute>(DontDelete | DontEnum));
-        ctorInstTpl->SetAccessor(String::NewFromUtf8(isolate, "shouldStoreAccessTime").ToLocalChecked(), Encoder::ShouldStoreAccessTime, Encoder::SetShouldStoreAccessTime, Local<Value>(), DEFAULT, static_cast<PropertyAttribute>(DontDelete | DontEnum));
-        ctorInstTpl->SetAccessor(String::NewFromUtf8(isolate, "shouldStoreModificationTime").ToLocalChecked(), Encoder::ShouldStoreModificationTime, Encoder::SetShouldStoreModificationTime, Local<Value>(), DEFAULT, static_cast<PropertyAttribute>(DontDelete | DontEnum));
+        ctorInstTpl->SetAccessor(String::NewFromUtf8(isolate, "shouldStoreCreationDate").ToLocalChecked(), Encoder::ShouldStoreCreationDate, Encoder::SetShouldStoreCreationDate, Local<Value>(), DEFAULT, static_cast<PropertyAttribute>(DontDelete | DontEnum));
+        ctorInstTpl->SetAccessor(String::NewFromUtf8(isolate, "shouldStoreAccessDate").ToLocalChecked(), Encoder::ShouldStoreAccessDate, Encoder::SetShouldStoreAccessDate, Local<Value>(), DEFAULT, static_cast<PropertyAttribute>(DontDelete | DontEnum));
+        ctorInstTpl->SetAccessor(String::NewFromUtf8(isolate, "shouldStoreModificationDate").ToLocalChecked(), Encoder::ShouldStoreModificationDate, Encoder::SetShouldStoreModificationDate, Local<Value>(), DEFAULT, static_cast<PropertyAttribute>(DontDelete | DontEnum));
         
         Local<Function> constructor = ctorTpl->GetFunction(context).ToLocalChecked();
         dataObject->SetInternalField(0, constructor);
@@ -2731,7 +2727,7 @@ namespace nplzma {
     }
 }
 
-void PlzmaModuleInit(Local<Object> exports) {
+static void PlzmaModuleInit(Local<Object> exports) {
     nplzma::InitConstsAndEnums(exports);
     nplzma::Path::Init(exports);
     nplzma::Item::Init(exports);

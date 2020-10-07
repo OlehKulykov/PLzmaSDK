@@ -42,7 +42,7 @@ enum ErrorCode {
 //     followSymlinks
 // }
 
-// version
+// version()
 
 // class Stat {
 //     size

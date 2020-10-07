@@ -177,7 +177,6 @@ int test_plzma_extract_broken_input_stream1(void) {
 //    PLZMA_TESTS_ASSERT(error != nullptr)
 //    CLZMA_RELEASE_CLEAN(error)
 //    CLZMA_RELEASE_CLEAN(stream)
-    
     return 0;
 }
 
@@ -204,8 +203,7 @@ int test_plzma_extract_broken_input_stream2(void) {
 //    PLZMA_TESTS_ASSERT(error != nullptr)
 //    plzma_error_release(error);
 //    plzma_in_stream_release(stream);
-//#endif // !LIBPLZMA_NO_C_BINDINGS
-    
+//#endif // !LIBPLZMA_NO_C_BINDINGS    
     return 0;
 }
 

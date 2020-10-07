@@ -1202,7 +1202,7 @@ namespace plzma {
         ///
         /// During the process, the decoder is self-retained till operation is in progress.
         /// @param path The directory path to extract all items.
-        /// @param usingItemsFullPath Exctract item using it's full path or only last path component.
+        /// @param usingItemsFullPath Extract item using it's full path or only last path component.
         /// @note The extracting progress might be executed in a separate thread.
         /// @note The extracting progress might be aborted via \a abort() method.
         /// @note Thread-safe.
@@ -1214,7 +1214,7 @@ namespace plzma {
         /// During the process, the decoder is self-retained till operation is in progress.
         /// @param items The array of items to extract.
         /// @param path The directory path to extract all items.
-        /// @param usingItemsFullPath Exctract item using it's full path or only the last path component.
+        /// @param usingItemsFullPath Extract item using it's full path or only the last path component.
         /// @note The extracting progress might be executed in a separate thread.
         /// @note The extracting progress might be aborted via \a abort() method.
         /// @note Thread-safe.
@@ -1298,14 +1298,14 @@ namespace plzma {
         /// @brief Adds the physical file or directory path to the encoder.
         /// @param path The file or directory path.
         /// @param openDirMode The mode for opening directory in case if \a path is a directory path.
-        /// @param archivePath The optional path of how the \a path will be presented in archive.
+        /// @param archivePath The optional path of how the item's \a path will be presented in archive.
         /// @note Thread-safe. Must be set before opening.
         virtual void add(const Path & path, const plzma_open_dir_mode_t openDirMode = 0, const Path & archivePath = Path()) = 0;
         
         
-        /// @brief Adds the file in-sctream to the encoder.
+        /// @brief Adds the file in-stream to the encoder.
         /// @param stream The input file stream to add.
-        /// @param archivePath The optional path of how the \a path will be presented in archive.
+        /// @param archivePath The optional path of how the item's \a path will be presented in archive.
         /// @note Thread-safe. Must be set before opening.
         virtual void add(const SharedPtr<InStream> & stream, const Path & archivePath) = 0;
         
