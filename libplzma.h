@@ -44,11 +44,11 @@
 /// Everything what you need to use this library in C | Objective-C | Swift env. is here.
 
 
-/// @brief Manualy defined required version parts of the library. 0.0.5
+/// @brief Manualy defined required version parts of the library. 0.0.6
 /// The optinal `LIBPLZMA_VERSION_BUILD` might be befined by the CI or via cmake during the configuration.
 #define LIBPLZMA_VERSION_MAJOR 0
 #define LIBPLZMA_VERSION_MINOR 0
-#define LIBPLZMA_VERSION_PATCH 5
+#define LIBPLZMA_VERSION_PATCH 6
 
 // check windows
 #if defined(WIN32) || defined(_WIN32) || defined(WIN32_LEAN_AND_MEAN) || defined(_WIN64) || defined(WIN64)
@@ -158,7 +158,7 @@ typedef enum plzma_file_type {
     
     /// @brief XZ type.
     ///
-    /// This file type supports only one arhive item, in a rest it same as 7-zip.
+    /// This file type supports only one arhive item without password protection.
     /// @note Supports only 'LZMA2' compression method which is automatically selected.
     /// @link https://www.7-zip.org/7z.html
     plzma_file_type_xz          = 2,
@@ -172,7 +172,7 @@ typedef enum plzma_file_type {
 } plzma_file_type;
 
 
-/// Compression method.
+/// @brief Compression method.
 typedef enum plzma_method {
     /// @brief Default and general compression method of 7z format.
     /// @link https://www.7-zip.org/7z.html
@@ -407,7 +407,7 @@ typedef bool (*plzma_in_stream_seek_callback)(void * LIBPLZMA_NULLABLE context,
 /// In this case, read and write the maximum available, but not bigger than provided.
 /// @param context The user's context pointer provided with stream creation.
 /// @param data The buffer to write the data.
-/// @param size The maximum size of the the data to read and write to a \a data buffer.
+/// @param size The maximum size of the data to read and write to a \a data buffer.
 /// @param processed_size The number of bytes actualy read from a stream and written to a buffer.
 /// @return \a true if operation was successfully done, otherwice \a false.
 typedef bool (*plzma_in_stream_read_callback)(void * LIBPLZMA_NULLABLE context,
@@ -434,7 +434,7 @@ typedef void (*plzma_progress_delegate_wide_callback)(void * LIBPLZMA_NULLABLE c
                                                       const double progress);
 
 
-/// @brief The full version string of the library generated on build time .
+/// @brief The full version string of the library generated on build time.
 ///
 /// Contains version<major, minor, patch> with optional automatic build number,
 /// library type, build date/time, os, compiler, environment, usage, features, etc. and original LZMA SDK version.
@@ -505,50 +505,47 @@ LIBPLZMA_C_API(char * LIBPLZMA_NULLABLE) plzma_cstring_append(char * LIBPLZMA_NU
 
 /// Settings
 
-/// @brief Receives the current size in bytes of the read block per single request.
-///
-/// @li \a CFilterCoder allocates buff for reading. Original value: 1 << 20.
-/// @li \a ISequentialOutStream max read block size, or available size. Original value: 1 << 31.
+/// @brief Receives the current size in bytes of the stream's read block per single read request.
+/// @note The lower value requires less amount of allocated memory, but increases the number of read requests and vice versa.
 LIBPLZMA_C_API(plzma_size_t) plzma_stream_read_size(void);
 
 
-/// @brief Change the the current size in bytes of the read block per single request.
+/// @brief Changes the current size in bytes of the stream's read block per single read request.
 /// @see Function \a plzma_stream_read_size.
+/// @note The lower value requires less amount of allocated memory, but increases the number of read requests and vice versa.
 LIBPLZMA_C_API(void) plzma_set_stream_read_size(const plzma_size_t size);
 
 
-/// @brief Receives the current size in bytes for write per single request.
-///
-/// @li \a ISequentialOutStream max write block size, or available size. Original value: 1 << 31.
+/// @brief Receives the current size in bytes of the stream's write block per single write request.
+/// @note The lower value requires less amount of allocated memory, but increases the number of write requests and vice versa.
 LIBPLZMA_C_API(plzma_size_t) plzma_stream_write_size(void);
 
 
-/// @brief Change the current size in bytes for write per single request.
+/// @brief Changes the current size in bytes of the stream's write block per single write request.
 /// @see Function \a plzma_stream_write_size.
+/// @note The lower value requires less amount of allocated memory, but increases the number of write requests and vice versa.
 LIBPLZMA_C_API(void) plzma_set_stream_write_size(const plzma_size_t size);
 
 
-/// @brief The current size in bytes for internal decoder buffer for holding coded data.
-///
-/// @li Lzma \a CDecoder in buffer, buff with coded data. Original value: 1 << 20.
-/// @li Lzma2 \a CDecoder in buffer, buff with coded data. Original value: 1 << 20.
+/// @brief The current size in bytes of the decoder's internal buffer for holding decoded data.
+/// @note The lower value requires less amount of allocated memory, but increases the number of read requests and vice versa.
 LIBPLZMA_C_API(plzma_size_t) plzma_decoder_read_size(void);
 
 
-/// @brief Change the current size in bytes for internal decoder buffer for holding coded data.
+/// @brief Changes the current size in bytes of the decoder's internal buffer for holding decoded data.
 /// @see Function \a plzma_decoder_read_size.
+/// @note The lower value requires less amount of allocated memory, but increases the number of read requests and vice versa.
 LIBPLZMA_C_API(void) plzma_set_decoder_read_size(const plzma_size_t size);
 
 
-/// @brief Receives the current size in bytes for internal decoder buffer for holding decoded data.
-///
-/// @li Lzma \a CDecoder out buffer, buff for decoded data. Original value: 1 << 22.
-/// @li Lzma2 \a CDecoder out buffer, buff for decoded data. Original value: 1 << 22.
+/// @brief Receives the current size in bytes of the decoder's internal buffer for holding decoded data.
+/// @note The lower value requires less amount of allocated memory, but increases the number of write requests and vice versa.
 LIBPLZMA_C_API(plzma_size_t) plzma_decoder_write_size(void);
 
 
-/// Change the current size in bytes for internal decoder buffer for holding decoded data.
+/// Changes the current size in bytes of the decoder's internal buffer for holding decoded data.
 /// @see Function \a plzma_decoder_write_size.
+/// @note The lower value requires less amount of allocated memory, but increases the number of write requests and vice versa.
 LIBPLZMA_C_API(void) plzma_set_decoder_write_size(const plzma_size_t size);
 
 /// Object

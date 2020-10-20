@@ -1,11 +1,31 @@
-
+﻿
 'use strict';
 
-const plzma = require('./../build/Release/plzma');
+const plzma = require('./../index.js');
 
 console.log('plzma export:', plzma);
 console.log('typeof plzma.ErrorCode.io:', typeof plzma.ErrorCode.io);
 let test = 1;
+
+if (typeof plzma.streamReadSize !== 'number') throw '';
+if (plzma.streamReadSize <= 0) throw '';
+plzma.streamReadSize = 3332;
+if (plzma.streamReadSize != 3332) throw '';
+
+if (typeof plzma.streamWriteSize !== 'number') throw '';
+if (plzma.streamWriteSize <= 0) throw '';
+plzma.streamWriteSize = 3332;
+if (plzma.streamWriteSize != 3332) throw '';
+
+if (typeof plzma.decoderReadSize !== 'number') throw '';
+if (plzma.decoderReadSize <= 0) throw '';
+plzma.decoderReadSize = 3332;
+if (plzma.decoderReadSize != 3332) throw '';
+
+if (typeof plzma.decoderWriteSize !== 'number') throw '';
+if (plzma.decoderWriteSize <= 0) throw '';
+plzma.decoderWriteSize = 3332;
+if (plzma.decoderWriteSize != 3332) throw '';
 
 let path, path1;
 for (let i = 1; i < 8; i++) {

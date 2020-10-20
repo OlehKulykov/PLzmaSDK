@@ -73,46 +73,18 @@ CLASS_NAME(const CLASS_NAME &) = delete; \
 
 namespace plzma {
     
-    /**
-     @brief Size in bytes of the read block size per single request.
-     @detailed
-     <li> \b CFilterCoder allocate buff for reading, was (1 << 20)
-     <li> \b ISequentialOutStream max read block size, or available size, was (1 << 31)
-     @warning This ammount of size will be allocated.
-     */
+    /// CFilterCoder, ISequentialOutStream default: 1 << 20
     extern plzma_size_t kStreamReadSize;
-
-
-    /**
-     @brief Size in bytes for write per single request.
-     @detailed
-     <li> \b CFilterCoder allocate buff for reading, was (1 << 20)
-     <li> \b ISequentialOutStream max write block size, or available size, was (1 << 31)
-     @warning This ammount of size will be allocated.
-     */
+    
+    /// CFilterCoder, ISequentialOutStream default: 1 << 20
     extern plzma_size_t kStreamWriteSize;
-
-
-    /**
-     @brief Size in bytes for internal decoder buffer for holding coded data.
-     @detailed
-     <li> Lzma \b CDecoder in buffer, buff with coded data, was (1 << 20)
-     <li> Lzma2 \b CDecoder in buffer, buff with coded data, was (1 << 20)
-     @warning This ammount of size will be allocated.
-     */
+    
+    /// CDecoder default: 1 << 20
     extern plzma_size_t kDecoderReadSize;
-
-
-    /**
-     @brief Size in bytes for internal decoder buffer for holding decoded data.
-     @detailed
-     <li> Lzma \b CDecoder out buffer, buff for decoded data, was (1 << 22)
-     <li> Lzma2 \b CDecoder out buffer, buff for decoded data, was (1 << 22)
-     @warning This ammount of size will be allocated.
-     */
+    
+    /// CDecoder default: 1 << 22
     extern plzma_size_t kDecoderWriteSize;
-
-
+    
     extern void initialize(void);
 
 } // namespace plzma

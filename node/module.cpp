@@ -32,6 +32,7 @@
 #include <node_object_wrap.h>
 #include <uv.h>
 #include "../libplzma.hpp"
+#include "../src/plzma_private.hpp"
 
 using namespace v8;
 
@@ -63,10 +64,10 @@ try { \
 #define NPLZMA_CATCH_RET(ISOLATE) \
 } catch (const plzma::Exception & e) { \
     const auto estr = nplzma::exceptionToString(e); \
-    ISOLATE->ThrowException(Exception::Error(String::NewFromUtf8(isolate, estr.c_str()).ToLocalChecked())); return; \
+    ISOLATE->ThrowException(Exception::Error(String::NewFromUtf8(ISOLATE, estr.c_str()).ToLocalChecked())); return; \
 } catch (const std::exception & e) { \
     const auto estr = nplzma::exceptionToString(e); \
-    ISOLATE->ThrowException(Exception::Error(String::NewFromUtf8(isolate, estr.c_str()).ToLocalChecked())); return; \
+    ISOLATE->ThrowException(Exception::Error(String::NewFromUtf8(ISOLATE, estr.c_str()).ToLocalChecked())); return; \
 } \
 
 
@@ -90,6 +91,41 @@ char ecsutf8[128] = { 0 }; \
 sprintf(ecsutf8, ecsutf8Format, ARG1); \
 ISOLATE->ThrowException(Exception::TypeError(String::NewFromUtf8(ISOLATE, ecsutf8).ToLocalChecked())); \
 return; \
+
+
+#define NPLZMA_GET_UINT64_FROM_VALUE(CONTEXT, VALUE, OUT_VALUE, OUT_VALUE_DEFINED) \
+if (VALUE->IsBigInt()) { \
+    OUT_VALUE = VALUE->ToBigInt(CONTEXT).ToLocalChecked()->Uint64Value(); \
+    OUT_VALUE_DEFINED = true; \
+} else if (VALUE->IsUint32()) { \
+    OUT_VALUE = VALUE->ToUint32(CONTEXT).ToLocalChecked()->Value(); \
+    OUT_VALUE_DEFINED = true; \
+} else if (VALUE->IsNumber()) { \
+    const auto valueFromNumber = VALUE->ToNumber(CONTEXT).ToLocalChecked()->Value(); \
+    if (valueFromNumber >= 0 && valueFromNumber <= UINT64_MAX) { \
+        OUT_VALUE = static_cast<uint64_t>(valueFromNumber); \
+        OUT_VALUE_DEFINED = true; \
+    } \
+} \
+
+
+#define NPLZMA_GET_UINT32_FROM_VALUE(CONTEXT, VALUE, OUT_VALUE, OUT_VALUE_DEFINED) \
+if (VALUE->IsUint32()) { \
+    OUT_VALUE = VALUE->ToUint32(CONTEXT).ToLocalChecked()->Value(); \
+    OUT_VALUE_DEFINED = true; \
+} else if (VALUE->IsBigInt()) { \
+    const auto valueFromBigInt = VALUE->ToBigInt(CONTEXT).ToLocalChecked()->Uint64Value(); \
+    if (valueFromBigInt <= UINT32_MAX) { \
+        OUT_VALUE = static_cast<uint32_t>(valueFromBigInt); \
+        OUT_VALUE_DEFINED = true; \
+    } \
+} else if (VALUE->IsNumber()) { \
+    const auto valueFromNumber = VALUE->ToNumber(CONTEXT).ToLocalChecked()->Value(); \
+    if (valueFromNumber >= 0 && valueFromNumber <= UINT32_MAX) { \
+        OUT_VALUE = static_cast<uint32_t>(valueFromNumber); \
+        OUT_VALUE_DEFINED = true; \
+    } \
+} \
 
 
 namespace nplzma {
@@ -562,16 +598,24 @@ namespace nplzma {
                         Local<Array> arr = Local<Array>::Cast(args[1]);
                         for (uint32_t i = 0, n = arr->Length(); i < n; i++) {
                             Local<Value> obj = arr->Get(context, i).ToLocalChecked();
-                            if (obj->IsUint32()) {
-                                mode |= obj->ToUint32(context).ToLocalChecked()->Value();
+                            uint32_t modeValue = 0;
+                            bool modeValueDefined = false;
+                            NPLZMA_GET_UINT32_FROM_VALUE(context, obj, modeValue, modeValueDefined)
+                            if (modeValueDefined) {
+                                mode |= modeValue;
                             } else {
                                 NPLZMA_THROW_ARG1_TYPE_ERROR_RET(isolate, "add(?,mode[%llu?],...)", static_cast<unsigned long long>(i))
                             }
                         }
                         unsupportedArg2 = false;
-                    } else if (args[1]->IsUint32()) {
-                        mode |= args[1]->ToUint32(context).ToLocalChecked()->Value();
-                        unsupportedArg2 = false;
+                    } else {
+                        uint32_t modeValue = 0;
+                        bool modeValueDefined = false;
+                        NPLZMA_GET_UINT32_FROM_VALUE(context, args[1], modeValue, modeValueDefined)
+                        if (modeValueDefined) {
+                            mode |= modeValue;
+                            unsupportedArg2 = false;
+                        }
                     }
                     if (!unsupportedArg2) {
                         openDirMode = static_cast<plzma_open_dir_mode_t>(mode);
@@ -735,11 +779,7 @@ namespace nplzma {
         Isolate * isolate = info.GetIsolate();
         HandleScope handleScope(isolate);
         Encoder * encoder = ObjectWrap::Unwrap<Encoder>(info.Holder());
-        if (value->IsBoolean()) {
-            encoder->_encoder->setShouldCreateSolidArchive(value->BooleanValue(isolate));
-        } else {
-            NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "shouldCreateSolidArchive")
-        }
+        encoder->_encoder->setShouldCreateSolidArchive(value->BooleanValue(isolate));
     }
     
     void Encoder::CompressionLevel(Local<String> property, const PropertyCallbackInfo<Value> & info) {
@@ -754,8 +794,11 @@ namespace nplzma {
         HandleScope handleScope(isolate);
         Encoder * encoder = ObjectWrap::Unwrap<Encoder>(info.Holder());
         Local<Context> context = isolate->GetCurrentContext();
-        if (value->IsUint32()) {
-            encoder->_encoder->setCompressionLevel(static_cast<uint8_t>(value->ToUint32(context).ToLocalChecked()->Value()));
+        uint32_t compressionLevelValue = 0;
+        bool compressionLevelValueDefined = false;
+        NPLZMA_GET_UINT32_FROM_VALUE(context, value, compressionLevelValue, compressionLevelValueDefined)
+        if (compressionLevelValueDefined) {
+            encoder->_encoder->setCompressionLevel(static_cast<uint8_t>(compressionLevelValue));
         } else {
             NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "compressionLevel")
         }
@@ -772,11 +815,7 @@ namespace nplzma {
         Isolate * isolate = info.GetIsolate();
         HandleScope handleScope(isolate);
         Encoder * encoder = ObjectWrap::Unwrap<Encoder>(info.Holder());
-        if (value->IsBoolean()) {
-            encoder->_encoder->setShouldCompressHeader(value->BooleanValue(isolate));
-        } else {
-            NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "shouldCompressHeader")
-        }
+        encoder->_encoder->setShouldCompressHeader(value->BooleanValue(isolate));
     }
     
     void Encoder::ShouldCompressHeaderFull(Local<String> property, const PropertyCallbackInfo<Value> & info) {
@@ -790,11 +829,7 @@ namespace nplzma {
         Isolate * isolate = info.GetIsolate();
         HandleScope handleScope(isolate);
         Encoder * encoder = ObjectWrap::Unwrap<Encoder>(info.Holder());
-        if (value->IsBoolean()) {
-            encoder->_encoder->setShouldCompressHeaderFull(value->BooleanValue(isolate));
-        } else {
-            NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "shouldCompressHeaderFull")
-        }
+        encoder->_encoder->setShouldCompressHeaderFull(value->BooleanValue(isolate));
     }
     
     void Encoder::ShouldEncryptContent(Local<String> property, const PropertyCallbackInfo<Value> & info) {
@@ -808,11 +843,7 @@ namespace nplzma {
         Isolate * isolate = info.GetIsolate();
         HandleScope handleScope(isolate);
         Encoder * encoder = ObjectWrap::Unwrap<Encoder>(info.Holder());
-        if (value->IsBoolean()) {
-            encoder->_encoder->setShouldEncryptContent(value->BooleanValue(isolate));
-        } else {
-            NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "shouldEncryptContent")
-        }
+        encoder->_encoder->setShouldEncryptContent(value->BooleanValue(isolate));
     }
     
     void Encoder::ShouldEncryptHeader(Local<String> property, const PropertyCallbackInfo<Value> & info) {
@@ -826,11 +857,7 @@ namespace nplzma {
         Isolate * isolate = info.GetIsolate();
         HandleScope handleScope(isolate);
         Encoder * encoder = ObjectWrap::Unwrap<Encoder>(info.Holder());
-        if (value->IsBoolean()) {
-            encoder->_encoder->setShouldEncryptHeader(value->BooleanValue(isolate));
-        } else {
-            NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "shouldEncryptHeader")
-        }
+        encoder->_encoder->setShouldEncryptHeader(value->BooleanValue(isolate));
     }
     
     void Encoder::ShouldStoreCreationDate(Local<String> property, const PropertyCallbackInfo<Value> & info) {
@@ -844,11 +871,7 @@ namespace nplzma {
         Isolate * isolate = info.GetIsolate();
         HandleScope handleScope(isolate);
         Encoder * encoder = ObjectWrap::Unwrap<Encoder>(info.Holder());
-        if (value->IsBoolean()) {
-            encoder->_encoder->setShouldStoreCreationTime(value->BooleanValue(isolate));
-        } else {
-            NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "shouldStoreCreationDate")
-        }
+        encoder->_encoder->setShouldStoreCreationTime(value->BooleanValue(isolate));
     }
     
     void Encoder::ShouldStoreAccessDate(Local<String> property, const PropertyCallbackInfo<Value> & info) {
@@ -862,11 +885,7 @@ namespace nplzma {
         Isolate * isolate = info.GetIsolate();
         HandleScope handleScope(isolate);
         Encoder * encoder = ObjectWrap::Unwrap<Encoder>(info.Holder());
-        if (value->IsBoolean()) {
-            encoder->_encoder->setShouldStoreAccessTime(value->BooleanValue(isolate));
-        } else {
-            NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "shouldStoreAccessDate")
-        }
+        encoder->_encoder->setShouldStoreAccessTime(value->BooleanValue(isolate));
     }
     
     void Encoder::ShouldStoreModificationDate(Local<String> property, const PropertyCallbackInfo<Value> & info) {
@@ -880,11 +899,7 @@ namespace nplzma {
         Isolate * isolate = info.GetIsolate();
         HandleScope handleScope(isolate);
         Encoder * encoder = ObjectWrap::Unwrap<Encoder>(info.Holder());
-        if (value->IsBoolean()) {
-            encoder->_encoder->setShouldStoreModificationTime(value->BooleanValue(isolate));
-        } else {
-            NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "shouldStoreModificationDate")
-        }
+        encoder->_encoder->setShouldStoreModificationTime(value->BooleanValue(isolate));
     }
     
     void Encoder::Init(Local<Object> exports) {
@@ -949,12 +964,16 @@ namespace nplzma {
                         NPLZMA_CATCH_RET(isolate)
                     }
                 }
-                if (args[1]->IsUint32()) {
-                    fileType = static_cast<plzma_file_type>(args[1]->ToUint32(context).ToLocalChecked()->Value());
+                uint32_t fileTypeValue = 0, methodValue = 0;
+                bool fileTypeValueDefined = false, methodValueDefined = false;
+                NPLZMA_GET_UINT32_FROM_VALUE(context, args[1], fileTypeValue, fileTypeValueDefined)
+                NPLZMA_GET_UINT32_FROM_VALUE(context, args[2], methodValue, methodValueDefined)
+                if (fileTypeValueDefined) {
+                    fileType = static_cast<plzma_file_type>(fileTypeValue);
                     unsupportedArg2 = false;
                 }
-                if (args[2]->IsUint32()) {
-                    method = static_cast<plzma_method>(args[2]->ToUint32(context).ToLocalChecked()->Value());
+                if (methodValueDefined) {
+                    method = static_cast<plzma_method>(methodValue);
                     unsupportedArg3 = false;
                 }
             }
@@ -1090,7 +1109,7 @@ namespace nplzma {
             args.GetReturnValue().Set(Boolean::New(isolate, opened));
         }
     }
-        
+    
     void Decoder::Abort(const FunctionCallbackInfo<Value> & args) {
         Isolate * isolate = args.GetIsolate();
         HandleScope handleScope(isolate);
@@ -1106,9 +1125,17 @@ namespace nplzma {
         Local<Context> context = isolate->GetCurrentContext();
         Decoder * decoder = ObjectWrap::Unwrap<Decoder>(args.Holder());
         plzma_size_t index = 0;
-        if (args.Length() > 0 && args[0]->IsUint32()) {
-            index = static_cast<plzma_size_t>(args[0]->ToUint32(context).ToLocalChecked()->Value());
-        } else {
+        bool unsupportedArg1 = true;
+        if (args.Length() > 0) {
+            uint32_t indexValue = 0;
+            bool indexValueDefined = false;
+            NPLZMA_GET_UINT32_FROM_VALUE(context, args[0], indexValue, indexValueDefined)
+            if (indexValueDefined) {
+                index = indexValue;
+                unsupportedArg1 = false;
+            }
+        }
+        if (unsupportedArg1) {
             NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "itemAt(?)")
         }
         plzma::SharedPtr<plzma::Item> itemSPtr;
@@ -1134,9 +1161,11 @@ namespace nplzma {
             Item * item = Item::TypedUnwrap(itemObject);
             item->_item = std::move(itemSPtr);
             args.GetReturnValue().Set(itemObject);
+        } else {
+            isolate->ThrowException(Exception::Error(String::NewFromUtf8(isolate, "Can't retrieve item at index. Decoder not opened or index out of bounds or internal error.").ToLocalChecked()));
         }
     }
-        
+    
     void Decoder::Extract(const FunctionCallbackInfo<Value> & args) {
         Isolate * isolate = args.GetIsolate();
         HandleScope handleScope(isolate);
@@ -1200,8 +1229,8 @@ namespace nplzma {
                 NPLZMA_TRY
                 path.set(*pathStr);
                 NPLZMA_CATCH_RET(isolate)
-                if (args.Length() > 1 && args[1]->IsBoolean()) {
-                    usingItemsFullPath = args[1]->ToBoolean(isolate)->Value();
+                if (args.Length() > 1) {
+                    usingItemsFullPath = args[1]->BooleanValue(isolate);
                 }
                 method = 2;
             } else if (args[0]->IsArray()) {
@@ -1251,8 +1280,8 @@ namespace nplzma {
                 if (invalidArg2) {
                     NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "extract(items<Item>,?,...)")
                 }
-                if (args.Length() > 2 && args[2]->IsBoolean()) {
-                    usingItemsFullPath = args[2]->ToBoolean(isolate)->Value();
+                if (args.Length() > 2) {
+                    usingItemsFullPath = args[2]->BooleanValue(isolate);
                 }
                 method = 3;
             } else if (args[0]->IsObject()) {
@@ -1269,8 +1298,8 @@ namespace nplzma {
                 if (invalidArg1) {
                     NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "extract(?,...)")
                 }
-                if (args.Length() > 1 && args[1]->IsBoolean()) {
-                    usingItemsFullPath = args[1]->ToBoolean(isolate)->Value();
+                if (args.Length() > 1) {
+                    usingItemsFullPath = args[1]->BooleanValue(isolate);
                 }
                 method = 2;
             }
@@ -1489,8 +1518,11 @@ namespace nplzma {
                         NPLZMA_CATCH_RET(isolate)
                     }
                 }
-                if (args[1]->IsUint32()) {
-                    fileType = static_cast<plzma_file_type>(args[1]->ToUint32(context).ToLocalChecked()->Value());
+                uint32_t fileTypeValue = 0;
+                bool fileTypeValueDefined = false;
+                NPLZMA_GET_UINT32_FROM_VALUE(context, args[1], fileTypeValue, fileTypeValueDefined)
+                if (fileTypeValueDefined) {
+                    fileType = static_cast<plzma_file_type>(fileTypeValue);
                     unsupportedArg2 = false;
                 }
             }
@@ -1534,8 +1566,11 @@ namespace nplzma {
         InStream * stream = ObjectWrap::Unwrap<InStream>(args.Holder());
         plzma_erase erase = plzma_erase_none;
         if (args.Length() > 0) {
-            if (args[0]->IsUint32()) {
-                erase = static_cast<plzma_erase>(args[0]->ToUint32(context).ToLocalChecked()->Value());
+            uint32_t eraseValue = 0;
+            bool eraseValueDefined = false;
+            NPLZMA_GET_UINT32_FROM_VALUE(context, args[0], eraseValue, eraseValueDefined)
+            if (eraseValueDefined) {
+                erase = static_cast<plzma_erase>(eraseValue);
             } else {
                 NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "erase(?)")
             }
@@ -1658,8 +1693,11 @@ namespace nplzma {
         OutStream * stream = ObjectWrap::Unwrap<OutStream>(args.Holder());
         plzma_erase erase = plzma_erase_none;
         if (args.Length() > 0) {
-            if (args[0]->IsUint32()) {
-                erase = static_cast<plzma_erase>(args[0]->ToUint32(context).ToLocalChecked()->Value());
+            uint32_t eraseValue = 0;
+            bool eraseValueDefined = false;
+            NPLZMA_GET_UINT32_FROM_VALUE(context, args[0], eraseValue, eraseValueDefined)
+            if (eraseValueDefined) {
+                erase = static_cast<plzma_erase>(eraseValue);
             } else {
                 NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "erase(?)")
             }
@@ -1787,18 +1825,16 @@ namespace nplzma {
         HandleScope handleScope(isolate);
         std::ostringstream oss;
         const auto item = ObjectWrap::Unwrap<Item>(args.Holder())->_item;
-        if (item) {
-            oss << "[path: " << item->path().utf8()
-            << ", idx: " << item->index()
-            << ", size: " << item->size()
-            << ", psize: " << item->packSize()
-            << ", crc32: " << item->crc32()
-            << ", cts: " << item->creationTime()
-            << ", ats: " << item->accessTime()
-            << ", mts: " << item->modificationTime()
-            << ", enc: " << item->encrypted()
-            << ", dir: " << item->isDir() << "]" << std::endl;
-        }
+        oss << "[path: " << item->path().utf8()
+        << ", idx: " << item->index()
+        << ", size: " << item->size()
+        << ", psize: " << item->packSize()
+        << ", crc32: " << item->crc32()
+        << ", cts: " << item->creationTime()
+        << ", ats: " << item->accessTime()
+        << ", mts: " << item->modificationTime()
+        << ", enc: " << item->encrypted()
+        << ", dir: " << item->isDir() << "]" << std::endl;
         const auto str = oss.str();
         const char * utf8 = str.c_str();
         args.GetReturnValue().Set(String::NewFromUtf8(isolate, utf8 ? utf8 : "").ToLocalChecked());
@@ -1808,7 +1844,7 @@ namespace nplzma {
         Isolate * isolate = info.GetIsolate();
         HandleScope handleScope(isolate);
         const auto item = ObjectWrap::Unwrap<Item>(info.Holder())->_item;
-        info.GetReturnValue().Set(Uint32::NewFromUnsigned(isolate, item ? item->index() : 0));
+        info.GetReturnValue().Set(Uint32::NewFromUnsigned(isolate, item->index()));
     }
     
     void Item::GetPath(Local<String> property, const PropertyCallbackInfo<Value> & info) {
@@ -1830,11 +1866,9 @@ namespace nplzma {
         }
         Local<Object> pathObject = maybePathObject.ToLocalChecked();
         Path * path = Path::TypedUnwrap(pathObject);
-        if (item) {
-            NPLZMA_TRY
-            path->_path = item->path();
-            NPLZMA_CATCH_RET(isolate)
-        }
+        NPLZMA_TRY
+        path->_path = item->path();
+        NPLZMA_CATCH_RET(isolate)
         info.GetReturnValue().Set(pathObject);
     }
     
@@ -1842,7 +1876,7 @@ namespace nplzma {
         Isolate * isolate = info.GetIsolate();
         HandleScope handleScope(isolate);
         const auto item = ObjectWrap::Unwrap<Item>(info.Holder())->_item;
-        info.GetReturnValue().Set(BigInt::NewFromUnsigned(isolate, item ? item->size() : 0));
+        info.GetReturnValue().Set(BigInt::NewFromUnsigned(isolate, item->size()));
     }
     
     void Item::SetSize(Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> & info) {
@@ -1850,24 +1884,13 @@ namespace nplzma {
         HandleScope handleScope(isolate);
         Local<Context> context = isolate->GetCurrentContext();
         auto item = ObjectWrap::Unwrap<Item>(info.Holder())->_item;
-        if (item) {
-            bool unsupportedValue = true;
-            if (value->IsBigInt()) {
-                Local<BigInt> num = value->ToBigInt(context).ToLocalChecked();
-                bool lossless = false;
-                uint64_t size = num->Uint64Value(&lossless);
-                if (lossless) {
-                    item->setSize(size);
-                    unsupportedValue = false;
-                }
-            } else if (value->IsUint32()) {
-                Local<Uint32> num = value->ToUint32(context).ToLocalChecked();
-                item->setSize(num->Value());
-                unsupportedValue = false;
-            }
-            if (unsupportedValue) {
-                NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "size")
-            }
+        uint64_t sizeValue = 0;
+        bool sizeValueDefined = false;
+        NPLZMA_GET_UINT64_FROM_VALUE(context, value, sizeValue, sizeValueDefined)
+        if (sizeValueDefined) {
+            item->setSize(sizeValue);
+        } else {
+            NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "size")
         }
     }
     
@@ -1875,7 +1898,7 @@ namespace nplzma {
         Isolate * isolate = info.GetIsolate();
         HandleScope handleScope(isolate);
         const auto item = ObjectWrap::Unwrap<Item>(info.Holder())->_item;
-        info.GetReturnValue().Set(BigInt::NewFromUnsigned(isolate, item ? item->packSize() : 0));
+        info.GetReturnValue().Set(BigInt::NewFromUnsigned(isolate, item->packSize()));
     }
     
     void Item::SetPackSize(Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> & info) {
@@ -1883,24 +1906,13 @@ namespace nplzma {
         HandleScope handleScope(isolate);
         Local<Context> context = isolate->GetCurrentContext();
         auto item = ObjectWrap::Unwrap<Item>(info.Holder())->_item;
-        if (item) {
-            bool unsupportedValue = true;
-            if (value->IsBigInt()) {
-                Local<BigInt> num = value->ToBigInt(context).ToLocalChecked();
-                bool lossless = false;
-                uint64_t size = num->Uint64Value(&lossless);
-                if (lossless) {
-                    item->setPackSize(size);
-                    unsupportedValue = false;
-                }
-            } else if (value->IsUint32()) {
-                Local<Uint32> num = value->ToUint32(context).ToLocalChecked();
-                item->setPackSize(num->Value());
-                unsupportedValue = false;
-            }
-            if (unsupportedValue) {
-                NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "packSize")
-            }
+        uint64_t sizeValue = 0;
+        bool sizeValueDefined = false;
+        NPLZMA_GET_UINT64_FROM_VALUE(context, value, sizeValue, sizeValueDefined)
+        if (sizeValueDefined) {
+            item->setPackSize(sizeValue);
+        } else {
+            NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "packSize")
         }
     }
     
@@ -1908,7 +1920,7 @@ namespace nplzma {
         Isolate * isolate = info.GetIsolate();
         HandleScope handleScope(isolate);
         const auto item = ObjectWrap::Unwrap<Item>(info.Holder())->_item;
-        info.GetReturnValue().Set(Uint32::NewFromUnsigned(isolate, item ? item->crc32() : 0));
+        info.GetReturnValue().Set(Uint32::NewFromUnsigned(isolate, item->crc32()));
     }
     
     void Item::SetCrc32(Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> & info) {
@@ -1916,13 +1928,13 @@ namespace nplzma {
         HandleScope handleScope(isolate);
         Local<Context> context = isolate->GetCurrentContext();
         auto item = ObjectWrap::Unwrap<Item>(info.Holder())->_item;
-        if (item) {
-            if (value->IsUint32()) {
-                Local<Uint32> num = value->ToUint32(context).ToLocalChecked();
-                item->setCrc32(num->Value());
-            } else {
-                NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "crc32")
-            }
+        uint32_t crc32Value = 0;
+        bool crc32ValueDefined = false;
+        NPLZMA_GET_UINT32_FROM_VALUE(context, value, crc32Value, crc32ValueDefined)
+        if (crc32ValueDefined) {
+            item->setCrc32(crc32Value);
+        } else {
+            NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "crc32")
         }
     }
     
@@ -1931,23 +1943,21 @@ namespace nplzma {
         HandleScope handleScope(isolate);
         Local<Context> context = isolate->GetCurrentContext();
         const auto item = ObjectWrap::Unwrap<Item>(info.Holder())->_item;
-        info.GetReturnValue().Set(Date::New(context, item ? (item->creationTime() * 1000) : 0).ToLocalChecked());
+        info.GetReturnValue().Set(Date::New(context, item->creationTime() * 1000).ToLocalChecked());
     }
     
     void Item::SetCreationDate(Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> & info) {
         Isolate * isolate = info.GetIsolate();
         HandleScope handleScope(isolate);
         auto item = ObjectWrap::Unwrap<Item>(info.Holder())->_item;
-        if (item) {
-            if (value->IsNumber()) {
-                Local<Number> num = Local<Number>::Cast(value);
-                item->setCreationTime(num->Value() / 1000);
-            } else if (value->IsDate()) {
-                Local<Date> date = Local<Date>::Cast(value);
-                item->setCreationTime(date->ValueOf() / 1000);
-            } else {
-                NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "creationDate")
-            }
+        if (value->IsNumber()) {
+            Local<Number> num = Local<Number>::Cast(value);
+            item->setCreationTime(num->Value() / 1000);
+        } else if (value->IsDate()) {
+            Local<Date> date = Local<Date>::Cast(value);
+            item->setCreationTime(date->ValueOf() / 1000);
+        } else {
+            NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "creationDate")
         }
     }
     
@@ -1956,23 +1966,21 @@ namespace nplzma {
         HandleScope handleScope(isolate);
         Local<Context> context = isolate->GetCurrentContext();
         const auto item = ObjectWrap::Unwrap<Item>(info.Holder())->_item;
-        info.GetReturnValue().Set(Date::New(context, item ? (item->accessTime() * 1000) : 0).ToLocalChecked());
+        info.GetReturnValue().Set(Date::New(context, item->accessTime() * 1000).ToLocalChecked());
     }
     
     void Item::SetAccessDate(Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> & info) {
         Isolate * isolate = info.GetIsolate();
         HandleScope handleScope(isolate);
         auto item = ObjectWrap::Unwrap<Item>(info.Holder())->_item;
-        if (item) {
-            if (value->IsNumber()) {
-                Local<Number> num = Local<Number>::Cast(value);
-                item->setAccessTime(num->Value() / 1000);
-            } else if (value->IsDate()) {
-                Local<Date> date = Local<Date>::Cast(value);
-                item->setAccessTime(date->ValueOf() / 1000);
-            } else {
-                NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "accessDate")
-            }
+        if (value->IsNumber()) {
+            Local<Number> num = Local<Number>::Cast(value);
+            item->setAccessTime(num->Value() / 1000);
+        } else if (value->IsDate()) {
+            Local<Date> date = Local<Date>::Cast(value);
+            item->setAccessTime(date->ValueOf() / 1000);
+        } else {
+            NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "accessDate")
         }
     }
     
@@ -1981,23 +1989,21 @@ namespace nplzma {
         HandleScope handleScope(isolate);
         Local<Context> context = isolate->GetCurrentContext();
         const auto item = ObjectWrap::Unwrap<Item>(info.Holder())->_item;
-        info.GetReturnValue().Set(Date::New(context, item ? (item->modificationTime() * 1000) : 0).ToLocalChecked());
+        info.GetReturnValue().Set(Date::New(context, item->modificationTime() * 1000).ToLocalChecked());
     }
     
     void Item::SetModificationDate(Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> & info) {
         Isolate * isolate = info.GetIsolate();
         HandleScope handleScope(isolate);
         auto item = ObjectWrap::Unwrap<Item>(info.Holder())->_item;
-        if (item) {
-            if (value->IsNumber()) {
-                Local<Number> num = Local<Number>::Cast(value);
-                item->setModificationTime(num->Value() / 1000);
-            } else if (value->IsDate()) {
-                Local<Date> date = Local<Date>::Cast(value);
-                item->setModificationTime(date->ValueOf() / 1000);
-            } else {
-                NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "modificationDate")
-            }
+        if (value->IsNumber()) {
+            Local<Number> num = Local<Number>::Cast(value);
+            item->setModificationTime(num->Value() / 1000);
+        } else if (value->IsDate()) {
+            Local<Date> date = Local<Date>::Cast(value);
+            item->setModificationTime(date->ValueOf() / 1000);
+        } else {
+            NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "modificationDate")
         }
     }
     
@@ -2005,40 +2011,28 @@ namespace nplzma {
         Isolate * isolate = info.GetIsolate();
         HandleScope handleScope(isolate);
         const auto item = ObjectWrap::Unwrap<Item>(info.Holder())->_item;
-        info.GetReturnValue().Set(Boolean::New(isolate, item ? item->encrypted() : false));
+        info.GetReturnValue().Set(Boolean::New(isolate, item->encrypted()));
     }
     
     void Item::SetEncrypted(Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> & info) {
         Isolate * isolate = info.GetIsolate();
         HandleScope handleScope(isolate);
         auto item = ObjectWrap::Unwrap<Item>(info.Holder())->_item;
-        if (item) {
-            if (value->IsBoolean()) {
-                item->setEncrypted(value->BooleanValue(isolate));
-            } else {
-                NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "encrypted")
-            }
-        }
+        item->setEncrypted(value->BooleanValue(isolate));
     }
     
     void Item::GetIsDir(Local<String> property, const PropertyCallbackInfo<Value> & info) {
         Isolate * isolate = info.GetIsolate();
         HandleScope handleScope(isolate);
         const auto item = ObjectWrap::Unwrap<Item>(info.Holder())->_item;
-        info.GetReturnValue().Set(Boolean::New(isolate, item ? item->isDir() : false));
+        info.GetReturnValue().Set(Boolean::New(isolate, item->isDir()));
     }
     
     void Item::SetIsDir(Local<String> property, Local<Value> value, const PropertyCallbackInfo<void> & info) {
         Isolate * isolate = info.GetIsolate();
         HandleScope handleScope(isolate);
         auto item = ObjectWrap::Unwrap<Item>(info.Holder())->_item;
-        if (item) {
-            if (value->IsBoolean()) {
-                item->setIsDir(value->BooleanValue(isolate));
-            } else {
-                NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "isDir")
-            }
-        }
+        item->setIsDir(value->BooleanValue(isolate));
     }
     
     void Item::Init(Local<Object> exports) {
@@ -2084,7 +2078,6 @@ namespace nplzma {
         HandleScope handleScope(isolate);
         Local<Context> context = isolate->GetCurrentContext();
         if (args.IsConstructCall()) {
-            plzma::SharedPtr<plzma::Item> item;
             plzma::Path path;
             plzma_size_t index = 0;
             bool unsupportedArg1 = false, unsupportedArg2 = false;
@@ -2108,8 +2101,11 @@ namespace nplzma {
                 }
             }
             if (args.Length() > 1) {
-                if (args[1]->IsUint32()) {
-                    index = args[1]->ToUint32(context).ToLocalChecked()->Value();
+                uint32_t indexValue = 0;
+                bool indexValueDefined = false;
+                NPLZMA_GET_UINT32_FROM_VALUE(context, args[1], indexValue, indexValueDefined)
+                if (indexValueDefined) {
+                    index = indexValue;
                 } else {
                     unsupportedArg2 = true;
                 }
@@ -2120,13 +2116,9 @@ namespace nplzma {
             if (unsupportedArg2) {
                 NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "Item(path, ?)")
             }
-            if (args.Length() > 0) {
-                NPLZMA_TRY
-                item = plzma::makeShared<plzma::Item>(std::move(path), index);
-                NPLZMA_CATCH_RET(isolate)
-            }
             Item * obj = nullptr;
             NPLZMA_TRY
+            auto item = plzma::makeShared<plzma::Item>(std::move(path), index);
             obj = new Item(std::move(item));
             NPLZMA_CATCH_RET(isolate)
             obj->TypedWrap(args.This());
@@ -2351,15 +2343,23 @@ namespace nplzma {
                 Local<Array> arr = Local<Array>::Cast(args[0]);
                 for (uint32_t i = 0, n = arr->Length(); i < n; i++) {
                     Local<Value> obj = arr->Get(context, i).ToLocalChecked();
-                    if (obj->IsUint32()) {
-                        mode |= obj->ToUint32(context).ToLocalChecked()->Value();
+                    uint32_t modeValue = 0;
+                    bool modeValueDefined = false;
+                    NPLZMA_GET_UINT32_FROM_VALUE(context, obj, modeValue, modeValueDefined)
+                    if (modeValueDefined) {
+                        mode |= modeValue;
                     } else {
                         NPLZMA_THROW_ARG1_TYPE_ERROR_RET(isolate, "openDir(mode[%llu?])", static_cast<unsigned long long>(i))
                     }
                 }
-            } else if (args[0]->IsUint32()) {
-                mode |= args[0]->ToUint32(context).ToLocalChecked()->Value();
-                unsupportedArg = false;
+            } else {
+                uint32_t modeValue = 0;
+                bool modeValueDefined = false;
+                NPLZMA_GET_UINT32_FROM_VALUE(context, args[0], modeValue, modeValueDefined)
+                if (modeValueDefined) {
+                    mode |= modeValue;
+                    unsupportedArg = false;
+                }
             }
             if (unsupportedArg) {
                 NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "openDir(?)")
@@ -2395,8 +2395,11 @@ namespace nplzma {
         Path * path = ObjectWrap::Unwrap<Path>(pathObject);
         plzma_erase erase = plzma_erase_none;
         if (args.Length() > 0) {
-            if (args[0]->IsUint32()) {
-                erase = static_cast<plzma_erase>(args[0]->ToUint32(context).ToLocalChecked()->Value());
+            uint32_t eraseValue = 0;
+            bool eraseValueDefined = false;
+            NPLZMA_GET_UINT32_FROM_VALUE(context, args[0], eraseValue, eraseValueDefined)
+            if (eraseValueDefined) {
+                erase = static_cast<plzma_erase>(eraseValue);
             } else {
                 NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "erase(?)")
             }
@@ -2520,14 +2523,7 @@ namespace nplzma {
         HandleScope handleScope(isolate);
         Local<Object> pathObject = args.Holder();
         Path * path = ObjectWrap::Unwrap<Path>(pathObject);
-        bool skipErrors = false;
-        if (args.Length() > 0) {
-            if (args[0]->IsBoolean()) {
-                skipErrors = args[0]->BooleanValue(isolate);
-            } else {
-                NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "remove(?)")
-            }
-        }
+        const bool skipErrors = (args.Length() > 0) ? args[0]->BooleanValue(isolate) : false;
         bool removed = false;
         NPLZMA_TRY
         removed = path->_path.remove(skipErrors);
@@ -2540,14 +2536,7 @@ namespace nplzma {
         HandleScope handleScope(isolate);
         Local<Object> pathObject = args.Holder();
         Path * path = ObjectWrap::Unwrap<Path>(pathObject);
-        bool withIntermediates = false;
-        if (args.Length() > 0) {
-            if (args[0]->IsBoolean()) {
-                withIntermediates = args[0]->BooleanValue(isolate);
-            } else {
-                NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "createDir(?)")
-            }
-        }
+        const bool withIntermediates = (args.Length() > 0) ? args[0]->BooleanValue(isolate) : false;
         bool created = false;
         NPLZMA_TRY
         created = path->_path.createDir(withIntermediates);
@@ -2649,7 +2638,7 @@ namespace nplzma {
                         unsupportedArg = false;
                         NPLZMA_CATCH_RET(isolate)
                     }
-                } else if (args[0]->IsUndefined() || args[0]->IsNull()) {
+                } else if (args[0]->IsNullOrUndefined()) {
                     unsupportedArg = false;
                 }
                 if (unsupportedArg) {
@@ -2680,6 +2669,55 @@ namespace nplzma {
                 return;
             }
             args.GetReturnValue().Set(maybeResult.ToLocalChecked());
+        }
+    }
+    
+    static void GetVersion(Local<Name> property, const PropertyCallbackInfo<Value>& info) {
+        Isolate * isolate = info.GetIsolate();
+        HandleScope handleScope(isolate);
+        info.GetReturnValue().Set(String::NewFromUtf8(isolate, plzma_version()).ToLocalChecked());
+    }
+    
+    static void GetGlobalUInt32Property(Local<Name> property, const PropertyCallbackInfo<Value>& info) {
+        Isolate * isolate = info.GetIsolate();
+        HandleScope handleScope(isolate);
+        Local<Context> context = isolate->GetCurrentContext();
+        const uint32_t propertyNumber = info.Data()->ToUint32(context).ToLocalChecked()->Value();
+        uint32_t retVal = 0;
+        switch (propertyNumber) {
+            case 1: retVal = plzma::kStreamReadSize; break;
+            case 2: retVal = plzma::kStreamWriteSize; break;
+            case 3: retVal = plzma::kDecoderReadSize; break;
+            case 4: retVal = plzma::kDecoderWriteSize; break;
+            default: break;
+        }
+        info.GetReturnValue().Set(Uint32::New(isolate, retVal));
+    }
+    
+    static void SetGlobalUInt32Property(Local<Name> property, Local<Value> value, const PropertyCallbackInfo<void>& info) {
+        Isolate * isolate = info.GetIsolate();
+        HandleScope handleScope(isolate);
+        Local<Context> context = isolate->GetCurrentContext();
+        const uint32_t propertyNumber = info.Data()->ToUint32(context).ToLocalChecked()->Value();
+        uint32_t size = 0;
+        bool sizeDefined = false;
+        NPLZMA_GET_UINT32_FROM_VALUE(context, value, size, sizeDefined)
+        if (sizeDefined) {
+            switch (propertyNumber) {
+                case 1: plzma::kStreamReadSize = size; break;
+                case 2: plzma::kStreamWriteSize = size; break;
+                case 3: plzma::kDecoderReadSize = size; break;
+                case 4: plzma::kDecoderWriteSize = size; break;
+                default: break;
+            }
+        } else {
+            switch (propertyNumber) {
+                case 1: { NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "streamReadSize") } break;
+                case 2: { NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "streamWriteSize") } break;
+                case 3: { NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "decoderReadSize") } break;
+                case 4: { NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "decoderWriteSize") } break;
+                default: break;
+            }
         }
     }
     
@@ -2722,8 +2760,12 @@ namespace nplzma {
         openDirModeObject->DefineOwnProperty(context, String::NewFromUtf8(isolate, "followSymlinks").ToLocalChecked(), Uint32::NewFromUnsigned(isolate, plzma_open_dir_mode_follow_symlinks), static_cast<PropertyAttribute>(ReadOnly | DontDelete)).Check();
         exports->Set(context, String::NewFromUtf8(isolate, "OpenDirMode").ToLocalChecked(), openDirModeObject).FromJust();
         
-        // version
-        exports->DefineOwnProperty(context, String::NewFromUtf8(isolate, "version").ToLocalChecked(), String::NewFromUtf8(isolate, plzma_version()).ToLocalChecked(), static_cast<PropertyAttribute>(ReadOnly | DontDelete)).Check();
+        // module properties
+        exports->SetNativeDataProperty(context, String::NewFromUtf8(isolate, "version").ToLocalChecked(), GetVersion, nullptr, Local<Value>(), static_cast<PropertyAttribute>(ReadOnly | DontDelete)).Check();
+        exports->SetNativeDataProperty(context, String::NewFromUtf8(isolate, "streamReadSize").ToLocalChecked(), GetGlobalUInt32Property, SetGlobalUInt32Property, Uint32::NewFromUnsigned(isolate, 1), static_cast<PropertyAttribute>(DontDelete)).Check();
+        exports->SetNativeDataProperty(context, String::NewFromUtf8(isolate, "streamWriteSize").ToLocalChecked(), GetGlobalUInt32Property, SetGlobalUInt32Property, Uint32::NewFromUnsigned(isolate, 2), static_cast<PropertyAttribute>(DontDelete)).Check();
+        exports->SetNativeDataProperty(context, String::NewFromUtf8(isolate, "decoderReadSize").ToLocalChecked(), GetGlobalUInt32Property, SetGlobalUInt32Property, Uint32::NewFromUnsigned(isolate, 3), static_cast<PropertyAttribute>(DontDelete)).Check();
+        exports->SetNativeDataProperty(context, String::NewFromUtf8(isolate, "decoderWriteSize").ToLocalChecked(), GetGlobalUInt32Property, SetGlobalUInt32Property, Uint32::NewFromUnsigned(isolate, 4), static_cast<PropertyAttribute>(DontDelete)).Check();
     }
 }
 

@@ -1,10 +1,21 @@
 {
   "name": "plzmasdk",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "(Portable, Patched, Package, cross-P-latform) Lzma SDK, libplzma",
   "author": "Oleh Kulykov <olehkulykov@gmail.com>",
   "license": "SEE LICENSE IN LICENSE",
-  "keywords": [ "PLzmaSDK", "lzma", "7z", "7zip", "xz", "tar", "tar.xz", "compression", "decompression", "password-protected" ],
+  "keywords": [
+    "PLzmaSDK",
+    "lzma",
+    "7z",
+    "7zip",
+    "xz",
+    "tar",
+    "tar.xz",
+    "compression",
+    "decompression",
+    "password-protected"
+  ],
   "main": "index.js",
   "scripts": {
     "install": "node-gyp clean configure build --jobs 4 --release",
@@ -19,7 +30,9 @@
     "node": ">=13.0.0",
     "npm": ">=6.0.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "bindings": "^1.2.1"
+  },
   "devDependencies": {},
   "gypfile": true,
   "files": [

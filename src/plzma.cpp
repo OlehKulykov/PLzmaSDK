@@ -229,89 +229,107 @@ const char * LIBPLZMA_NONNULL plzma_version(void) {
     
 #if defined(LIBPLZMA_OS_WINDOWS) && !defined(LIBPLZMA_VERSION_OS_DETECTED)
     " : Windows"
-#define LIBPLZMA_VERSION_OS_DETECTED
+#define LIBPLZMA_VERSION_OS_DETECTED 1
 #endif
 #if defined(TARGET_OS_OSX) && !defined(LIBPLZMA_VERSION_OS_DETECTED)
 #if TARGET_OS_OSX
     " : macOS"
-#define LIBPLZMA_VERSION_OS_DETECTED
+#define LIBPLZMA_VERSION_OS_DETECTED 1
 #endif
 #endif
 #if defined(TARGET_OS_IPHONE) && !defined(LIBPLZMA_VERSION_OS_DETECTED)
 #if TARGET_OS_IPHONE
     " : iPhone"
-#define LIBPLZMA_VERSION_OS_DETECTED
+#define LIBPLZMA_VERSION_OS_DETECTED 1
+#if !defined(LIBPLZMA_PLATFORM_MOBILE)
+#define LIBPLZMA_PLATFORM_MOBILE 1
+#endif
 #endif
 #endif
 #if defined(TARGET_OS_IOS) && !defined(LIBPLZMA_VERSION_OS_DETECTED)
 #if TARGET_OS_IOS
     " : iOS"
-#define LIBPLZMA_VERSION_OS_DETECTED
+#define LIBPLZMA_VERSION_OS_DETECTED 1
+#if !defined(LIBPLZMA_PLATFORM_MOBILE)
+#define LIBPLZMA_PLATFORM_MOBILE 1
+#endif
 #endif
 #endif
 #if defined(TARGET_OS_WATCH) && !defined(LIBPLZMA_VERSION_OS_DETECTED)
 #if TARGET_OS_WATCH
     " : watchOS"
-#define LIBPLZMA_VERSION_OS_DETECTED
+#define LIBPLZMA_VERSION_OS_DETECTED 1
+#if !defined(LIBPLZMA_PLATFORM_MOBILE)
+#define LIBPLZMA_PLATFORM_MOBILE 1
+#endif
 #endif
 #endif
 #if defined(TARGET_OS_TV) && !defined(LIBPLZMA_VERSION_OS_DETECTED)
 #if TARGET_OS_TV
     " : tvOS"
-#define LIBPLZMA_VERSION_OS_DETECTED
+#define LIBPLZMA_VERSION_OS_DETECTED 1
+#if !defined(LIBPLZMA_PLATFORM_MOBILE)
+#define LIBPLZMA_PLATFORM_MOBILE 1
+#endif
 #endif
 #endif
 #if defined(TARGET_OS_SIMULATOR) && !defined(LIBPLZMA_VERSION_OS_DETECTED)
 #if TARGET_OS_SIMULATOR
     " : Simulator"
-#define LIBPLZMA_VERSION_OS_DETECTED
+#define LIBPLZMA_VERSION_OS_DETECTED 1
+#if !defined(LIBPLZMA_PLATFORM_MOBILE)
+#define LIBPLZMA_PLATFORM_MOBILE 1
+#endif
 #endif
 #endif
 #if defined(__APPLE__) && !defined(LIBPLZMA_VERSION_OS_DETECTED)
     " : Apple"
-#define LIBPLZMA_VERSION_OS_DETECTED
+#define LIBPLZMA_VERSION_OS_DETECTED 1
 #endif
 #if (defined(__ANDROID__) || defined(__ANDROID_API__)) && !defined(LIBPLZMA_VERSION_OS_DETECTED)
     " : Android"
-#define LIBPLZMA_VERSION_OS_DETECTED
+#define LIBPLZMA_VERSION_OS_DETECTED 1
+#if !defined(LIBPLZMA_PLATFORM_MOBILE)
+#define LIBPLZMA_PLATFORM_MOBILE 1
+#endif
 #endif
 #if defined(__DragonFly__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__bsdi__)
 #if !defined(LIBPLZMA_VERSION_OS_DETECTED)
     " : BSD"
-#define LIBPLZMA_VERSION_OS_DETECTED
+#define LIBPLZMA_VERSION_OS_DETECTED 1
 #endif
 #endif
 #if defined(__gnu_linux__) && !defined(LIBPLZMA_VERSION_OS_DETECTED)
     " : GNU/Linux"
-#define LIBPLZMA_VERSION_OS_DETECTED
+#define LIBPLZMA_VERSION_OS_DETECTED 1
 #endif
 #if defined(__linux__) && !defined(LIBPLZMA_VERSION_OS_DETECTED)
     " : Linux"
-#define LIBPLZMA_VERSION_OS_DETECTED
+#define LIBPLZMA_VERSION_OS_DETECTED 1
 #endif
 #if defined(__ros__) && !defined(LIBPLZMA_VERSION_OS_DETECTED)
     " : Akaros"
-#define LIBPLZMA_VERSION_OS_DETECTED
+#define LIBPLZMA_VERSION_OS_DETECTED 1
 #endif
 #if defined(__native_client__) && !defined(LIBPLZMA_VERSION_OS_DETECTED)
     " : NaCL"
-#define LIBPLZMA_VERSION_OS_DETECTED
+#define LIBPLZMA_VERSION_OS_DETECTED 1
 #endif
 #if defined(__asmjs__) && !defined(LIBPLZMA_VERSION_OS_DETECTED)
     " : AsmJS"
-#define LIBPLZMA_VERSION_OS_DETECTED
+#define LIBPLZMA_VERSION_OS_DETECTED 1
 #endif
 #if defined(__Fuchsia__) && !defined(LIBPLZMA_VERSION_OS_DETECTED)
     " : Fuschia"
-#define LIBPLZMA_VERSION_OS_DETECTED
+#define LIBPLZMA_VERSION_OS_DETECTED 1
 #endif
 #if (defined(__unix__) || defined(__unix)) && !defined(LIBPLZMA_VERSION_OS_DETECTED)
     " : unix"
-#define LIBPLZMA_VERSION_OS_DETECTED
+#define LIBPLZMA_VERSION_OS_DETECTED 1
 #endif
 #if !defined(LIBPLZMA_VERSION_OS_DETECTED)
     " : unknown"
-#define LIBPLZMA_VERSION_OS_DETECTED
+#define LIBPLZMA_VERSION_OS_DETECTED 1
 #endif
     
 #if defined(BUILDING_NODE_EXTENSION)
@@ -377,10 +395,18 @@ namespace plzma {
 @brief 22 = 4 Mb
 @brief 31 = 1 Gb
 */
-    plzma_size_t kStreamReadSize = static_cast<unsigned int>(1) << 16;
-    plzma_size_t kStreamWriteSize = static_cast<unsigned int>(1) << 16;
-    plzma_size_t kDecoderReadSize = static_cast<unsigned int>(1) << 16;
-    plzma_size_t kDecoderWriteSize = static_cast<unsigned int>(1) << 18;
+
+#if defined(LIBPLZMA_PLATFORM_MOBILE)
+plzma_size_t kStreamReadSize = static_cast<unsigned int>(1) << 16;
+plzma_size_t kStreamWriteSize = static_cast<unsigned int>(1) << 16;
+plzma_size_t kDecoderReadSize = static_cast<unsigned int>(1) << 16;
+plzma_size_t kDecoderWriteSize = static_cast<unsigned int>(1) << 18;
+#else
+plzma_size_t kStreamReadSize = static_cast<unsigned int>(1) << 20;
+plzma_size_t kStreamWriteSize = static_cast<unsigned int>(1) << 20;
+plzma_size_t kDecoderReadSize = static_cast<unsigned int>(1) << 20;
+plzma_size_t kDecoderWriteSize = static_cast<unsigned int>(1) << 22;
+#endif // LIBPLZMA_PLATFORM_MOBILE
 
     void initialize(void) {
         static bool notInitalized = true;

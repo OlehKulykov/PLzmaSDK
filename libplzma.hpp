@@ -671,7 +671,7 @@ namespace plzma {
         virtual bool next() = 0;
         
         
-        /// @brief Closes iteration.
+        /// @brief Closes iteration and all open directory descriptors/handlers.
         virtual void close() noexcept = 0;
     };
     

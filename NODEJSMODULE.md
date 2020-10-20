@@ -2,6 +2,9 @@
 
 
 * plzmasdk
+  * [version](#global_version) ⇒ ```String```
+  * [streamReadSize](#global_stream_read_size) ⇔ ```Number```
+  * [streamWriteSize](#global_stream_write_size) ⇔ ```Number```  
   * [ErrorCode](#enum_errorcode)
     * [.unknown](#enum_errorcode_unknown) ⇒ ```Number```
     * [.invalidArguments](#enum_errorcode_invalidarguments) ⇒ ```Number```
@@ -126,6 +129,18 @@
     * [.shouldStoreAccessDate](#class_encoder_should_store_access_date) ⇔ ```Boolean```
     * [.shouldStoreModificationDate](#class_encoder_should_store_modification_date) ⇔ ```Boolean```    
     
+
+### <a name="global_version"></a>version ⇒ String
+The full version string of the library generated on build time. Contains version<major, minor, patch> with optional automatic build number,
+library type, build date/time, os, compiler, environment, usage, features, etc. and original LZMA SDK version.
+
+### <a name="global_stream_read_size"></a>streamReadSize ⇔ Number
+Read-Write property: receives or updates the size in bytes of the stream's read block per single read request.
+The lower value requires less amount of allocated memory, but increases the number of read requests and vice versa.
+
+### <a name="global_stream_write_size"></a>streamWriteSize ⇔ Number
+Read-Write property: receives or updates the size in bytes of the stream's write block per single write request.
+The lower value requires less amount of allocated memory, but increases the number of write requests and vice versa.
 
 ### <a name="enum_errorcode"></a>ErrorCode
 Exported object with exception error codes.

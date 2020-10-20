@@ -46,7 +46,7 @@ All optional features are enabled by default, but they might be disabled during 
 <summary>Swift Package Manager</summary>
 
 ```swift
-.package(url: "https://github.com/OlehKulykov/PLzmaSDK.git", .exact("0.0.5"))
+.package(url: "https://github.com/OlehKulykov/PLzmaSDK.git", .exact("0.0.6"))
 ```
 
 </details>
@@ -73,7 +73,7 @@ end
     "npm": ">=6.0.0"
   },
   "dependencies": {
-    "plzmasdk": "^0.0.5"
+    "plzmasdk": "0.0.6"
   }
 }
 ```

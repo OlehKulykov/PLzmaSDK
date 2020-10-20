@@ -15,14 +15,14 @@ apply plugin: 'com.android.library'
 android {
     compileSdkVersion 26
     defaultConfig {
-        applicationId "com.ok.clzma"
+        applicationId "com.ok.plzmasdk"
         minSdkVersion 21
         targetSdkVersion 26
         versionCode 1
-        versionName "0.0.5"
+        versionName "0.0.6"
         externalNativeBuild {
             cmake {
-                arguments "-DANDROID_STL=c++_static", "-DANDROID_TOOLCHAIN=clang", "-DLIBCLZMA_OPT_ANDROID:BOOL=ON", "-DLIBCLZMA_OPT_STATIC:BOOL=OFF", "-DLIBCLZMA_OPT_TESTS:BOOL=OFF", "-DLIBCLZMA_OPT_BUILD_NUMBER=112"
+                arguments "-DANDROID_STL=c++_static", "-DANDROID_TOOLCHAIN=clang", "-DLIBCLZMA_OPT_ANDROID:BOOL=ON", "-DLIBCLZMA_OPT_STATIC:BOOL=OFF", "-DLIBCLZMA_OPT_TESTS:BOOL=OFF", "-DLIBCLZMA_OPT_BUILD_NUMBER=120"
                 cppFlags "-fexceptions"
             }
         }

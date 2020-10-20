@@ -1,15 +1,15 @@
 {
   'targets': [
     {
-      'target_name': 'plzma',
+      'target_name': 'plzmasdk',
       'defines': [
-        'LIBPLZMA_VERSION_BUILD=112',
+        'LIBPLZMA_VERSION_BUILD=120',
         'LIBPLZMA_SHARED=1',
         'LIBPLZMA_NO_C_BINDINGS=1',
         'LIBPLZMA_HAVE_STD=1'
       ],
       'sources': [
-        'node/plzma_module_main.cpp',
+        'node/module.cpp',
         'src/C/7zCrc.c',
         'src/C/7zCrcOpt.c',
         'src/C/7zStream.c',

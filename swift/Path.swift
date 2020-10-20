@@ -310,6 +310,7 @@ public final class Path {
     ///
     /// The provided directory path, if such exists, has a read-write permissions.
     /// - Returns: The path with existed temporary directory or empty path.
+    /// - Throws: `Exception`.
     public static func tmpDir() throws -> Path {
         let path = plzma_path_create_with_tmp_dir()
         if let exception = path.exception {
@@ -355,9 +356,13 @@ extension Path: CustomDebugStringConvertible {
 
 extension Path {
     
+    /// Platform specific directory path iterator.
     public final class Iterator {
         internal let object: plzma_path_iterator
         
+        
+        /// Recevies the current file or directory component.
+        /// - Throws: `Exception`.
         public func component() throws -> Path {
             var iterator = object
             let path = plzma_path_iterator_component(&iterator)
@@ -367,6 +372,9 @@ extension Path {
             return Path(object: path)
         }
         
+        
+        /// Recevies the current file or directory path.
+        /// - Throws: `Exception`.
         public func path() throws -> Path {
             var iterator = object
             let path = plzma_path_iterator_path(&iterator)
@@ -376,6 +384,9 @@ extension Path {
             return Path(object: path)
         }
         
+        
+        /// Recevies the current file or directory full path, prefixed with root path.
+        /// - Throws: `Exception`.
         public func fullPath() throws -> Path {
             var iterator = object
             let path = plzma_path_iterator_full_path(&iterator)
@@ -385,11 +396,18 @@ extension Path {
             return Path(object: path)
         }
         
+        
+        /// Checks the current iterator's path is directory.
+        /// - Returns: \a true the iterator's path is directory.
         public var isDir: Bool {
             var iterator = object
             return plzma_path_iterator_is_dir(&iterator)
         }
         
+        
+        /// Continue iteration.
+        /// - Returns: \a true The next file or directory located, otherwise iteration is finished.
+        /// - Throws: `Exception`.
         public func next() throws -> Bool {
             var iterator = object
             let result = plzma_path_iterator_next(&iterator)
@@ -399,6 +417,8 @@ extension Path {
             return result
         }
         
+        
+        /// Closes iteration and all open directory descriptors/handlers.
         public func close() {
             var iterator = object
             plzma_path_iterator_close(&iterator)
@@ -415,16 +435,21 @@ extension Path {
     }
 }
 
+
+/// Contains stat info of the path.
 extension plzma_path_stat {
     
+    /// Path creation date based on unix timestamp.
     public var creationDate: Date {
         return Date(timeIntervalSince1970: TimeInterval(creation))
     }
     
+    /// Last path access date based on unix timestamp.
     public var lastAccessDate: Date {
         return Date(timeIntervalSince1970: TimeInterval(last_access))
     }
     
+    /// Last path modification date based on unix timestamp.
     public var lastModificationDate: Date {
         return Date(timeIntervalSince1970: TimeInterval(last_modification))
     }
