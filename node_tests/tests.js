@@ -1,7 +1,7 @@
 ﻿
 'use strict';
 
-const plzma = require('./../index.js');
+const plzma = require('./../');
 
 console.log('plzma export:', plzma);
 console.log('typeof plzma.ErrorCode.io:', typeof plzma.ErrorCode.io);

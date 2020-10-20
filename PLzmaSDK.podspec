@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = 'PLzmaSDK'
-  s.version = '0.0.6'
+  s.version = '0.0.7'
   s.summary = '(Portable, Patched, Package, cross-P-latform) Lzma SDK, libplzma'
   s.homepage = 'https://github.com/OlehKulykov/PLzmaSDK'
   s.source = { :git => s.homepage + '.git', :tag => s.version }
@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
   s.subspec 'libplzma' do |libplzma|
     libplzma.source_files = 'libplzma.h', 'libplzma.hpp', 'src/**/*.{c,cpp,h,hpp}'
     libplzma.public_header_files = 'libplzma.h'
-    libplzma.compiler_flags = '-DLIBPLZMA_VERSION_BUILD=120'
+    libplzma.compiler_flags = '-DLIBPLZMA_VERSION_BUILD=125'
     libplzma.libraries = 'c++'
   end
   

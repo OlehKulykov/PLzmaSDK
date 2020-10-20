@@ -46,6 +46,10 @@ script:
   - nvm use 14
   - npm run install
   - npm run test
+  - nvm install 15
+  - nvm use 15
+  - npm run install
+  - npm run test
 
 branches:
   only:

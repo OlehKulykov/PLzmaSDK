@@ -1,23 +1,26 @@
 (Portable, Patched, Package, cross-P-latform) Lzma SDK, libplzma
 
-Changes on version 0.0.6 (current):
+0.0.7 (current):
+- Node.js 'index.js': improved resolving native module.
+
+0.0.6:
 - Swift, Node.js: added global read-write 'streamReadSize' , 'streamWriteSize', 'decoderReadSize' and 'decoderWriteSize' properties.
-- Node.js: Improved retrieving 'Boolean', 'Uint64'/'BigInt' and 'Uint32' actual values from input value objects.
+- Node.js: improved retrieving 'Boolean', 'Uint64'/'BigInt' and 'Uint32' actual values from input objects.
 - Node.js 'Decoder': The 'itemAt' method/function always returns non-optional 'Item' or throws an exception instead.
 
-Changes on version 0.0.5:
+0.0.5:
 - Node.js: introduce initial native module.
 
-Changes on version 0.0.4:
+0.0.4:
 - Swift 'Path': added 'writable' getter.
 
-Changes on version 0.0.3:
+0.0.3:
 - Swift 'Item': added lazy, throwable 'path' getter.
 - PLzmaSDK.podspec: added Swift 5.3.
 
-Changes on version 0.0.2:
+0.0.2:
 - Self-retain the encoder and decoder during long-time operations like opening, extracting,
   testing and compressing.
 
-Version 0.0.1:
+0.0.1:
 - Initial implementation.

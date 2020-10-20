@@ -1,6 +1,6 @@
 {
   "name": "plzmasdk",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "(Portable, Patched, Package, cross-P-latform) Lzma SDK, libplzma",
   "author": "Oleh Kulykov <olehkulykov@gmail.com>",
   "license": "SEE LICENSE IN LICENSE",
@@ -30,9 +30,7 @@
     "node": ">=13.0.0",
     "npm": ">=6.0.0"
   },
-  "dependencies": {
-    "bindings": "^1.2.1"
-  },
+  "dependencies": {},
   "devDependencies": {},
   "gypfile": true,
   "files": [
