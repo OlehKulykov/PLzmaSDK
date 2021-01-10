@@ -191,10 +191,14 @@ async function decoderAsyncExample1() {
 
         //  3.2. Get the number of items, iterate items by index, filter and select items.
         const selectedItemsDuringIteration = [];
+        const selectedItemsToStreams = new Map();
         for (let itemIndex = 0, numberOfArchiveItems = decoder.count; itemIndex <  numberOfArchiveItems; itemIndex++) {
             const item = decoder.itemAt(itemIndex);
             selectedItemsDuringIteration.push(item);
+            selectedItemsToStreams.set(item, plzma.OutStream());
         }
+
+        const extracted = await decoder.extractAsync(selectedItemsToStreams);
     } catch (error) {
         console.log(`Exception: ${error}`);
     }

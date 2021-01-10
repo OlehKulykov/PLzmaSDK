@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2020 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2021 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,7 @@
 
 
 #ifndef __PLZMA_MUTEX_HPP__
-#define __PLZMA_MUTEX_HPP__
+#define __PLZMA_MUTEX_HPP__ 1
 
 #include <cstddef>
 
@@ -213,3 +213,4 @@ namespace plzma {
 #endif // LIBPLZMA_THREAD_UNSAFE
 
 #endif // !__PLZMA_MUTEX_HPP__
+

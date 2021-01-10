@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2020 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2021 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -26,11 +26,12 @@
 
 
 #ifndef __PLZMA_C_BINDINGS_PRIVATE_HPP__
-#define __PLZMA_C_BINDINGS_PRIVATE_HPP__
+#define __PLZMA_C_BINDINGS_PRIVATE_HPP__ 1
 
 #if !defined(LIBPLZMA_NO_C_BINDINGS)
 
 #include <cstddef>
+
 #include "../libplzma.h"
 
 

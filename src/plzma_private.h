@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2020 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2021 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,7 @@
 
 
 #ifndef __PLZMA_PRIVATE_H__
-#define __PLZMA_PRIVATE_H__
+#define __PLZMA_PRIVATE_H__ 1
 
 #include "../libplzma.h"
 
@@ -149,3 +149,4 @@ LIBPLZMA_C_API(void) plzma_print_memory(int line, const void * LIBPLZMA_NULLABLE
 #endif // #if 0
 
 #endif // !__PLZMA_PRIVATE_H__
+

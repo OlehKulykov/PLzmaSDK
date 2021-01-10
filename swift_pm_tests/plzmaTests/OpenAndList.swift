@@ -25,12 +25,17 @@ final class OpenAndList: XCTestCase, DecoderDelegate {
             XCTAssertTrue(numberOfArchiveItems == 5)
             let allArchiveItems = try decoder.items()
             let selectedItemsDuringIteration = try ItemArray(capacity: numberOfArchiveItems)
+            let selectedItemsToStreams = try ItemOutStreamArray()
             for itemIndex in 0..<numberOfArchiveItems {
                 let item = try decoder.item(at: itemIndex)
                 try selectedItemsDuringIteration.add(item: item)
+                try selectedItemsToStreams.add(item: item, stream: OutStream())
             }
             XCTAssertTrue(numberOfArchiveItems == allArchiveItems.count)
             XCTAssertTrue(numberOfArchiveItems == selectedItemsDuringIteration.count)
+            
+            let extracted = try decoder.extract(itemsToStreams: selectedItemsToStreams)
+            XCTAssertTrue(extracted)
             
         } catch let exception as Exception {
             print("Exception: \(exception)")

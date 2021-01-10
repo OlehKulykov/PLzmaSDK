@@ -1,6 +1,10 @@
 (Portable, Patched, Package, cross-P-latform) Lzma SDK, libplzma
 
-0.0.7 (current):
+1.0.0 (current):
+- Update documentation and license.
+- Standardization of the included C/C++ files(minor update).
+
+0.0.7:
 - Node.js 'index.js': improved resolving native module.
 
 0.0.6:

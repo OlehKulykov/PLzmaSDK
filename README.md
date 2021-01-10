@@ -1,58 +1,58 @@
-Travis CI: macOS, Linux | AppVeyor: Windows
------------------------ | -----------------
-[![Build Status](https://travis-ci.org/OlehKulykov/PLzmaSDK.svg?branch=master)](https://travis-ci.org/OlehKulykov/PLzmaSDK) | [![Build status](https://ci.appveyor.com/api/projects/status/1mb5w6nlht1ar2p8/branch/master?svg=true)](https://ci.appveyor.com/project/OlehKulykov/plzmasdk/branch/master)
+![Cocoapods platforms](https://img.shields.io/cocoapods/p/PLzmaSDK)
+![Cocoapods](https://img.shields.io/cocoapods/l/PLzmaSDK)
+![Cocoapods](https://img.shields.io/cocoapods/v/PLzmaSDK)
+![node-current](https://img.shields.io/node/v/plzmasdk)
+[![Build Status](https://travis-ci.org/OlehKulykov/PLzmaSDK.svg?branch=master)](https://travis-ci.org/OlehKulykov/PLzmaSDK)
+[![Build status](https://ci.appveyor.com/api/projects/status/1mb5w6nlht1ar2p8/branch/master?svg=true)](https://ci.appveyor.com/project/OlehKulykov/plzmasdk/branch/master)
 
 
 **P**LzmaSDK is (**P**ortable, **P**atched, **P**ackage, cross-**P**-latform) Lzma SDK.
 Based on original [LZMA SDK] version 19.00 (1900 - latest for now) and patched for unix platforms.
-Available for all Apple's platforms(iOS, macOS, tvOS, watchOS), Android, Windows and any unix'es.
+Available for all Apple's platforms(iOS, macOS, tvOS, watchOS), Android, Windows, Linux and any unix'es.
 
 
 ### Features / detailed description
 -----------
-- The SDK available for the next programming languages:
+- The SDK is available for the next programming languages:
   * [Swift](https://swift.org/) via [Swift Package Manager] or [CocoaPods].
   * JavaScript via [npm].
-  * C/C++ via git+CMake.
+  * Pure C++ via git+CMake or copy 2 main lib headers([libplzma.h] and [libplzma.hpp] files) and 'src' folder to your project.
+  * Pure C, also via git+CMake or copy 2 main lib headers([libplzma.h] and [libplzma.hpp] files) and 'src' folder to your project. But this internal C bindings code might be disabled via  `LIBPLZMA_OPT_NO_C_BINDINGS` preprocessor flag if you are not planning to use the lib within the pure C code, see below.
 - Supports next archives:
-  * [7z]. Both, encrypted/password-protected and unencrypted. [Lzma] and [Lzma2] compression methods.
+  * [7z]. Both, encrypted/password-protected and unencrypted archive item-list and it's content. [Lzma] and [Lzma2] compression methods.
   * [xz]. [Lzma2] compression method.
   * [tar]/[tarball].
-- Supports list, test, extract and compress operations. All these operations can be executed in a separate thread and aborted.
+- Supports list, test, extract and compress operations. All these operations can be executed in a separate thread and aborted during the process.
 - Thread safe encoder, decoder and progress tracking.
-- Supports memory and file IO streams. The extracting and compressing might be from <-> to memory or file.
-- Support extracting and compressing archive files with size more than 4GB.
+- Supports memory and file IO streams. The extracting and compressing might be from ⇔ to memory or file.
+- Support extracting and compressing archive files with size more than 4GB(x64 support).
 - Track smoothed progress.
-- UTF8 support.
+- Full UTF8 support.
 - Available for any platform with compiller which supports the [C++11] standard. Let's say, almost everywhere nowadays.
-- No external dependencies also no [STL].
-- The SDK is organized as C **and** C++ library at the same time. Supports static and dynamic linking.
-  * The [libplzma.h] - the library header for a pure C environment. Contains generic functions, types and bindings to the whole functionality of the library. Currently uses with [Swift Package Manager] and [CocoaPods].
-  * The [libplzma.hpp] - the library header for a C++ environment and must be used together with [libplzma.h] header. Currently uses with [npm] native module.
+- No external dependencies. Also no [STL] (of couse not in a public interface and internally).
+- The SDK is organized as C **and** C++ library at the same time. And supports static and dynamic linking.
+  * The [libplzma.h] - the library header for a pure C environment. Contains generic functions, types and optional bindings to the whole functionality of the library. Currently uses with [Swift Package Manager] and [CocoaPods].
+  * The [libplzma.hpp] - the library header for a pure C++ environment and must be used together with [libplzma.h] header. Currently uses with [npm] native module.
   * The [swift](https://github.com/OlehKulykov/PLzmaSDK/tree/master/swift) directory contains Swift part of the SDK and available via the [Swift Package Manager] and [CocoaPods], see ```Installation``` section.
+  * The 'node' directory contains Node.js native, inline module implementation. 
 
 ### Optional features
-All optional features are enabled by default, but they might be disabled during the build process to reduce the binary size, if you are not planning to use them.
+All optional features are enabled by default, but they might be disabled during the build process to reduce the binary size, and of course, if you are not planning to use them.
 
-- [tar]/[tarball] archive support. To disable use CMake boolean option `LIBPLZMA_OPT_NO_TAR:BOOL=YES` or preprocessor definition `LIBPLZMA_NO_TAR=1`
-- Thread safety. To disable use CMake boolean option `LIBPLZMA_OPT_THREAD_UNSAFE:BOOL=YES` or preprocessor definition `LIBPLZMA_THREAD_UNSAFE=1`
-- Progress tracking. To disable use CMake boolean option `LIBPLZMA_OPT_NO_PROGRESS:BOOL=YES` or preprocessor definition `LIBPLZMA_NO_PROGRESS=1`
-- C bindings to the whole functionality of the library in [libplzma.h] header. To disable use CMake boolean option `LIBPLZMA_OPT_NO_C_BINDINGS:BOOL=YES` or preprocessor definition `LIBPLZMA_NO_C_BINDINGS=1`
+- [tar]/[tarball] archive support. To disable, use the CMake's boolean option `LIBPLZMA_OPT_NO_TAR:BOOL=YES` or preprocessor definition `LIBPLZMA_NO_TAR=1`
+- Thread safety. To disable, use the CMake's boolean option `LIBPLZMA_OPT_THREAD_UNSAFE:BOOL=YES` or preprocessor definition `LIBPLZMA_THREAD_UNSAFE=1`
+- Progress tracking. To disable, use the CMake's boolean option `LIBPLZMA_OPT_NO_PROGRESS:BOOL=YES` or preprocessor definition `LIBPLZMA_NO_PROGRESS=1`
+- C bindings to the whole functionality of the library in [libplzma.h] header. To disable, use the CMake's boolean option `LIBPLZMA_OPT_NO_C_BINDINGS:BOOL=YES` or preprocessor definition `LIBPLZMA_NO_C_BINDINGS=1`
 
 
 ### Installation
 -----------
-<details>
-<summary>Swift Package Manager</summary>
-
+#### Swift Package Manager
 ```swift
-.package(url: "https://github.com/OlehKulykov/PLzmaSDK.git", .exact("0.0.7"))
+.package(url: "https://github.com/OlehKulykov/PLzmaSDK.git", .exact("1.0.0"))
 ```
 
-</details>
-<details>
-<summary>CocoaPods Podfile</summary>
-
+#### CocoaPods Podfile
 ```ruby
 use_frameworks!
 platform :ios, '8.0'
@@ -62,10 +62,7 @@ target '<REPLACE_WITH_YOUR_TARGET>' do
 end
 ```
 
-</details>
-<details>
-<summary>npm package.json</summary>
-
+#### npm via 'package.json'
 ```json
 {
   "engines": {
@@ -73,27 +70,18 @@ end
     "npm": ">=6.0.0"
   },
   "dependencies": {
-    "plzmasdk": "0.0.7"
+    "plzmasdk": "1.0.0"
   }
 }
 ```
 
-</details>
-<details>
-<summary>Android NDK</summary>
-  
+#### Android NDK
 ```bash
 cd <PATH_TO_ANDROID_NDK>
 ./ndk-build NDK_PROJECT_PATH=<PATH_TO_PLZMASDK>/PLzmaSDK/android
 ```
 
-</details>
-<details>
-<summary>CMake</summary>
-
-<details>
-<summary>Unix</summary>
-  
+#### CMake Unix
 ```bash
 cd PLzmaSDK
 mkdir build
@@ -101,11 +89,8 @@ cd build
 cmake -DCMAKE_BUILD_TYPE=Release ..
 make -j4
 ```
-  
-</details>
-<details>
-<summary>Windows</summary>
-  
+
+#### CMake Windows
 ```bash
 cd PLzmaSDK
 md build
@@ -113,30 +98,27 @@ cd build
 cmake -DCMAKE_BUILD_TYPE=Release ..
 cmake --build . --config Release --parallel 4
 ```
-  
-</details>
-</details>
-
 
 ### Examples
 -----------
-<details>
-<summary>Open, list and select archive items for extracting or testing</summary> 
-  
-The process consists of three steps:
+#### Extract or test
+##### Open, list and select archive items for extracting or testing.  
+The process consists of four steps:
 1. Create a source input stream for reading archive file content. The input stream might be created with:
-   1. The path to an archive file.
-   2. The archive's file content in memory.
+   1. The path to the archive file.
+   2. The archive file content in memory, i.e. using const memory or it's copy for internal usage.
    3. The custom read/seek callbacks(C/C++ only).
-2. Create decoder with source input stream, type of archive and optional delegate.
-   1. Optionaly provide the password to open/list encrypted archive and for a future extracting/testing.
-3. Select archive items for extracting or testing.
-   1. Select all archive items.
-   2. Get the number of items, iterate items by index, filter and select items.
-  
-<details>
-<summary>Swift</summary>
+2. Create decoder with source input stream, type of the archive and optional progress delegate.
+   1. Optionaly provide the password to open and list encrypted archive and for a future extracting or testing.
+3. Select archive items for extracting or testing. Migth be skiped if you want to process all items(the whole archive), see below.
+   1. Select all archive items as is.
+   2. Retrieve the number of items, iterate them by index, filter and/or select.
+4. Extract or test selected archive items. The extract process might be:
+   1. Extract all items to a directory. In this case, you can skip the step #3.
+   2. Extract selected items to a directory.
+   3. Extract each item to a custom out-stream. The out-stream might be a file or memory. I.e. extract 'item #1' to a file stream, extract 'item #2' to a memory stream(then take extacted memory) and so on.
 
+##### Swift
 ```swift
 do {
     // 1. Create a source input stream for reading archive file content.
@@ -163,20 +145,29 @@ do {
     //  3.2. Get the number of items, iterate items by index, filter and select items.
     let numberOfArchiveItems = try decoder.count()
     let selectedItemsDuringIteration = try ItemArray(capacity: numberOfArchiveItems)
+    let selectedItemsToStreams = try ItemOutStreamArray()
     for itemIndex in 0..<numberOfArchiveItems {
         let item = try decoder.item(at: itemIndex)
         try selectedItemsDuringIteration.add(item: item)
+        try selectedItemsToStreams.add(item: item, stream: OutStream()) // to memory stream
     }
-    ...
+    
+    // 4. Extract or test selected archive items. The extract process might be:
+    //  4.1. Extract all items to a directory. In this case, you can skip the step #3.
+    let extracted = try decoder.extract(to: Path("path/outdir"))
+    
+    //  4.2. Extract selected items to a directory.
+    let extracted = try decoder.extract(items: selectedItemsDuringIteration, to: Path("path/outdir"))
+    
+    //  4.3. Extract each item to a custom out-stream. 
+    //       The out-stream might be a file or memory. I.e. extract 'item #1' to a file stream, extract 'item #2' to a memory stream(then take extacted memory) and so on.
+    let extracted = try decoder.extract(itemsToStreams: selectedItemsToStreams)
 } catch let exception as Exception {
     print("Exception: \(exception)")
 }
 ```
 
-</details>
-<details>
-<summary>JavaScript</summary>
-
+##### JavaScript
 ```javascript
 const plzma = require('plzmasdk');
 
@@ -205,20 +196,29 @@ try {
 
     //  3.2. Get the number of items, iterate items by index, filter and select items.
     const selectedItemsDuringIteration = [];
+    const selectedItemsToStreams = new Map();
     for (let itemIndex = 0, numberOfArchiveItems = decoder.count; itemIndex <  numberOfArchiveItems; itemIndex++) {
         const item = decoder.itemAt(itemIndex);
         selectedItemsDuringIteration.push(item);
+        selectedItemsToStreams.set(item, plzma.OutStream()); // to memory stream
     }
-    ...
+    
+    // 4. Extract or test selected archive items. The extract process might be:
+    //  4.1. Extract all items to a directory. In this case, you can skip the step #3.
+    const extracted = await decoder.extractAsync('path/outdir'); // also available sync. version 'decoder.extract()'
+    
+    //  4.2. Extract selected items to a directory.
+    const extracted = await decoder.extractAsync(selectedItemsDuringIteration, 'path/outdir'); // also available sync. version 'decoder.extract()'
+    
+    //  4.3. Extract each item to a custom out-stream. 
+    //       The out-stream might be a file or memory. I.e. extract 'item #1' to a file stream, extract 'item #2' to a memory stream(then take extacted memory) and so on.
+    const extracted = await decoder.extractAsync(selectedItemsToStreams); // also available sync. version 'decoder.extract()'
 } catch (error) {
     console.log(`Exception: ${error}`);
 }
 ```
 
-</details>
-<details>
-<summary>C++</summary>
-
+##### C++
 ```cpp
 try {
     // 1. Create a source input stream for reading archive file content.
@@ -245,20 +245,29 @@ try {
     //  3.2. Get the number of items, iterate items by index, filter and select items.
     size_t numberOfArchiveItems = decoder->count();
     auto selectedItemsDuringIteration = makeShared<ItemArray>(numberOfArchiveItems);
+    auto selectedItemsToStreams = makeShared<ItemOutStreamArray>();
     for (size_t itemIndex = 0; itemIndex < numberOfArchiveItems; itemIndex++) {
         auto item = decoder->itemAt(itemIndex);
         selectedItemsDuringIteration->push(item /* std::move(item) */);
+        selectedItemsToStreams->push(Pair<SharedPtr<Item>, SharedPtr<OutStream> >(item, makeSharedOutStream())); // to memory stream
     }
-    ...
+    
+    // 4. Extract or test selected archive items. The extract process might be:
+    //  4.1. Extract all items to a directory. In this case, you can skip the step #3.
+    bool extracted = decoder->extract(Path("path/outdir"));
+    
+    //  4.2. Extract selected items to a directory.
+    bool extracted = decoder->extract(selectedItemsDuringIteration, Path("path/outdir"));
+    
+    //  4.3. Extract each item to a custom out-stream. 
+    //       The out-stream might be a file or memory. I.e. extract 'item #1' to a file stream, extract 'item #2' to a memory stream(then take extacted memory) and so on.
+    bool extracted = decoder->extract(selectedItemsToStreams);
 } catch (const Exception & exception) {
     std::cout << "Exception: " << exception.what() << std::endl;
 }
 ```
 
-</details>
-<details>
-<summary>C</summary>
-
+##### C
 ```c
 // 1. Create a source input stream for reading archive file content.
 //  1.1. Create a source input stream with the path to an archive file.
@@ -288,82 +297,38 @@ plzma_item_array allArchiveItems = plzma_decoder_items(&decoder);
 //  3.2. Get the number of items, iterate items by index, filter and select items.
 size_t numberOfArchiveItems = plzma_decoder_count(&decoder);
 plzma_item_array selectedItemsDuringIteration = plzma_item_array_create(numberOfArchiveItems);
+plzma_item_out_stream_array selectedItemsToStreams = plzma_item_out_stream_array_create(numberOfArchiveItems);
 for (size_t itemIndex = 0; itemIndex < numberOfArchiveItems; itemIndex++) {
     plzma_item item = plzma_decoder_item_at(&decoder, itemIndex);
     plzma_item_array_add(&selectedItemsDuringIteration, &item);
+    
+    plzma_out_stream outItemStream = plzma_out_stream_create_memory_stream(); // to memory stream
+    plzma_item_out_stream_array_add(&selectedItemsToStreams, &item, &outItemStream);
+    plzma_out_stream_release(&outItemStream);
+    
     plzma_item_release(&item);
 }
-...
+
+// 4. Extract or test selected archive items. The extract process might be:
+//  4.1. Extract all items to a directory. In this case, you can skip the step #3.
+plzma_path extractPath = plzma_path_create_with_utf8_string("path/outdir");
+bool extracted = plzma_decoder_extract_all_items_to_path(&decoder, &extractPath, true);
+plzma_path_release(&extractPath);
+
+//  4.2. Extract selected items to a directory.
+plzma_path extractPath = plzma_path_create_with_utf8_string("path/outdir");
+bool extracted = plzma_decoder_extract_items_to_path(&decoder, &selectedItemsDuringIteration, &extractPath, true);
+plzma_path_release(&extractPath);
+
+//  4.3. Extract each item to a custom out-stream. 
+//       The out-stream might be a file or memory. I.e. extract 'item #1' to a file stream, extract 'item #2' to a memory stream(then take extacted memory) and so on.
+bool extracted = plzma_decoder_extract_item_out_stream_array(&decoder, &selectedItemsToStreams);
+
 plzma_item_array_release(&selectedItemsDuringIteration); // when no longer needed 
 plzma_item_array_release(&allArchiveItems); // when no longer needed
+plzma_item_out_stream_array_release(&selectedItemsToStreams); // when no longer needed
 plzma_decoder_release(&decoder); // when no longer needed
 ```
-
-</details>
-</details>
-
-<details>
-<summary>Extract all or selected archive items</summary>
-  
-Example description
-  
-<details>
-<summary>Swift</summary>
-
-```swift
-// Hello swift: Extract all or selected archive items
-```
-
-</details>
-<details>
-<summary>C++</summary>
-
-```cpp
-// Hello cpp: Extract all or selected archive items
-```
-
-</details>
-<details>
-<summary>C</summary>
-
-```cpp
-// Hello c: Extract all or selected archive items
-```
-
-</details>
-</details>
-
-
-<details>
-<summary>Compress individual files, directories or memory streams</summary>
-  
-Example description
-  
-<details>
-<summary>Swift</summary>
-
-```swift
-// Hello swift: Compress individual files, directories or memory streams
-```
-
-</details>
-<details>
-<summary>C++</summary>
-
-```cpp
-// Hello cpp: Compress individual files, directories or memory streams
-```
-
-</details>
-<details>
-<summary>C</summary>
-
-```cpp
-// Hello c: Compress individual files, directories or memory streams
-```
-
-</details>
-</details>
 
 
 ### License
@@ -372,7 +337,7 @@ By using this all you are accepting original [LZMA SDK] and MIT license (*see be
 
 The MIT License (MIT)
 
-Copyright (c) 2015 - 2020 Oleh Kulykov <olehkulykov@gmail.com>
+Copyright (c) 2015 - 2021 Oleh Kulykov <olehkulykov@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

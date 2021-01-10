@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2020 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2021 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -368,13 +368,21 @@ int test_plzma_open_cpp_doc(void) {
         
         size_t numberOfArchiveItems = decoder->count();
         auto selectedItemsDuringIteration = makeShared<ItemArray>(numberOfArchiveItems);
+        auto selectedItemsToStreams = makeShared<ItemOutStreamArray>();
         for (size_t itemIndex = 0; itemIndex < numberOfArchiveItems; itemIndex++) {
             auto item = decoder->itemAt(itemIndex);
             selectedItemsDuringIteration->push(item /* std::move(item) */);
+            selectedItemsToStreams->push(Pair<SharedPtr<Item>, SharedPtr<OutStream> >(item, makeSharedOutStream()));
         }
         PLZMA_TESTS_ASSERT(numberOfArchiveItems == 5)
         PLZMA_TESTS_ASSERT(numberOfArchiveItems == allArchiveItems->count())
         PLZMA_TESTS_ASSERT(numberOfArchiveItems == selectedItemsDuringIteration->count())
+        PLZMA_TESTS_ASSERT(numberOfArchiveItems == selectedItemsToStreams->count())
+        
+        //bool extracted = decoder->extract(Path("path/outdir"));
+        //bool extracted = decoder->extract(selectedItemsDuringIteration, Path("path/outdir"));
+        bool extracted = decoder->extract(selectedItemsToStreams);
+        PLZMA_TESTS_ASSERT(extracted == true)
     } catch (const Exception & exception) {
         std::cout << "Exception: " << exception.what() << std::endl;
     }
@@ -403,18 +411,35 @@ int test_plzma_open_c_doc(void) {
     
     size_t numberOfArchiveItems = plzma_decoder_count(&decoder);
     plzma_item_array selectedItemsDuringIteration = plzma_item_array_create(numberOfArchiveItems);
+    plzma_item_out_stream_array selectedItemsToStreams = plzma_item_out_stream_array_create(0);
     for (size_t itemIndex = 0; itemIndex < numberOfArchiveItems; itemIndex++) {
         plzma_item item = plzma_decoder_item_at(&decoder, itemIndex);
         plzma_item_array_add(&selectedItemsDuringIteration, &item);
+        plzma_out_stream outItemStream = plzma_out_stream_create_memory_stream();
+        plzma_item_out_stream_array_add(&selectedItemsToStreams, &item, &outItemStream);
+        plzma_out_stream_release(&outItemStream);
         plzma_item_release(&item);
     }
     
     PLZMA_TESTS_ASSERT(numberOfArchiveItems == 5)
     PLZMA_TESTS_ASSERT(numberOfArchiveItems == plzma_item_array_count(&allArchiveItems))
     PLZMA_TESTS_ASSERT(numberOfArchiveItems == plzma_item_array_count(&selectedItemsDuringIteration))
+    PLZMA_TESTS_ASSERT(numberOfArchiveItems == plzma_item_out_stream_array_count(&selectedItemsToStreams))
+    
+//    plzma_path extractPath = plzma_path_create_with_utf8_string("path/outdir");
+//    bool extracted = plzma_decoder_extract_all_items_to_path(&decoder, &extractPath, true);
+//    plzma_path_release(&extractPath);
+    
+//    plzma_path extractPath = plzma_path_create_with_utf8_string("path/outdir");
+//    bool extracted = plzma_decoder_extract_items_to_path(&decoder, &selectedItemsDuringIteration, &extractPath, true);
+//    plzma_path_release(&extractPath);
+    
+    bool extracted = plzma_decoder_extract_item_out_stream_array(&decoder, &selectedItemsToStreams);
+    PLZMA_TESTS_ASSERT(extracted == true)
     
     plzma_item_array_release(&selectedItemsDuringIteration);
     plzma_item_array_release(&allArchiveItems);
+    plzma_item_out_stream_array_release(&selectedItemsToStreams);
     plzma_decoder_release(&decoder);
 #endif
     return 0;

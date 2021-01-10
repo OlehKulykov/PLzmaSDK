@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2020 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2021 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,7 @@
 
 
 #ifndef __LIBPLZMA_H__
-#define __LIBPLZMA_H__
+#define __LIBPLZMA_H__ 1
 
 #include <stdarg.h>
 #include <stdint.h>
@@ -44,11 +44,11 @@
 /// Everything what you need to use this library in C | Objective-C | Swift env. is here.
 
 
-/// @brief Manualy defined required version parts of the library. 0.0.7
+/// @brief Manualy defined required version parts of the library. 1.0.0
 /// The optinal `LIBPLZMA_VERSION_BUILD` might be befined by the CI or via cmake during the configuration.
-#define LIBPLZMA_VERSION_MAJOR 0
+#define LIBPLZMA_VERSION_MAJOR 1
 #define LIBPLZMA_VERSION_MINOR 0
-#define LIBPLZMA_VERSION_PATCH 7
+#define LIBPLZMA_VERSION_PATCH 0
 
 // check windows
 #if defined(WIN32) || defined(_WIN32) || defined(WIN32_LEAN_AND_MEAN) || defined(_WIN64) || defined(WIN64)
