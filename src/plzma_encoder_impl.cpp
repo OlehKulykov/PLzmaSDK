@@ -225,12 +225,19 @@ namespace plzma {
     
     // ICryptoGetTextPassword
     STDMETHODIMP EncoderImpl::CryptoGetTextPassword(BSTR * password) {
-        return getTextPassword(nullptr, password);
+        if (hasOption(OptionRequirePassword)) {
+            return getTextPassword(nullptr, password);
+        }
+        return S_OK;
     }
     
     // ICryptoGetTextPassword2
     STDMETHODIMP EncoderImpl::CryptoGetTextPassword2(Int32 * passwordIsDefined, BSTR * password) {
-        return getTextPassword(passwordIsDefined, password);
+        if (hasOption(OptionRequirePassword)) {
+            return getTextPassword(passwordIsDefined, password);
+        }
+        LIBPLZMA_SET_VALUE_TO_PTR(passwordIsDefined, BoolToInt(false))
+        return S_OK;
     }
     
     void EncoderImpl::setPassword(const wchar_t * password) {
@@ -285,6 +292,9 @@ namespace plzma {
         LIBPLZMA_LOCKGUARD(lock, _mutex)
         if (_archive || _opening || _result == E_ABORT) {
             return;
+        }
+        if (archivePath.count() == 0) {
+            throw Exception(plzma_error_code_invalid_arguments, "Can't add stream without archive path.", __FILE__, __LINE__);
         }
         if (stream) {
             for (plzma_size_t i = 0, n = _streams.count(); i < n; i++) {
@@ -381,6 +391,7 @@ namespace plzma {
             auto & stream = _streams.at(index);
             HRESULT res = S_OK;
             _source.stream = stream.stream;
+            _source.archivePath = stream.archivePath;
             if (stream.stat.size == 0) {
                 stream.stream->open();
                 UInt64 pos = 0;
@@ -407,7 +418,7 @@ namespace plzma {
             L"s",   // solid
             L"x",   // compression level
             L"hc",  // compress header
-            L"he",  // encode header
+            L"he",  // encrypt header
             L"tc",  // write creation time
             L"ta",  // write access time
             L"tm",  // write modification time
@@ -421,7 +432,7 @@ namespace plzma {
             CPropVariant((_options & OptionSolid) ? true : false),          // solid mode ON
             CPropVariant(static_cast<UInt32>(_compressionLevel)),           // compression level = 9 - ultra
             CPropVariant((_options & OptionCompressHeader) ? true : false), // compress header
-            CPropVariant((_options & OptionEncryptHeader) ? true : false),  // encode header
+            CPropVariant((_options & OptionEncryptHeader) ? true : false),  // encrypt header
             CPropVariant((_options & OptionStoreCTime) ? true : false),     // write creation time
             CPropVariant((_options & OptionStoreATime) ? true : false),     // write access time
             CPropVariant((_options & OptionStoreMTime) ? true : false),     // write modification time

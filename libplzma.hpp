@@ -1296,7 +1296,7 @@ namespace plzma {
         
         
         /// @brief Adds the physical file or directory path to the encoder.
-        /// @param path The file or directory path.
+        /// @param path The file or directory path. Duplicated path is not allowed.
         /// @param openDirMode The mode for opening directory in case if \a path is a directory path.
         /// @param archivePath The optional path of how the item's \a path will be presented in archive.
         /// @note Thread-safe. Must be set before opening.
@@ -1304,8 +1304,8 @@ namespace plzma {
         
         
         /// @brief Adds the file in-stream to the encoder.
-        /// @param stream The input file stream to add.
-        /// @param archivePath The optional path of how the item's \a path will be presented in archive.
+        /// @param stream The input file stream to add. Empty stream is not allowed.
+        /// @param archivePath The optional path of how the item's \a path will be presented in archive. Empty path is not allowed.
         /// @note Thread-safe. Must be set before opening.
         virtual void add(const SharedPtr<InStream> & stream, const Path & archivePath) = 0;
         

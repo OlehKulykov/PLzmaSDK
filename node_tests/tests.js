@@ -210,11 +210,14 @@ test++; // encoder.open
 async function encoderAsyncTest1() {
     const t = test;
     console.log(`${t}. encoderAsyncTest1 enter`);
-    const encoder = plzma.Encoder(plzma.OutStream(), plzma.FileType.sevenZ, plzma.Method.LZMA2);
-    encoder.setProgressDelegate((path, progress) => console.log(`compressing: ${path} progress: ${progress}`) );
+    try {
+       
+    } catch (error) {
+        console.log(`Exception: ${error}`);
+    }
 }
 
-//encoderAsyncTest1();
+encoderAsyncTest1();
 
 // let decoder = plzma.Decoder(plzma.InStream('/tmp/7z1900-src.7z'), plzma.FileType.sevenZ);
 // if (decoder.open() !== true) throw '';
@@ -252,10 +255,10 @@ async function encoderAsyncTest1() {
 //     }
 // }
 
-iterator = plzma.Path.tmpPath.openDir(plzma.OpenDirMode.followSymlinks);
-while (iterator.next()) {
-    iterator.fullPath.remove();
-}
-iterator.close();
+// iterator = plzma.Path.tmpPath.openDir(plzma.OpenDirMode.followSymlinks);
+// while (iterator.next()) {
+//     iterator.fullPath.remove();
+// }
+// iterator.close();
 
 console.log('exit.');

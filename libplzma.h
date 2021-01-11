@@ -1352,7 +1352,7 @@ LIBPLZMA_C_API(void) plzma_encoder_set_should_store_modification_time(plzma_enco
 
 
 /// @brief Adds the physical file or directory path to the encoder.
-/// @param path The file or directory path.
+/// @param path The file or directory path. Duplicated path is not allowed.
 /// @param open_dir_mode The mode for opening directory in case if \a path is a directory path.
 /// @param archive_path The optional path of how the \a path will be presented in archive.
 /// @note Thread-safe. Must be set before opening.
@@ -1363,8 +1363,8 @@ LIBPLZMA_C_API(void) plzma_encoder_add_path(plzma_encoder * LIBPLZMA_NONNULL enc
 
 
 /// @brief Adds the file in-sctream to the encoder.
-/// @param stream The input file stream to add.
-/// @param archive_path The optional path of how the \a path will be presented in archive.
+/// @param stream The input file stream to add. Empty stream is not allowed.
+/// @param archive_path The optional path of how the \a path will be presented in archive. Empty path is not allowed.
 /// @note Thread-safe. Must be set before opening.
 LIBPLZMA_C_API(void) plzma_encoder_add_stream(plzma_encoder * LIBPLZMA_NONNULL encoder,
                                               const plzma_in_stream * LIBPLZMA_NONNULL stream,

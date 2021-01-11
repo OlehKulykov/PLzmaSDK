@@ -42,8 +42,9 @@ namespace plzma {
             if (_password.count() > 0) {
                 _result = StringToBstr(_password.wide(), password);
                 LIBPLZMA_SET_VALUE_TO_PTR(passwordIsDefined, BoolToInt(_result == S_OK))
+            } else {
+                LIBPLZMA_SET_VALUE_TO_PTR(passwordIsDefined, BoolToInt(false))
             }
-            LIBPLZMA_SET_VALUE_TO_PTR(passwordIsDefined, BoolToInt(false))
             return _result;
         } catch (const Exception & exception) {
             _exception = exception.moveToHeapCopy();

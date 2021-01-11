@@ -222,6 +222,10 @@ int test_plzma_encode_test2(void) {
     return 0;
 }
 
+int test_plzma_encode_example(void) {
+    return 0;
+}
+
 int test_plzma_encode_test3(void) {
 ////    inStream = inStreamCreate(FILE__southpark_jpg_PTR, FILE__southpark_jpg_SIZE, dummy_free_callback);
 ////    PLZMA_TESTS_ASSERT(inStream != nullptr)
@@ -269,6 +273,10 @@ int main(int argc, char* argv[]) {
         }
         
         if ( (ret = test_plzma_encode_test3()) ) {
+            return ret;
+        }
+        
+        if ( (ret = test_plzma_encode_example()) ) {
             return ret;
         }
     } catch (const Exception & e) {

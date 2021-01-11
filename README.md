@@ -17,7 +17,7 @@ Available for all Apple's platforms(iOS, macOS, tvOS, watchOS), Android, Windows
   * [Swift](https://swift.org/) via [Swift Package Manager] or [CocoaPods].
   * JavaScript via [npm].
   * Pure C++ via git+CMake or copy 2 main lib headers([libplzma.h] and [libplzma.hpp] files) and 'src' folder to your project.
-  * Pure C, also via git+CMake or copy 2 main lib headers([libplzma.h] and [libplzma.hpp] files) and 'src' folder to your project. But this internal C bindings code might be disabled via  `LIBPLZMA_OPT_NO_C_BINDINGS` preprocessor flag if you are not planning to use the lib within the pure C code, see below.
+  * Pure C, also via git+CMake or copy 2 main lib headers([libplzma.h] and [libplzma.hpp] files) and 'src' folder to your project. But this internal C bindings code might be disabled via CMake's boolean option `LIBPLZMA_OPT_NO_C_BINDINGS:BOOL=YES` or preprocessor definition `LIBPLZMA_NO_C_BINDINGS=1`, see below.
 - Supports next archives:
   * [7z]. Both, encrypted/password-protected and unencrypted archive item-list and it's content. [Lzma] and [Lzma2] compression methods.
   * [xz]. [Lzma2] compression method.
@@ -330,6 +330,210 @@ plzma_item_out_stream_array_release(&selectedItemsToStreams); // when no longer 
 plzma_decoder_release(&decoder); // when no longer needed
 ```
 
+-----------
+#### Compress
+##### Create output, setup encoder/archive, add content, open & compress.  
+The process consists of 4 steps:
+1. Create output stream for writing archive's file content. The output stream might be created with:
+   1. The path to the archive file.
+   2. Create memory stream without any arguments.
+2. Create encoder with output stream, type of the archive, compression method and optional progress delegate.
+   1. Optionaly provide the password in case of header and/or content encryption.
+   2. Setup archive properties.
+3. Add content for archiving. The content might be next:
+   1. Single file path with optional path inside the archive.
+   2. Single directory path with optional directory iteration option and optional path inside the archive.
+   3. Any input stream with required path inside the archive.
+4. Open & compress.
+
+##### Swift
+```swift
+do {
+    // 1. Create output stream for writing archive's file content.
+    //  1.1. Using file path.
+    let archivePath = Path("path/out.7z");
+    let archivePathOutStream = try OutStream(path: archivePath)
+    
+    // 2. Create encoder with output stream, type of the archive, compression method and optional progress delegate.
+    let encoder = try Encoder(stream: archivePathOutStream, fileType: .sevenZ, method: .LZMA2, delegate: self)
+    
+    //  2.1. Optionaly provide the password in case of header and/or content encryption.
+    try encoder.setPassword("1234")
+    
+    //  2.2. Setup archive properties.
+    try encoder.setShouldEncryptHeader(true)  // use this option with password.
+    try encoder.setShouldEncryptContent(true) // use this option with password.
+    try encoder.setCompressionLevel(9)
+    
+    // 3. Add content for archiving.
+    //  3.1. Single file path with optional path inside the archive.
+    try encoder.add(path: Path("dir/my_file1.txt")) // store as "my_file1.txt"
+    try encoder.add(path: Path("dir/my_file2.txt"), mode: .default, archivePath: Path("renamed_file2.txt")) // store as "renamed_file2.txt"
+    
+    //  3.2. Single directory path with optional directory iteration option and optional path inside the archive.
+    try encoder.add(path: Path("dir/dir1")) // store as "dir1/..."
+    try encoder.add(path: Path("dir/dir2"), mode: .followSymlinks, archivePath: Path("renamed_dir2")) // store as "renamed_dir2/..."
+    
+    //  3.3. Any input stream with required path inside the archive.
+    let itemStream = try InStream(dataCopy: <Data>) // InStream(dataNoCopy: <Data>)
+    try encoder.add(stream: itemStream, archivePath: Path("my_file3.txt")) // store as "my_file3.txt"
+    
+    // 4. Open.
+    let opened = try encoder.open()
+    
+    // 4. Compress.
+    let compressed = try encoder.compress()
+} catch let exception as Exception {
+    print("Exception: \(exception)")
+}
+```
+
+##### JavaScript
+```javascript
+const plzma = require('plzmasdk');
+
+try {
+    // 1. Create output stream for writing archive's file content.
+    //  1.1. Using file path.
+    const archivePathOutStream = new plzma.OutStream('path/out.7z');
+
+    // 2. Create encoder with output stream, type of the archive, compression method and optional progress delegate.
+    const encoder = plzma.Encoder(archivePathOutStream, plzma.FileType.sevenZ, plzma.Method.LZMA2);
+    encoder.setProgressDelegate((path, progress) => console.log(`Delegating progress, path: ${path}, progress: ${progress}`) );
+    
+    //  2.1. Optionaly provide the password in case of header and/or content encryption.
+    encoder.setPassword('1234');
+
+    //  2.2. Setup archive properties.
+    encoder.shouldEncryptHeader = true;  // use this option with password.
+    encoder.shouldEncryptContent = true; // use this option with password.
+    encoder.compressionLevel = 9;
+    
+    // 3. Add content for archiving.
+    //  3.1. Single file path with optional path inside the archive.
+    encoder.add('dir/my_file1.txt'); // store as "my_file1.txt"
+    encoder.add('dir/my_file2.txt', 0, 'renamed_file2.txt'); // store as "renamed_file2.txt"
+    
+    //  3.2. Single directory path with optional directory iteration option and optional path inside the archive.
+    encoder.add('dir/dir1'); // store as "dir1/..."
+    encoder.add('dir/dir2', plzma.OpenDirMode.followSymlinks, 'renamed_dir2'); // store as "renamed_dir2/..."
+
+    //  3.3. Any input stream with required path inside the archive.
+    const itemStream = plzma.InStream(new ArrayBuffer(...));
+    encoder.add(itemStream, 'my_file3.txt'); // store as "my_file3.txt"
+    
+    // 4. Open.
+    const opened = await encoder.openAsync(); // also available sync. version 'encoder.open()'
+    
+    // 4. Compress.
+    const compressed = await encoder.compressAsync(); // also available sync. version 'encoder.compress()'
+} catch (error) {
+    console.log(`Exception: ${error}`);
+}
+```
+
+##### C++
+```cpp
+try {
+    // 1. Create output stream for writing archive's file content.
+    //  1.1. Using file path.
+    const auto archivePathOutStream = makeSharedOutStream(Path("path/out.7z"));
+
+    // 2. Create encoder with output stream, type of the archive, compression method and optional progress delegate.
+    auto encoder = makeSharedEncoder(archivePathOutStream, plzma_file_type_7z, plzma_method_LZMA2);
+    encoder->setProgressDelegate(_progressDelegate);
+
+    //  2.1. Optionaly provide the password in case of header and/or content encryption.
+    encoder->setPassword("1234");
+    
+    //  2.2. Setup archive properties.
+    encoder->setShouldEncryptHeader(true);
+    encoder->setShouldEncryptContent(true);
+    encoder->setCompressionLevel(9);
+
+    // 3. Add content for archiving.
+    //  3.1. Single file path with optional path inside the archive.
+    encoder->add(Path("dir/my_file1.txt"));  // store as "my_file1.txt"
+    encoder->add(Path("dir/my_file2.txt"), 0, Path("renamed_file2.txt")); // store as "renamed_file2.txt"
+
+    //  3.2. Single directory path with optional directory iteration option and optional path inside the archive.
+    encoder->add(Path("dir/dir1")); // store as "dir1/..."
+    encoder->add(Path("dir/dir2"), plzma_open_dir_mode_follow_symlinks, Path("renamed_dir2")); // store as "renamed_dir2/..."
+
+    //  3.3. Any input stream with required path inside the archive.
+    auto itemStream = makeSharedInStream(<DATA>, <DATA_SIZE>);
+    encoder->add(itemStream, Path("my_file3.txt")); // store as "my_file3.txt"
+    
+    // 4. Open.
+    bool opened = encoder->open();
+
+    // 4. Compress.
+    bool compressed = encoder->compress();
+} catch (const Exception & exception) {
+    std::cout << "Exception: " << exception.what() << std::endl;
+}
+```
+
+##### C
+```c
+// 1. Create output stream for writing archive's file content.
+//  1.1. Using file path.
+plzma_path archivePath = plzma_path_create_with_utf8_string("path/out.7z");
+plzma_out_stream archivePathOutStream = plzma_out_stream_create_with_path(&archivePath);
+
+// 2. Create encoder with output stream, type of the archive, compression method and optional progress delegate.
+plzma_context context;
+plzma_encoder encoder = plzma_encoder_create(&archivePathOutStream, plzma_file_type_7z, plzma_method_LZMA2, context);
+plzma_encoder_set_progress_delegate_utf8_callback(&encoder, <C_CALLBACK_FUNCTION>);
+
+//  2.1. Optionaly provide the password in case of header and/or content encryption.
+plzma_encoder_set_password_utf8_string(&encoder, "1234");
+
+//  2.2. Setup archive properties.
+plzma_encoder_set_should_encrypt_header(&encoder, true);
+plzma_encoder_set_should_encrypt_content(&encoder, true);
+plzma_encoder_set_compression_level(&encoder, 9);
+
+// 3. Add content for archiving.
+//  3.1. Single file path with optional path inside the archive.
+plzma_path itemPath = plzma_path_create_with_utf8_string("dir/my_file1.txt");
+plzma_encoder_add_path(&encoder, &itemPath, 0, NULL); // store as "my_file1.txt"
+plzma_path_release(&itemPath);
+
+itemPath = plzma_path_create_with_utf8_string("dir/my_file2.txt");
+plzma_path itemArchivePath = plzma_path_create_with_utf8_string("renamed_file2.txt");
+plzma_encoder_add_path(&encoder, &itemPath, 0, &itemArchivePath); // store as "renamed_file2.txt"
+plzma_path_release(&itemPath);
+plzma_path_release(&itemArchivePath);
+
+//  3.2. Single directory path with optional directory iteration option and optional path inside the archive.
+itemPath = plzma_path_create_with_utf8_string("dir/dir1");
+plzma_encoder_add_path(&encoder, &itemPath, 0, NULL); // store as "dir1/..."
+plzma_path_release(&itemPath);
+
+itemPath = plzma_path_create_with_utf8_string("dir/dir2");
+itemArchivePath = plzma_path_create_with_utf8_string("renamed_dir2");
+plzma_encoder_add_path(&encoder, &itemPath, plzma_open_dir_mode_follow_symlinks, &itemArchivePath); // store as "renamed_dir2/..."
+plzma_path_release(&itemPath);
+plzma_path_release(&itemArchivePath);
+
+//  3.3. Any input stream with required path inside the archive.
+itemArchivePath = plzma_path_create_with_utf8_string("my_file3.txt");
+plzma_in_stream itemStream = plzma_in_stream_create_with_memory(<DATA>, <DATA_SIZE>);
+plzma_encoder_add_stream(&encoder, &itemStream, &itemArchivePath); // store as "my_file3.txt"
+plzma_in_stream_release(&itemStream);
+plzma_path_release(&itemArchivePath);
+
+// 4. Open.
+bool opened = plzma_encoder_open(&encoder);
+
+// 4. Compress.
+bool compressed = plzma_encoder_compress(&encoder);
+
+plzma_out_stream_release(&archivePathOutStream); // when no longer needed
+plzma_path_release(&archivePath); // when no longer needed
+plzma_encoder_release(&encoder); // when no longer needed
+```
 
 ### License
 -----------

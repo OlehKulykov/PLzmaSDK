@@ -34,6 +34,7 @@ let package = Package(
             ],
             path: "swift_pm_tests")
     ],
+    swiftLanguageVersions: [.v5],
     cLanguageStandard: .c11,
     cxxLanguageStandard: .cxx11
 )

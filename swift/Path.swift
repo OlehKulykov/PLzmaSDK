@@ -137,6 +137,7 @@ public final class Path {
     /// Physically removes the directory with all content or file associated with the path.
     /// - Parameter skipErrors: Skips errors and continuing removing or stop on first error.
     /// - Throws: `Exception`.
+    @discardableResult
     public func remove(skipErrors: Bool = false) throws -> Bool {
         var path = object
         let result = plzma_path_remove(&path, skipErrors)

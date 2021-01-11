@@ -113,7 +113,7 @@
     * [.setProgressDelegate([delegate])](#class_encoder_set_progress_delegate)
     * [.setPassword([password])](#class_encoder_set_password)
     * [.add(path, [openDirMode, [archivePath]])](#class_encoder_add_path)
-    * [.add(inStream, [archivePath])](#class_encoder_add_instream)
+    * [.add(inStream, archivePath)](#class_encoder_add_instream)
     * [.open()](#class_encoder_open) ⇒ ```Boolean```
     * [.openAsync()](#class_encoder_open_async) ⇒ ```Promise```
     * [.abort()](#class_encoder_abort)
@@ -491,15 +491,15 @@ Provides the archive password.
 * <code>password</code> {String} Optional password.
 
 #### <a name="class_encoder_add_path"></a>Encoder.add(path, [openDirMode, [archivePath]])
-Adds the physical file or directory path to the encoder.
+Adds the physical file or directory path to the encoder. Duplicated path is not allowed.
 * <code>path</code> {String|[Path](#class_path)} The file or directory path.
 * <code>openDirMode</code> {[OpenDirMode](#enum_opendirmode)|Array<[OpenDirMode](#enum_opendirmode)>} Optional mode for opening directory in case if path is a directory path.
 * <code>archivePath</code> {String|[Path](#class_path)} Optional path of how the item's path will be presented in archive.
 
-#### <a name="class_encoder_add_instream"></a>Encoder.add(inStream, [archivePath])
+#### <a name="class_encoder_add_instream"></a>Encoder.add(inStream, archivePath)
 Adds the file in-stream to the encoder.
-* <code>inStream</code> {[InStream](#class_instream)} The input file stream to add.
-* <code>archivePath</code> {String|[Path](#class_path)} Optional path of how the item's path will be presented in archive.
+* <code>inStream</code> {[InStream](#class_instream)} The input file stream to add. Empty stream is not allowed.
+* <code>archivePath</code> {String|[Path](#class_path)} The path of how the item's path will be presented in archive. Empty path is not allowed.
 
 #### <a name="class_encoder_open"></a>Encoder.open() ⇒ Boolean
 Opens the archive.

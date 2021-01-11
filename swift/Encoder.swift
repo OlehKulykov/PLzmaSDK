@@ -112,7 +112,7 @@ public final class Encoder {
     
     
     /// Adds the physical file or directory path to the encoder.
-    /// - Parameter path: The file or directory path.
+    /// - Parameter path: The uniq. file or directory path. Duplicated value is not allowed.
     /// - Parameter mode: The mode for opening directory in case if `path` is a directory path.
     /// - Parameter archivePath: The custom path of how the `path` will be presented in archive.
     /// - Note: Thread-safe. Must be set before opening.
@@ -129,8 +129,8 @@ public final class Encoder {
     
     
     /// Adds the file in-sctream to the encoder.
-    /// - Parameter stream: The input file stream to add.
-    /// - Parameter archivePath: The custom path of how the `path` will be presented in archive.
+    /// - Parameter stream: The input file stream to add. Empty stream is not allowed.
+    /// - Parameter archivePath: The custom path of how the `path` will be presented in archive. Empty path is not allowed.
     /// - Note: Thread-safe. Must be set before opening.
     /// - Throws: `Exception`.
     public func add(stream: InStream, archivePath: Path) throws {

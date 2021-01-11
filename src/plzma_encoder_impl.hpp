@@ -67,7 +67,9 @@ namespace plzma {
             OptionEncryptHeader         = 1 << 4,
             OptionStoreCTime            = 1 << 5,
             OptionStoreMTime            = 1 << 6,
-            OptionStoreATime            = 1 << 7
+            OptionStoreATime            = 1 << 7,
+            
+            OptionRequirePassword       = OptionEncryptContent | OptionEncryptHeader
         };
         struct AddedPath final {
             Path path;
