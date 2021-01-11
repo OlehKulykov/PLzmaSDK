@@ -204,6 +204,7 @@ namespace plzma {
     
     void InMemStream::open() {
         LIBPLZMA_LOCKGUARD(lock, _mutex)
+        _offset = 0;
         _opened = true;
     }
     

@@ -138,10 +138,19 @@ public class InStream {
         let contextObject = plzma_context(context: unmanagedContext.toOpaque()) { unmanagedContext in
             Unmanaged<DataNoCopyContext>.fromOpaque(unmanagedContext).release()
         }
-        let stream = plzma_in_stream_create_with_callbacks({ _ in
-            return true // nothing to open
-        }, { _ in
-            // nothing to close
+        let stream = plzma_in_stream_create_with_callbacks({ unmanagedContext in
+            guard let unmanagedContext = unmanagedContext else {
+                return false
+            }
+            let context = Unmanaged<DataNoCopyContext>.fromOpaque(unmanagedContext).takeUnretainedValue()
+            context.offset = 0
+            return true
+        }, { unmanagedContext in
+            guard let unmanagedContext = unmanagedContext else {
+                return
+            }
+            let context = Unmanaged<DataNoCopyContext>.fromOpaque(unmanagedContext).takeUnretainedValue()
+            context.offset = 0
         }, { (unmanagedContext, offset, origin, newPosition) -> Bool in
             guard let unmanagedContext = unmanagedContext else {
                 return false

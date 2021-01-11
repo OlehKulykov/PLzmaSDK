@@ -1,6 +1,9 @@
 (Portable, Patched, Package, cross-P-latform) Lzma SDK, libplzma
 
-1.0.0 (current):
+1.0.1 (current):
+- Reuse non-copyable memory streams.
+
+1.0.0:
 - Update documentation and license.
 - Standardization of the included C/C++ files(minor update).
 

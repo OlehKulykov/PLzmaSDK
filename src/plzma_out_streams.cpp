@@ -242,6 +242,7 @@ namespace plzma {
     
     void OutMemStream::close() {
         LIBPLZMA_LOCKGUARD(lock, _mutex)
+        _offset = 0;
         _opened = false;
     }
     
