@@ -66,6 +66,7 @@ try { \
 } \
 return createdCObject; \
 
+
 #else
 #define LIBPLZMA_C_BINDINGS_CREATE_OBJECT_CATCH \
 } catch (const Exception & exception) { \
@@ -74,6 +75,7 @@ return createdCObject; \
     createdCObject.exception = static_cast<void *>(Exception::create(plzma_error_code_unknown, nullptr, __FILE__, __LINE__)); \
 } \
 return createdCObject; \
+
 
 #endif // LIBPLZMA_HAVE_STD
 
@@ -113,6 +115,7 @@ try { \
 } \
 return FAIL_RES; \
 
+
 #else
 #define LIBPLZMA_C_BINDINGS_OBJECT_EXEC_CATCH_RETURN(OBJ_PTR, FAIL_RES) \
 } catch (const Exception & exception) { \
@@ -121,6 +124,7 @@ return FAIL_RES; \
     OBJ_PTR->exception = static_cast<void *>(Exception::create(plzma_error_code_unknown, nullptr, __FILE__, __LINE__)); \
 } \
 return FAIL_RES; \
+
 
 #endif // LIBPLZMA_HAVE_STD
 
@@ -133,6 +137,7 @@ return FAIL_RES; \
     OBJ_PTR->exception = static_cast<void *>(Exception::create(plzma_error_code_internal, exception.what(), __FILE__, __LINE__)); \
 } \
 
+
 #else
 #define LIBPLZMA_C_BINDINGS_OBJECT_EXEC_CATCH(OBJ_PTR) \
 } catch (const Exception & exception) { \
@@ -140,6 +145,7 @@ return FAIL_RES; \
 } catch (...) { \
     OBJ_PTR->exception = static_cast<void *>(Exception::create(plzma_error_code_unknown, nullptr, __FILE__, __LINE__)); \
 } \
+
 
 #endif // LIBPLZMA_HAVE_STD
 

@@ -41,43 +41,71 @@ namespace plzma {
     class Progress final {
     private:
         friend struct SharedPtr<Progress>;
-        class SharedString : public String {
-        private:
-            friend struct SharedPtr<SharedString>;
-            size_t _referenceCounter = 0;
-            void retain() noexcept { LIBPLZMA_RETAIN_IMPL(_referenceCounter) }
-            void release() noexcept { LIBPLZMA_RELEASE_IMPL(_referenceCounter) }
-        public:
-            SharedString(Path && path) : String(static_cast<Path &&>(path)) { }
-            SharedString(const Path & path) : String(path) { }
-        };
+        
         struct ReportData final {
-            SharedPtr<SharedString> path;
-            void * context;
-            ProgressDelegate * delegate;
+        private:
+            String _path;
+            void * _context = nullptr;
+            ProgressDelegate * _delegate = nullptr;
 #if !defined(LIBPLZMA_NO_C_BINDINGS)
-            plzma_progress_delegate_utf8_callback utf8Callback;
-            plzma_progress_delegate_wide_callback wideCallback;
+            plzma_progress_delegate_utf8_callback _utf8Callback = nullptr;
+            plzma_progress_delegate_wide_callback _wideCallback = nullptr;
 #endif
-            double progress;
+            double _progress = 0.0;
             
+        public:
             void report() const {
-                if (delegate) {
-                    delegate->onProgress(context, *path.get(), progress);
+                if (_delegate) {
+                    _delegate->onProgress(_context, _path, _progress);
                 }
 #if !defined(LIBPLZMA_NO_C_BINDINGS)
-                if (utf8Callback) {
-                    utf8Callback(context, path->utf8(), progress);
+                if (_utf8Callback) {
+                    _utf8Callback(_context, _path.utf8(), _progress);
                 }
-                if (wideCallback) {
-                    wideCallback(context, path->wide(), progress);
+                if (_wideCallback) {
+                    _wideCallback(_context, _path.wide(), _progress);
                 }
 #endif
             }
+            
+            ReportData & operator = (const ReportData &) = delete;
+            ReportData(const ReportData &) = delete;
+            
+            ReportData(ReportData && data) noexcept :
+                _path(static_cast<String &&>(data._path)),
+                _context(data._context),
+                _delegate(data._delegate),
+#if !defined(LIBPLZMA_NO_C_BINDINGS)
+                _utf8Callback(data._utf8Callback),
+                _wideCallback(data._wideCallback),
+#endif
+                _progress(data._progress) { }
+            
+            ReportData(const Path & path,
+                       void * context,
+                       ProgressDelegate * delegate,
+#if !defined(LIBPLZMA_NO_C_BINDINGS)
+                       plzma_progress_delegate_utf8_callback utf8Callback,
+                       plzma_progress_delegate_wide_callback wideCallback,
+#endif
+                       const double progress) :
+                _path(path),
+                _context(context),
+                _delegate(delegate),
+#if !defined(LIBPLZMA_NO_C_BINDINGS)
+                _utf8Callback(utf8Callback),
+                _wideCallback(wideCallback),
+#endif
+                _progress(progress) { }
+            
+            ~ReportData() noexcept {
+                _path.clear(plzma_erase_zero);
+            }
         };
+        
         LIBPLZMA_MUTEX(_mutex)
-        SharedPtr<SharedString> _path;
-        plzma_context _context;
+        Path _path;
+        plzma_context _context = plzma_context{nullptr, nullptr}; // C2059 = { .context = nullptr, .deinitializer = nullptr }
         ProgressDelegate * _delegate = nullptr;
 #if !defined(LIBPLZMA_NO_C_BINDINGS)
         plzma_progress_delegate_utf8_callback _utf8Callback = nullptr;
@@ -100,8 +128,16 @@ namespace plzma {
         void release();
 #endif
         bool calculateReportable() const noexcept;
-        ReportData reportData() const noexcept;
         void updateProgress() noexcept;
+        
+        ReportData reportData() const {
+            return ReportData(_path, _context.context, _delegate,
+#if !defined(LIBPLZMA_NO_C_BINDINGS)
+                              _utf8Callback,
+                              _wideCallback,
+#endif
+                              _progress);
+        }
         
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(Progress)
         

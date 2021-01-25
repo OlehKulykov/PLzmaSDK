@@ -200,6 +200,16 @@ public final class Path {
         }
     }
     
+    /// - SeeAlso: `appendRandomComponent` method.
+    /// - Throws: `Exception`
+    public func appendingRandomComponent() throws -> Path {
+        var path = object
+        let result = plzma_path_appending_random_component(&path)
+        if let exception = result.exception {
+            throw Exception(object: exception)
+        }
+        return Path(object: result)
+    }
     
     /// Appends the path component to the path.
     /// - Parameter component: The path component to append.

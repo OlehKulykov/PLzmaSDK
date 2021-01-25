@@ -38,70 +38,105 @@ using namespace plzma;
 #endif
 
 int test_plzma_path_remove_last1(void) {
-    Path path;
+    Path path, pathCopy;
     
     path.set("/tmp/scratch.png");
     std::cout << path.utf8() << " " << __LINE__ << std::endl;
     std::wcout << path.wide() << L" " << __LINE__ << L"\n";
+    pathCopy = path.removingLastComponent();
     path.removeLastComponent();
     std::cout << path.utf8() << " " << __LINE__ << std::endl;
     PLZMA_TESTS_ASSERT(strcmp(path.utf8(), CSEP "tmp") == 0)
     PLZMA_TESTS_ASSERT(wcscmp(path.wide(), WSEP L"tmp") == 0)
+    PLZMA_TESTS_ASSERT(strcmp(pathCopy.utf8(), CSEP "tmp") == 0)
+    PLZMA_TESTS_ASSERT(wcscmp(pathCopy.wide(), WSEP L"tmp") == 0)
     
     path.set("/tmp/lock/");
+    pathCopy = path.removingLastComponent();
     path.removeLastComponent();
     PLZMA_TESTS_ASSERT(strcmp(path.utf8(), CSEP "tmp") == 0)
     PLZMA_TESTS_ASSERT(wcscmp(path.wide(), WSEP L"tmp") == 0)
+    PLZMA_TESTS_ASSERT(strcmp(pathCopy.utf8(), CSEP "tmp") == 0)
+    PLZMA_TESTS_ASSERT(wcscmp(pathCopy.wide(), WSEP L"tmp") == 0)
     
     path.set("/tmp/");
+    pathCopy = path.removingLastComponent();
     path.removeLastComponent();
     PLZMA_TESTS_ASSERT(strcmp(path.utf8(), CSEP) == 0)
     PLZMA_TESTS_ASSERT(wcscmp(path.wide(), WSEP) == 0)
+    PLZMA_TESTS_ASSERT(strcmp(pathCopy.utf8(), CSEP) == 0)
+    PLZMA_TESTS_ASSERT(wcscmp(pathCopy.wide(), WSEP) == 0)
     
     path.set("/tmp");
+    pathCopy = path.removingLastComponent();
     path.removeLastComponent();
     PLZMA_TESTS_ASSERT(strcmp(path.utf8(), CSEP) == 0)
     PLZMA_TESTS_ASSERT(wcscmp(path.wide(), WSEP) == 0)
+    PLZMA_TESTS_ASSERT(strcmp(pathCopy.utf8(), CSEP) == 0)
+    PLZMA_TESTS_ASSERT(wcscmp(pathCopy.wide(), WSEP) == 0)
     
     path.set("/");
+    pathCopy = path.removingLastComponent();
     path.removeLastComponent();
     PLZMA_TESTS_ASSERT(strcmp(path.utf8(), CSEP) == 0)
     PLZMA_TESTS_ASSERT(wcscmp(path.wide(), WSEP) == 0)
+    PLZMA_TESTS_ASSERT(strcmp(pathCopy.utf8(), CSEP) == 0)
+    PLZMA_TESTS_ASSERT(wcscmp(pathCopy.wide(), WSEP) == 0)
 
     path.set("scratch.png");
+    pathCopy = path.removingLastComponent();
     path.removeLastComponent();
     PLZMA_TESTS_ASSERT(path.count() == 0)
+    PLZMA_TESTS_ASSERT(pathCopy.count() == 0)
     
     path.set("c:/");
+    pathCopy = path.removingLastComponent();
     path.removeLastComponent();
     PLZMA_TESTS_ASSERT(strcmp(path.utf8(), "c:" CSEP) == 0)
     PLZMA_TESTS_ASSERT(wcscmp(path.wide(), L"c:" WSEP) == 0)
+    PLZMA_TESTS_ASSERT(strcmp(pathCopy.utf8(), "c:" CSEP) == 0)
+    PLZMA_TESTS_ASSERT(wcscmp(pathCopy.wide(), L"c:" WSEP) == 0)
     
     path.set("c:/a");
+    pathCopy = path.removingLastComponent();
     path.removeLastComponent();
     PLZMA_TESTS_ASSERT(strcmp(path.utf8(), "c:" CSEP) == 0)
     PLZMA_TESTS_ASSERT(wcscmp(path.wide(), L"c:" WSEP) == 0)
+    PLZMA_TESTS_ASSERT(strcmp(pathCopy.utf8(), "c:" CSEP) == 0)
+    PLZMA_TESTS_ASSERT(wcscmp(pathCopy.wide(), L"c:" WSEP) == 0)
     
     path.set("c:\\\\a");
+    pathCopy = path.removingLastComponent();
     path.removeLastComponent();
     PLZMA_TESTS_ASSERT(strcmp(path.utf8(), "c:" CSEP CSEP) == 0)
     PLZMA_TESTS_ASSERT(wcscmp(path.wide(), L"c:" WSEP WSEP) == 0)
+    PLZMA_TESTS_ASSERT(strcmp(pathCopy.utf8(), "c:" CSEP CSEP) == 0)
+    PLZMA_TESTS_ASSERT(wcscmp(pathCopy.wide(), L"c:" WSEP WSEP) == 0)
     
     path.set("c:\\\\a/b");
+    pathCopy = path.removingLastComponent();
     path.removeLastComponent();
     PLZMA_TESTS_ASSERT(strcmp(path.utf8(), "c:" CSEP CSEP "a") == 0)
     PLZMA_TESTS_ASSERT(wcscmp(path.wide(), L"c:" WSEP WSEP "a") == 0)
+    PLZMA_TESTS_ASSERT(strcmp(pathCopy.utf8(), "c:" CSEP CSEP "a") == 0)
+    PLZMA_TESTS_ASSERT(wcscmp(pathCopy.wide(), L"c:" WSEP WSEP "a") == 0)
     
     path.set("");
+    pathCopy = path.removingLastComponent();
     path.removeLastComponent();
     PLZMA_TESTS_ASSERT(path.count() == 0)
+    PLZMA_TESTS_ASSERT(pathCopy.count() == 0)
     
     path.set(L".");
     PLZMA_TESTS_ASSERT(path.count() == 1)
+    pathCopy = path.appending(L"*");
     path.append(L"*");
     PLZMA_TESTS_ASSERT(path.count() == 3)
     PLZMA_TESTS_ASSERT(wcscmp(path.wide(), L"." WSEP "*") == 0)
     PLZMA_TESTS_ASSERT(strcmp(path.utf8(), "." CSEP "*") == 0)
+    PLZMA_TESTS_ASSERT(pathCopy.count() == 3)
+    PLZMA_TESTS_ASSERT(wcscmp(pathCopy.wide(), L"." WSEP "*") == 0)
+    PLZMA_TESTS_ASSERT(strcmp(pathCopy.utf8(), "." CSEP "*") == 0)
     
     return 0;
 }
@@ -197,55 +232,86 @@ int test_plzma_path_last_component1(void) {
 }
 
 int test_plzma_path_test_append1(void) {
-    Path path;
+    Path path, pathCopy;
+    
+    pathCopy = path.appending("");
     path.append("");
     PLZMA_TESTS_ASSERT(path.count() == 0)
+    PLZMA_TESTS_ASSERT(pathCopy.count() == 0)
     
     path.clear();
+    pathCopy = path.appending("a");
     path.append("a");
     PLZMA_TESTS_ASSERT(strcmp(path.utf8(), "a") == 0)
     PLZMA_TESTS_ASSERT(wcscmp(path.wide(), L"a") == 0)
+    PLZMA_TESTS_ASSERT(strcmp(pathCopy.utf8(), "a") == 0)
+    PLZMA_TESTS_ASSERT(wcscmp(pathCopy.wide(), L"a") == 0)
     
     path.set("a");
+    pathCopy = path.appending("b");
     path.append("b");
     PLZMA_TESTS_ASSERT(strcmp(path.utf8(), "a" CSEP "b") == 0)
     PLZMA_TESTS_ASSERT(wcscmp(path.wide(), L"a" WSEP L"b") == 0)
+    PLZMA_TESTS_ASSERT(strcmp(pathCopy.utf8(), "a" CSEP "b") == 0)
+    PLZMA_TESTS_ASSERT(wcscmp(pathCopy.wide(), L"a" WSEP L"b") == 0)
     
     path.set("\\//a");
+    pathCopy = path.appending("b");
     path.append("b");
     PLZMA_TESTS_ASSERT(strcmp(path.utf8(), CSEP "a" CSEP "b") == 0)
     PLZMA_TESTS_ASSERT(wcscmp(path.wide(), WSEP L"a" WSEP L"b") == 0)
+    PLZMA_TESTS_ASSERT(strcmp(pathCopy.utf8(), CSEP "a" CSEP "b") == 0)
+    PLZMA_TESTS_ASSERT(wcscmp(pathCopy.wide(), WSEP L"a" WSEP L"b") == 0)
 
     path.set("\\a");
+    pathCopy = path.appending("\\b");
     path.append("\\b");
     PLZMA_TESTS_ASSERT(strcmp(path.utf8(), CSEP "a" CSEP "b") == 0)
     PLZMA_TESTS_ASSERT(wcscmp(path.wide(), WSEP L"a" WSEP L"b") == 0)
+    PLZMA_TESTS_ASSERT(strcmp(pathCopy.utf8(), CSEP "a" CSEP "b") == 0)
+    PLZMA_TESTS_ASSERT(wcscmp(pathCopy.wide(), WSEP L"a" WSEP L"b") == 0)
 
     path.clear();
+    pathCopy = path.appending("a").appending("\\b");
     path.append("a");
     path.append("\\b");
     PLZMA_TESTS_ASSERT(strcmp(path.utf8(), "a" CSEP "b") == 0)
     PLZMA_TESTS_ASSERT(wcscmp(path.wide(), L"a" WSEP L"b") == 0)
+    PLZMA_TESTS_ASSERT(strcmp(pathCopy.utf8(), "a" CSEP "b") == 0)
+    PLZMA_TESTS_ASSERT(wcscmp(pathCopy.wide(), L"a" WSEP L"b") == 0)
     
     path.set("a/b\\");
+    pathCopy = path.appending("/c\\d");
     path.append("/c\\d");
     PLZMA_TESTS_ASSERT(strcmp(path.utf8(), "a" CSEP "b" CSEP "c" CSEP "d") == 0)
     PLZMA_TESTS_ASSERT(wcscmp(path.wide(), L"a" WSEP L"b" WSEP L"c" WSEP L"d") == 0)
+    PLZMA_TESTS_ASSERT(strcmp(pathCopy.utf8(), "a" CSEP "b" CSEP "c" CSEP "d") == 0)
+    PLZMA_TESTS_ASSERT(wcscmp(pathCopy.wide(), L"a" WSEP L"b" WSEP L"c" WSEP L"d") == 0)
     
     path.set("a/b/");
+    pathCopy = path.appending("/c/d/");
     path.append("/c/d/");
     PLZMA_TESTS_ASSERT(strcmp(path.utf8(), "a" CSEP "b" CSEP "c" CSEP "d" CSEP) == 0)
     PLZMA_TESTS_ASSERT(wcscmp(path.wide(), L"a" WSEP L"b" WSEP L"c" WSEP L"d" WSEP) == 0)
+    PLZMA_TESTS_ASSERT(strcmp(pathCopy.utf8(), "a" CSEP "b" CSEP "c" CSEP "d" CSEP) == 0)
+    PLZMA_TESTS_ASSERT(wcscmp(pathCopy.wide(), L"a" WSEP L"b" WSEP L"c" WSEP L"d" WSEP) == 0)
 
     path.set("a\\b/");
+    pathCopy = path.appending("\\c/d");
     path.append("\\c/d");
     PLZMA_TESTS_ASSERT(strcmp(path.utf8(), "a" CSEP "b" CSEP "c" CSEP "d") == 0)
     PLZMA_TESTS_ASSERT(wcscmp(path.wide(), L"a" WSEP L"b" WSEP L"c" WSEP "d") == 0)
+    PLZMA_TESTS_ASSERT(strcmp(pathCopy.utf8(), "a" CSEP "b" CSEP "c" CSEP "d") == 0)
+    PLZMA_TESTS_ASSERT(wcscmp(pathCopy.wide(), L"a" WSEP L"b" WSEP L"c" WSEP "d") == 0)
     
     path.set("a\\b\\");
+    pathCopy = path.appending("\\c\\/\\d\\");
     path.append("\\c\\/\\d\\");
     PLZMA_TESTS_ASSERT(strcmp(path.utf8(), "a" CSEP "b" CSEP "c" CSEP "d" CSEP) == 0)
     PLZMA_TESTS_ASSERT(wcscmp(path.wide(), L"a" WSEP L"b" WSEP L"c" WSEP L"d" WSEP) == 0)
+    PLZMA_TESTS_ASSERT(strcmp(pathCopy.utf8(), "a" CSEP "b" CSEP "c" CSEP "d" CSEP) == 0)
+    PLZMA_TESTS_ASSERT(wcscmp(pathCopy.wide(), L"a" WSEP L"b" WSEP L"c" WSEP L"d" WSEP) == 0)
+    
     return 0;
 }
 

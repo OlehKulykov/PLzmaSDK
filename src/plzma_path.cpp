@@ -423,6 +423,24 @@ namespace plzma {
 #endif
     }
     
+    Path Path::appending(const wchar_t * LIBPLZMA_NULLABLE str) const {
+        Path result(*this);
+        result.append(str);
+        return result;
+    }
+
+    Path Path::appending(const char * LIBPLZMA_NULLABLE str) const {
+        Path result(*this);
+        result.append(str);
+        return result;
+    }
+
+    Path Path::appending(const Path & path) const {
+        Path result(*this);
+        result.append(path);
+        return result;
+    }
+
     void Path::appendRandomComponent() {
 #if defined(LIBPLZMA_MSC)
         syncWide();
@@ -437,6 +455,12 @@ namespace plzma {
 #endif
     }
     
+    Path Path::appendingRandomComponent() const {
+        Path result(*this);
+        result.appendRandomComponent();
+        return result;
+    }
+
     Path Path::lastComponent() const {
         Path res;
 #if defined(LIBPLZMA_MSC)
@@ -481,6 +505,12 @@ namespace plzma {
             _size = static_cast<plzma_size_t>(len.second);
         }
 #endif
+    }
+    
+    Path Path::removingLastComponent() const {
+        Path result(*this);
+        result.removeLastComponent();
+        return result;
     }
     
     bool Path::exists(bool * LIBPLZMA_NULLABLE isDir /* = nullptr */) const {
@@ -702,16 +732,37 @@ void plzma_path_append_wide_component(plzma_path * LIBPLZMA_NONNULL path, const 
     LIBPLZMA_C_BINDINGS_OBJECT_EXEC_CATCH(path)
 }
 
+plzma_path plzma_path_appending_wide_component(const plzma_path * LIBPLZMA_NONNULL path, const wchar_t * LIBPLZMA_NULLABLE component) {
+    LIBPLZMA_C_BINDINGS_CREATE_OBJECT_FROM_TRY(plzma_path, path)
+    Path result = static_cast<const Path *>(path->object)->appending(component);
+    createdCObject.object = static_cast<void *>(new Path(static_cast<Path &&>(result)));
+    LIBPLZMA_C_BINDINGS_CREATE_OBJECT_CATCH
+}
+
 void plzma_path_append_utf8_component(plzma_path * LIBPLZMA_NONNULL path, const char * LIBPLZMA_NULLABLE component) {
     LIBPLZMA_C_BINDINGS_OBJECT_EXEC_TRY(path)
     static_cast<Path *>(path->object)->append(component);
     LIBPLZMA_C_BINDINGS_OBJECT_EXEC_CATCH(path)
 }
 
+plzma_path plzma_path_appending_utf8_component(const plzma_path * LIBPLZMA_NONNULL path, const char * LIBPLZMA_NULLABLE component) {
+    LIBPLZMA_C_BINDINGS_CREATE_OBJECT_FROM_TRY(plzma_path, path)
+    Path result = static_cast<const Path *>(path->object)->appending(component);
+    createdCObject.object = static_cast<void *>(new Path(static_cast<Path &&>(result)));
+    LIBPLZMA_C_BINDINGS_CREATE_OBJECT_CATCH
+}
+
 void plzma_path_append_random_component(plzma_path * LIBPLZMA_NONNULL path) {
     LIBPLZMA_C_BINDINGS_OBJECT_EXEC_TRY(path)
     static_cast<Path *>(path->object)->appendRandomComponent();
     LIBPLZMA_C_BINDINGS_OBJECT_EXEC_CATCH(path)
+}
+
+plzma_path plzma_path_appending_random_component(const plzma_path * LIBPLZMA_NONNULL path) {
+    LIBPLZMA_C_BINDINGS_CREATE_OBJECT_FROM_TRY(plzma_path, path)
+    Path result = static_cast<const Path *>(path->object)->appendingRandomComponent();
+    createdCObject.object = static_cast<void *>(new Path(static_cast<Path &&>(result)));
+    LIBPLZMA_C_BINDINGS_CREATE_OBJECT_CATCH
 }
 
 const wchar_t * LIBPLZMA_NULLABLE plzma_path_wide_string(plzma_path * LIBPLZMA_NONNULL path) {
@@ -779,6 +830,13 @@ void plzma_path_remove_last_component(plzma_path * LIBPLZMA_NONNULL path) {
     LIBPLZMA_C_BINDINGS_OBJECT_EXEC_TRY(path)
     static_cast<Path *>(path->object)->removeLastComponent();
     LIBPLZMA_C_BINDINGS_OBJECT_EXEC_CATCH(path)
+}
+
+plzma_path plzma_path_removing_last_component(const plzma_path * LIBPLZMA_NONNULL path) {
+    LIBPLZMA_C_BINDINGS_CREATE_OBJECT_FROM_TRY(plzma_path, path)
+    Path result = static_cast<const Path *>(path->object)->removingLastComponent();
+    createdCObject.object = static_cast<void *>(new Path(static_cast<Path &&>(result)));
+    LIBPLZMA_C_BINDINGS_CREATE_OBJECT_CATCH
 }
 
 bool plzma_path_create_dir(plzma_path * LIBPLZMA_NONNULL path, const bool with_intermediates) {

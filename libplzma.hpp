@@ -542,6 +542,9 @@ namespace plzma {
         virtual void append(const char * LIBPLZMA_NULLABLE str) override final;
         
         void append(const Path & path);
+        Path appending(const wchar_t * LIBPLZMA_NULLABLE str) const;
+        Path appending(const char * LIBPLZMA_NULLABLE str) const;
+        Path appending(const Path & path) const;
         
         
         /// @brief Appends the random component to the path.
@@ -550,6 +553,7 @@ namespace plzma {
         /// The component consists of ASCII characters in range ['a'; 'z'].
         /// @exception The \a Exception with \a plzma_error_code_internal code in case if path can't be appended.
         void appendRandomComponent();
+        Path appendingRandomComponent() const;
         
         
         /// @brief Receives the last component of the path.
@@ -558,6 +562,7 @@ namespace plzma {
         
         /// @brief Removes the last component from the path.
         void removeLastComponent();
+        Path removingLastComponent() const;
         
         
         /// @brief Checks the path exists with optional checking for a directory.

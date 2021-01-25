@@ -1,6 +1,9 @@
 (Portable, Patched, Package, cross-P-latform) Lzma SDK, libplzma
 
-1.0.1 (current):
+1.0.2 (current):
+- Fix progress delegation.
+
+1.0.1:
 - Reuse non-copyable memory streams.
 
 1.0.0:

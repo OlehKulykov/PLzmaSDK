@@ -62,19 +62,6 @@ namespace plzma {
 #endif
     }
     
-    Progress::ReportData Progress::reportData() const noexcept {
-        ReportData data;
-        data.path = _path;
-        data.context = _context.context;
-        data.delegate = _delegate;
-#if !defined(LIBPLZMA_NO_C_BINDINGS)
-        data.utf8Callback = _utf8Callback;
-        data.wideCallback = _wideCallback;
-#endif
-        data.progress = _progress;
-        return data;
-    }
-    
     void Progress::updateProgress() noexcept {
         _progress = (_partNumber > 0) ? (_perPart * (_partNumber - 1)) : 0.0;
         if (_partTotal > 0) {
@@ -179,7 +166,7 @@ namespace plzma {
     
     void Progress::setPath(Path && path) {
         LIBPLZMA_LOCKGUARD(lock, _mutex)
-        _path = makeShared<SharedString>(static_cast<Path &&>(path));
+        _path = static_cast<Path &&>(path);
         if (_reportable) {
             const auto report = reportData();
             LIBPLZMA_LOCKGUARD_UNLOCK(lock)
@@ -189,7 +176,7 @@ namespace plzma {
     
     void Progress::setPath(const Path & path) {
         LIBPLZMA_LOCKGUARD(lock, _mutex)
-        _path = makeShared<SharedString>(path);
+        _path = path;
         if (_reportable) {
             const auto report = reportData();
             LIBPLZMA_LOCKGUARD_UNLOCK(lock)
