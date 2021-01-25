@@ -72,7 +72,7 @@ namespace plzma {
     
     void Progress::reset() {
         LIBPLZMA_LOCKGUARD(lock, _mutex)
-        _path.clear();
+        _path.clear(plzma_erase_zero);
         _partsCount = 1;
         _partNumber = 0;
         _partCompleted = _partTotal = 0;

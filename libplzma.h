@@ -44,11 +44,11 @@
 /// Everything what you need to use this library in C | Objective-C | Swift env. is here.
 
 
-/// @brief Manualy defined required version parts of the library. 1.0.2
+/// @brief Manualy defined required version parts of the library. 1.0.3
 /// The optinal `LIBPLZMA_VERSION_BUILD` might be befined by the CI or via cmake during the configuration.
 #define LIBPLZMA_VERSION_MAJOR 1
 #define LIBPLZMA_VERSION_MINOR 0
-#define LIBPLZMA_VERSION_PATCH 2
+#define LIBPLZMA_VERSION_PATCH 3
 
 // check windows
 #if defined(WIN32) || defined(_WIN32) || defined(WIN32_LEAN_AND_MEAN) || defined(_WIN64) || defined(WIN64)

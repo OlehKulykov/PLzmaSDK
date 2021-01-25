@@ -68,8 +68,10 @@ namespace plzma {
 #endif
             }
             
+            ReportData & operator = (ReportData &&) = delete;
             ReportData & operator = (const ReportData &) = delete;
             ReportData(const ReportData &) = delete;
+            ReportData() = delete;
             
             ReportData(ReportData && data) noexcept :
                 _path(static_cast<String &&>(data._path)),

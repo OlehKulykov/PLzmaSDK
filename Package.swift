@@ -13,10 +13,10 @@ let package = Package(
         .target(name: "libplzma",
                 path: "src",
                 cSettings: [
-                    .define("LIBPLZMA_VERSION_BUILD", to: "198")
+                    .define("LIBPLZMA_VERSION_BUILD", to: "205")
                 ],
                 cxxSettings: [
-                    .define("LIBPLZMA_VERSION_BUILD", to: "198")
+                    .define("LIBPLZMA_VERSION_BUILD", to: "205")
         ]),
         .target(name: "PLzmaSDK",
                 dependencies: [
