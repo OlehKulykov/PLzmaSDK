@@ -58,11 +58,13 @@ static void BoolVector_Fill_False(CBoolVector &v, unsigned size)
 
 class CInArchiveException {};
 class CUnsupportedFeatureException: public CInArchiveException {};
+class CInvalidPasswordException: public CInArchiveException {};
 
 static void ThrowException() { throw CInArchiveException(); }
 static inline void ThrowEndOfData()   { ThrowException(); }
 static inline void ThrowUnsupported() { throw CUnsupportedFeatureException(); }
 static inline void ThrowIncorrect()   { ThrowException(); }
+static inline void ThrowInvalidPasswordException()   { throw CInvalidPasswordException(); }
 
 class CStreamSwitch final
 {
@@ -1128,8 +1130,14 @@ HRESULT CInArchive::ReadAndDecodePackedStreams(
       ThereIsHeaderError = true;
     
     if (folders.FolderCRCs.ValidAndDefined(i))
-      if (CrcCalc(data, unpackSize) != folders.FolderCRCs.Vals[i])
-        ThrowIncorrect();
+      if (CrcCalc(data, unpackSize) != folders.FolderCRCs.Vals[i]) {
+        if (isEncrypted) {
+            ThrowInvalidPasswordException();
+        }
+        else {
+            ThrowIncorrect();
+        }
+      }
   }
 
   if (folders.PackPositions)
@@ -1665,6 +1673,10 @@ HRESULT CInArchive::ReadDatabase(
   {
     db.UnsupportedFeatureError = true;
     return S_FALSE;
+  }
+  catch(CInvalidPasswordException &)
+  {
+    return E_INVALIDPASSWORD;
   }
   catch(CInArchiveException &)
   {

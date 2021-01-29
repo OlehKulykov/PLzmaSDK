@@ -77,7 +77,13 @@ namespace plzma {
             _exception = nullptr;
             throw localException;
         }
-        throw Exception(plzma_error_code_internal, "Can't open in archive.", __FILE__, __LINE__);
+        
+        if (E_INVALIDPASSWORD == result) {
+            throw Exception(plzma_error_code_invalid_password, "Ivalid password.", __FILE__, __LINE__);
+        }
+        else {
+            throw Exception(plzma_error_code_internal, "Can't open in archive.", __FILE__, __LINE__);
+        }
     }
     
     void OpenCallback::abort() {
