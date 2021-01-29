@@ -95,7 +95,6 @@ typedef LONG SCODE;
 #define STG_E_INVALIDFUNCTION ((HRESULT)0x80030001L)
 #define E_OUTOFMEMORY ((HRESULT)0x8007000EL)
 #define E_INVALIDARG ((HRESULT)0x80070057L)
-#define E_INVALIDPASSWORD ((HRESULT)0xA7770001L)
 
 #ifdef _MSC_VER
 #define STDMETHODCALLTYPE __stdcall
@@ -127,7 +126,7 @@ struct IUnknown {
 
 typedef IUnknown *LPUNKNOWN;
 
-#endif
+#endif // __cplusplus
 
 #define VARIANT_TRUE ((VARIANT_BOOL)-1)
 #define VARIANT_FALSE ((VARIANT_BOOL)0)
@@ -222,7 +221,9 @@ typedef enum tagSTREAM_SEEK {
   STREAM_SEEK_END = 2
 } STREAM_SEEK;
 
-#endif
+#endif // _WIN32
+
+#define E_INVALIDPASSWORD ((HRESULT)0xA7770001L)
 
 #if !defined(LIBPLZMA_OS_WINDOWS)
 
@@ -404,4 +405,4 @@ DWORD WINAPI GetTickCount(void);
 const TCHAR kAnyStringWildcard = '*';
 
 #endif // !LIBPLZMA_OS_WINDOWS
-#endif
+#endif // __MY_WINDOWS_H
