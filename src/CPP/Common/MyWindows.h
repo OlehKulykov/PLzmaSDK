@@ -126,7 +126,7 @@ struct IUnknown {
 
 typedef IUnknown *LPUNKNOWN;
 
-#endif
+#endif // __cplusplus
 
 #define VARIANT_TRUE ((VARIANT_BOOL)-1)
 #define VARIANT_FALSE ((VARIANT_BOOL)0)
@@ -221,7 +221,9 @@ typedef enum tagSTREAM_SEEK {
   STREAM_SEEK_END = 2
 } STREAM_SEEK;
 
-#endif
+#endif // _WIN32
+
+#define E_INVALIDPASSWORD ((HRESULT)0xA7770001L)
 
 #if !defined(LIBPLZMA_OS_WINDOWS)
 
@@ -403,4 +405,4 @@ DWORD WINAPI GetTickCount(void);
 const TCHAR kAnyStringWildcard = '*';
 
 #endif // !LIBPLZMA_OS_WINDOWS
-#endif
+#endif // __MY_WINDOWS_H

@@ -208,7 +208,10 @@ typedef enum plzma_error_code {
     plzma_error_code_io                 = 3,
     
     /// @brief Any internal errors or exceptions.
-    plzma_error_code_internal           = 4
+    plzma_error_code_internal           = 4,
+    
+    /// @brief Archive can't be unarchived with provided password
+    plzma_error_code_invalid_password   = 5
 } plzma_error_code;
 
 
