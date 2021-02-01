@@ -1,6 +1,9 @@
 (Portable, Patched, Package, cross-P-latform) Lzma SDK, libplzma
 
-1.0.3 (current):
+1.0.4 (current):
+- Fix warning in Xcode when CLANG_WARN_STRICT_PROTOTYPES is set to YES. Thanks to 'apodrugin'.
+
+1.0.3:
 - C++(core) 'Progress': explicitly disable unused copy constructor and copy operator.
 
 1.0.2:
