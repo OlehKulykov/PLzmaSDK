@@ -120,6 +120,7 @@ if(MSVC)
     # Check vs version: ?view=vs-2015
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /GR-")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /GR-")
+    add_definitions(-DLIBPLZMA_NO_CPP_RTTI=1)
   endif()
 
 else()
