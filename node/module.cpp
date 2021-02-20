@@ -191,9 +191,12 @@ namespace nplzma {
         static void Clear(const FunctionCallbackInfo<Value> & args);
         static void Set(const FunctionCallbackInfo<Value> & args);
         static void Append(const FunctionCallbackInfo<Value> & args);
+        static void Appending(const FunctionCallbackInfo<Value> & args);
         static void AppendRandomComponent(const FunctionCallbackInfo<Value> & args);
+        static void AppendingRandomComponent(const FunctionCallbackInfo<Value> & args);
         static void LastComponent(const FunctionCallbackInfo<Value> & args);
         static void RemoveLastComponent(const FunctionCallbackInfo<Value> & args);
+        static void RemovingLastComponent(const FunctionCallbackInfo<Value> & args);
         static void Remove(const FunctionCallbackInfo<Value> & args);
         static void CreateDir(const FunctionCallbackInfo<Value> & args);
         static void TmpPath(Local<String> property, const PropertyCallbackInfo<Value> & info);
@@ -2469,6 +2472,53 @@ namespace nplzma {
         }
         args.GetReturnValue().Set(pathObject);
     }
+
+    void Path::Appending(const FunctionCallbackInfo<Value> & args) {
+        Isolate * isolate = args.GetIsolate();
+        HandleScope handleScope(isolate);
+        Local<Context> context = isolate->GetCurrentContext();
+        Local<Object> pathObject = args.Holder();
+        Path * path = ObjectWrap::Unwrap<Path>(pathObject);
+        plzma::Path resultPath;
+        bool unsupportedArg = true;
+        if (args.Length() > 0) {
+            if (args[0]->IsString()) {
+                String::Utf8Value str(isolate, args[0]);
+                NPLZMA_TRY
+                resultPath = path->_path.appending(*str);
+                unsupportedArg = false;
+                NPLZMA_CATCH_RET(isolate)
+            } else if (args[0]->IsObject()) {
+                auto inObj = args[0]->ToObject(context).ToLocalChecked();
+                Path * inPath = Path::TypedUnwrap(inObj);
+                if (inPath) {
+                    NPLZMA_TRY
+                    resultPath = path->_path.appending(inPath->_path);
+                    unsupportedArg = false;
+                    NPLZMA_CATCH_RET(isolate)
+                }
+            }
+        }
+        if (unsupportedArg) {
+            NPLZMA_THROW_ARG_TYPE_ERROR_RET(isolate, "appending(?)")
+        }
+        Local<Function> constructor = _constructor.Get(isolate)->GetFunction(context).ToLocalChecked();
+        Local<Value> argv[1];
+        TryCatch trycatch(isolate);
+        MaybeLocal<Object> maybeResultPathObject = constructor->NewInstance(context, 0, argv);
+        if (maybeResultPathObject.IsEmpty()) {
+            if (trycatch.HasCaught()) {
+                trycatch.ReThrow();
+            } else {
+                isolate->ThrowException(Exception::Error(String::NewFromUtf8(isolate, "Can't instantiate Path.").ToLocalChecked()));
+            }
+            return;
+        }
+        Local<Object> resultPathObject = maybeResultPathObject.ToLocalChecked();
+        Path * resultPathObjectPath = Path::TypedUnwrap(resultPathObject);
+        resultPathObjectPath->_path = std::move(resultPath);
+        args.GetReturnValue().Set(resultPathObject);
+    }
     
     void Path::AppendRandomComponent(const FunctionCallbackInfo<Value> & args) {
         Isolate * isolate = args.GetIsolate();
@@ -2481,6 +2531,34 @@ namespace nplzma {
         args.GetReturnValue().Set(pathObject);
     }
     
+    void Path::AppendingRandomComponent(const FunctionCallbackInfo<Value> & args) {
+        Isolate * isolate = args.GetIsolate();
+        HandleScope handleScope(isolate);
+        Local<Context> context = isolate->GetCurrentContext();
+        Local<Object> pathObject = args.Holder();
+        Path * path = ObjectWrap::Unwrap<Path>(pathObject);
+        plzma::Path resultPath;
+        NPLZMA_TRY
+        resultPath = path->_path.appendingRandomComponent();
+        NPLZMA_CATCH_RET(isolate)
+        Local<Function> constructor = _constructor.Get(isolate)->GetFunction(context).ToLocalChecked();
+        Local<Value> argv[1];
+        TryCatch trycatch(isolate);
+        MaybeLocal<Object> maybeResultPathObject = constructor->NewInstance(context, 0, argv);
+        if (maybeResultPathObject.IsEmpty()) {
+            if (trycatch.HasCaught()) {
+                trycatch.ReThrow();
+            } else {
+                isolate->ThrowException(Exception::Error(String::NewFromUtf8(isolate, "Can't instantiate Path.").ToLocalChecked()));
+            }
+            return;
+        }
+        Local<Object> resultPathObject = maybeResultPathObject.ToLocalChecked();
+        Path * resultPathObjectPath = Path::TypedUnwrap(resultPathObject);
+        resultPathObjectPath->_path = std::move(resultPath);
+        args.GetReturnValue().Set(resultPathObject);
+    }
+
     void Path::LastComponent(const FunctionCallbackInfo<Value> & args) {
         Isolate * isolate = args.GetIsolate();
         HandleScope handleScope(isolate);
@@ -2516,6 +2594,34 @@ namespace nplzma {
         path->_path.removeLastComponent();
         NPLZMA_CATCH_RET(isolate)
         args.GetReturnValue().Set(pathObject);
+    }
+
+    void Path::RemovingLastComponent(const FunctionCallbackInfo<Value> & args) {
+        Isolate * isolate = args.GetIsolate();
+        HandleScope handleScope(isolate);
+        Local<Context> context = isolate->GetCurrentContext();
+        Local<Object> pathObject = args.Holder();
+        Path * path = ObjectWrap::Unwrap<Path>(pathObject);
+        plzma::Path resultPath;
+        NPLZMA_TRY
+        resultPath = path->_path.removingLastComponent();
+        NPLZMA_CATCH_RET(isolate)
+        Local<Function> constructor = _constructor.Get(isolate)->GetFunction(context).ToLocalChecked();
+        Local<Value> argv[1];
+        TryCatch trycatch(isolate);
+        MaybeLocal<Object> maybeResultPathObject = constructor->NewInstance(context, 0, argv);
+        if (maybeResultPathObject.IsEmpty()) {
+            if (trycatch.HasCaught()) {
+                trycatch.ReThrow();
+            } else {
+                isolate->ThrowException(Exception::Error(String::NewFromUtf8(isolate, "Can't instantiate Path.").ToLocalChecked()));
+            }
+            return;
+        }
+        Local<Object> resultPathObject = maybeResultPathObject.ToLocalChecked();
+        Path * resultPathObjectPath = Path::TypedUnwrap(resultPathObject);
+        resultPathObjectPath->_path = std::move(resultPath);
+        args.GetReturnValue().Set(resultPathObject);
     }
     
     void Path::Remove(const FunctionCallbackInfo<Value> & args) {
@@ -2596,9 +2702,12 @@ namespace nplzma {
         ctorProtoTpl->Set(String::NewFromUtf8(isolate, "clear").ToLocalChecked(), FunctionTemplate::New(isolate, Path::Clear), static_cast<PropertyAttribute>(ReadOnly | DontEnum | DontDelete));
         ctorProtoTpl->Set(String::NewFromUtf8(isolate, "set").ToLocalChecked(), FunctionTemplate::New(isolate, Path::Set), static_cast<PropertyAttribute>(ReadOnly | DontEnum | DontDelete));
         ctorProtoTpl->Set(String::NewFromUtf8(isolate, "append").ToLocalChecked(), FunctionTemplate::New(isolate, Path::Append), static_cast<PropertyAttribute>(ReadOnly | DontEnum | DontDelete));
+        ctorProtoTpl->Set(String::NewFromUtf8(isolate, "appending").ToLocalChecked(), FunctionTemplate::New(isolate, Path::Appending), static_cast<PropertyAttribute>(ReadOnly | DontEnum | DontDelete));
         ctorProtoTpl->Set(String::NewFromUtf8(isolate, "appendRandomComponent").ToLocalChecked(), FunctionTemplate::New(isolate, Path::AppendRandomComponent), static_cast<PropertyAttribute>(ReadOnly | DontEnum | DontDelete));
+        ctorProtoTpl->Set(String::NewFromUtf8(isolate, "appendingRandomComponent").ToLocalChecked(), FunctionTemplate::New(isolate, Path::AppendingRandomComponent), static_cast<PropertyAttribute>(ReadOnly | DontEnum | DontDelete));
         ctorProtoTpl->Set(String::NewFromUtf8(isolate, "lastComponent").ToLocalChecked(), FunctionTemplate::New(isolate, Path::LastComponent), static_cast<PropertyAttribute>(ReadOnly | DontEnum | DontDelete));
         ctorProtoTpl->Set(String::NewFromUtf8(isolate, "removeLastComponent").ToLocalChecked(), FunctionTemplate::New(isolate, Path::RemoveLastComponent), static_cast<PropertyAttribute>(ReadOnly | DontEnum | DontDelete));
+        ctorProtoTpl->Set(String::NewFromUtf8(isolate, "removingLastComponent").ToLocalChecked(), FunctionTemplate::New(isolate, Path::RemovingLastComponent), static_cast<PropertyAttribute>(ReadOnly | DontEnum | DontDelete));
         ctorProtoTpl->Set(String::NewFromUtf8(isolate, "remove").ToLocalChecked(), FunctionTemplate::New(isolate, Path::Remove), static_cast<PropertyAttribute>(ReadOnly | DontEnum | DontDelete));
         ctorProtoTpl->Set(String::NewFromUtf8(isolate, "createDir").ToLocalChecked(), FunctionTemplate::New(isolate, Path::CreateDir), static_cast<PropertyAttribute>(ReadOnly | DontEnum | DontDelete));
         

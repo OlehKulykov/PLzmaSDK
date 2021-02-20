@@ -1,6 +1,10 @@
 (Portable, Patched, Package, cross-P-latform) Lzma SDK, libplzma
 
-1.0.5 (current):
+1.0.6 (current):
+- PLzmaSDK.podspec: increase minimum supported iOS version up to 9.0.
+- Node.js 'Path': Introduced 'appending', 'appendingRandomComponent' and 'removingLastComponent' helper methods/functions.
+
+1.0.5:
 - PLzmaSDK.podspec: added Swift 5.4.
 - C++(core): minor improvements.
 
@@ -44,3 +48,4 @@
 
 0.0.1:
 - Initial implementation.
+

@@ -27,7 +27,7 @@ if (plzma.decoderWriteSize <= 0) throw '';
 plzma.decoderWriteSize = 3332;
 if (plzma.decoderWriteSize != 3332) throw '';
 
-let path, path1;
+let path, path1, path2;
 for (let i = 1; i < 8; i++) {
     let arg;
     switch (i) {
@@ -84,6 +84,53 @@ if (path.exists !== 0) throw ''; // 1 -> file, 2 -> dir, 0 -> false
 path.removeLastComponent();
 console.log(`${test}.3. remove last component: \'${path}\'`);
 if (path.exists !== 2) throw ''; // 1 -> file, 2 -> dir, 0 -> false
+
+test++;
+console.log(`${test}.4. appending: \'${path}\'`);
+path1 = plzma.Path('a');
+path2 = plzma.Path('b');
+if (path1.toString() !== 'a' || path2.toString() !== 'b') throw '';
+path = path1.appending('b');
+if ( !(path.toString() === 'a/b' || path.toString() === 'a\\b') ) throw '';
+path = path1.appending(path2);
+if ( !(path.toString() === 'a/b' || path.toString() === 'a\\b') ) throw '';
+path = path1.appending('');
+if (path.toString() !== path1.toString() || path.toString() !== 'a') throw '';
+
+test++;
+console.log(`${test}.5. appendingRandomComponent`);
+path = plzma.Path().appendingRandomComponent();
+console.log(`${path}`);
+if (path.count === 0) throw '';
+let count = path.count;
+path1 = path.appendingRandomComponent();
+console.log(`${path1}`);
+if (path1.count <= path.count || count !== path.count) throw '';
+
+test++;
+console.log(`${test}.5. removingLastComponent`);
+path = plzma.Path();
+if (path.count !== 0) throw '' ;
+count = path.count;
+path1 = path.removingLastComponent();
+if (path1.count !== 0 || path.count !== 0 || count !== path.count) throw '';
+
+path = plzma.Path('a');
+if (path.count === 0) throw '' ;
+count = path.count;
+path1 = path.removingLastComponent();
+if (path.count !== count) throw '' ;
+if (path1.count > 0) throw '' ;
+
+path = plzma.Path('a/b');
+if (path.count === 0) throw '' ;
+count = path.count;
+path1 = path.removingLastComponent();
+if (path.count !== count) throw '' ;
+if (path1.count === 0) throw '' ;
+if (path1.count >= path.count) throw '' ;
+if (path1.toString() !== 'a') throw '' ;
+if ( !(path.toString() === 'a/b' || path.toString() === 'a\\b') ) throw '' ;
 
 test++;
 path = plzma.Path.tmpPath;

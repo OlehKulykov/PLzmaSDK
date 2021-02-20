@@ -39,9 +39,12 @@
     * [.clear([erase])](#class_path_clear) ⇒ <code>[Path](#class_path)</code> this/self object.
     * [.set([path])](#class_path_set) ⇒ <code>[Path](#class_path)</code> this/self object.
     * [.append([path])](#class_path_append) ⇒ <code>[Path](#class_path)</code> this/self object.
+    * [.appending([path])](#class_path_appending) ⇒ <code>[Path](#class_path)</code>
     * [.appendRandomComponent()](#class_path_appendrandomcomponent) ⇒ <code>[Path](#class_path)</code> this/self object.
+    * [.appendingRandomComponent()](#class_path_appendingrandomcomponent) ⇒ <code>[Path](#class_path)</code>
     * [.lastComponent()](#class_path_lastcomponent) ⇒ <code>[Path](#class_path)</code>
     * [.removeLastComponent()](#class_path_removelastcomponent) ⇒ <code>[Path](#class_path)</code> this/self object.
+    * [.removingLastComponent()](#class_path_removinglastcomponent) ⇒ <code>[Path](#class_path)</code>
     * [.remove([skipErrors])](#class_path_remove) ⇒ ```Boolean```
     * [.createDir([withIntermediates])](#class_path_createdir) ⇒ ```Boolean```
     * [.count](#class_path_count) ⇒ ```Number```
@@ -250,10 +253,17 @@ Set the new path from optional source path.
 Appends path component to path object.
 * <code>path</code> {[String|[Path](#class_path)} Optional string or path object.
 
+#### <a name="class_path_appending"></a>Path.appending([path]) ⇒ [Path](#class_path)
+Returns new Path object by appending provided  path argument to the receiver.
+* <code>path</code> {[String|[Path](#class_path)} Optional string or path object.
+
 #### <a name="class_path_appendrandomcomponent"></a>Path.appendRandomComponent() ⇒ [Path](#class_path) this/self object
 Appends random path component to the path object.
 If path successfully updated, then the updated path doesn't exists in a root directory.
 The component consists of ASCII characters in range ['a'; 'z'].
+
+#### <a name="class_path_appendingrandomcomponent"></a>Path.appendingRandomComponent() ⇒ [Path](#class_path)
+Returns new Path object by appending random path component to the receiver.
 
 #### <a name="class_path_lastcomponent"></a>Path.lastComponent() ⇒ [Path](#class_path)
 Receives the last component of the path.
@@ -261,6 +271,9 @@ The result is new instance of the path object representing the last component.
 
 #### <a name="class_path_removelastcomponent"></a>Path.removeLastComponent() ⇒ [Path](#class_path) this/self object.
 Removes the last component from the path.
+
+#### <a name="class_path_removinglastcomponent"></a>Path.removingLastComponent() ⇒ [Path](#class_path)
+Returns new Path object by removing last path component from the receiver.
 
 #### <a name="class_path_remove"></a>Path.remove([skipErrors]) ⇒ Boolean
 Physically removes the directory with all content or file associated with the path.

@@ -49,13 +49,13 @@ All optional features are enabled by default, but they might be disabled during 
 -----------
 #### Swift Package Manager
 ```swift
-.package(url: "https://github.com/OlehKulykov/PLzmaSDK.git", .exact("1.0.5"))
+.package(url: "https://github.com/OlehKulykov/PLzmaSDK.git", .exact("1.0.6"))
 ```
 
 #### CocoaPods Podfile
 ```ruby
 use_frameworks!
-platform :ios, '8.0'
+platform :ios, '9.0'
 
 target '<REPLACE_WITH_YOUR_TARGET>' do
     pod 'PLzmaSDK', :inhibit_warnings => true
@@ -70,7 +70,7 @@ end
     "npm": ">=6.0.0"
   },
   "dependencies": {
-    "plzmasdk": "1.0.5"
+    "plzmasdk": "1.0.6"
   }
 }
 ```
