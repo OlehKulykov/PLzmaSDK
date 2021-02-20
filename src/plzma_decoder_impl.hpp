@@ -39,6 +39,7 @@
 #include "plzma_common.hpp"
 #include "plzma_c_bindings_private.hpp"
 #include "plzma_progress.hpp"
+#include "plzma_mutex.hpp"
 
 #include "CPP/Common/Common.h"
 #include "CPP/Common/MyWindows.h"

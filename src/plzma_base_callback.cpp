@@ -28,6 +28,7 @@
 #include <cstddef>
 
 #include "plzma_base_callback.hpp"
+#include "plzma_c_bindings_private.hpp"
 
 #include "CPP/7zip/Archive/DllExports2.h"
 
@@ -113,6 +114,7 @@ namespace plzma {
     
     BaseCallback::~BaseCallback() {
         delete _exception;
+        _exception = nullptr; // virtual base
         _password.clear(plzma_erase_zero);
     }
     

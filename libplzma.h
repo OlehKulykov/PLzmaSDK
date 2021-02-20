@@ -44,11 +44,11 @@
 /// Everything what you need to use this library in C | Objective-C | Swift env. is here.
 
 
-/// @brief Manualy defined required version parts of the library. 1.0.4
+/// @brief Manualy defined required version parts of the library. 1.0.5
 /// The optinal `LIBPLZMA_VERSION_BUILD` might be befined by the CI or via cmake during the configuration.
 #define LIBPLZMA_VERSION_MAJOR 1
 #define LIBPLZMA_VERSION_MINOR 0
-#define LIBPLZMA_VERSION_PATCH 4
+#define LIBPLZMA_VERSION_PATCH 5
 
 // check windows
 #if defined(WIN32) || defined(_WIN32) || defined(WIN32_LEAN_AND_MEAN) || defined(_WIN64) || defined(WIN64)
@@ -626,12 +626,20 @@ LIBPLZMA_C_API(void) plzma_path_set_utf8_string(plzma_path * LIBPLZMA_NONNULL pa
 /// @brief Appends path component to path object.
 /// @param component The wide character string presentation of the component to append.
 LIBPLZMA_C_API(void) plzma_path_append_wide_component(plzma_path * LIBPLZMA_NONNULL path, const wchar_t * LIBPLZMA_NULLABLE component);
+
+
+/// @return New path with new component.
+/// @see \a plzma_path_append_wide_component function.
 LIBPLZMA_C_API(plzma_path) plzma_path_appending_wide_component(const plzma_path * LIBPLZMA_NONNULL path, const wchar_t * LIBPLZMA_NULLABLE component);
 
 
 /// @brief Appends path component to path object.
 /// @param component The UTF-8 C string presentation of the component to append.
 LIBPLZMA_C_API(void) plzma_path_append_utf8_component(plzma_path * LIBPLZMA_NONNULL path, const char * LIBPLZMA_NULLABLE component);
+
+
+/// @return New path with new component.
+/// @see \a plzma_path_append_utf8_component function.
 LIBPLZMA_C_API(plzma_path) plzma_path_appending_utf8_component(const plzma_path * LIBPLZMA_NONNULL path, const char * LIBPLZMA_NULLABLE component);
 
 
@@ -640,6 +648,10 @@ LIBPLZMA_C_API(plzma_path) plzma_path_appending_utf8_component(const plzma_path 
 /// or exception assigned to the path object.
 /// The component consists of ASCII characters in range ['a'; 'z'].
 LIBPLZMA_C_API(void) plzma_path_append_random_component(plzma_path * LIBPLZMA_NONNULL path);
+
+
+/// @return New path object with new random component.
+/// @see \a plzma_path_append_random_component function.
 LIBPLZMA_C_API(plzma_path) plzma_path_appending_random_component(const plzma_path * LIBPLZMA_NONNULL path);
 
 
@@ -701,6 +713,10 @@ LIBPLZMA_C_API(plzma_path) plzma_path_last_component(plzma_path * LIBPLZMA_NONNU
 
 /// @brief Removes the last component from the path.
 LIBPLZMA_C_API(void) plzma_path_remove_last_component(plzma_path * LIBPLZMA_NONNULL path);
+
+
+/// @return New path object without last component.
+/// @see \a plzma_path_remove_last_component function.
 LIBPLZMA_C_API(plzma_path) plzma_path_removing_last_component(const plzma_path * LIBPLZMA_NONNULL path);
 
 

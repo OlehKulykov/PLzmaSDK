@@ -553,6 +553,10 @@ namespace plzma {
         /// The component consists of ASCII characters in range ['a'; 'z'].
         /// @exception The \a Exception with \a plzma_error_code_internal code in case if path can't be appended.
         void appendRandomComponent();
+        
+        
+        /// @return New path with new random component.
+        /// @see \a appendRandomComponent method.
         Path appendingRandomComponent() const;
         
         
@@ -562,6 +566,10 @@ namespace plzma {
         
         /// @brief Removes the last component from the path.
         void removeLastComponent();
+        
+        
+        /// @return New path by without last component.
+        /// @see \a removeLastComponent method.
         Path removingLastComponent() const;
         
         
@@ -625,6 +633,8 @@ namespace plzma {
         Path(const wchar_t * LIBPLZMA_NULLABLE path);
         Path(const char * LIBPLZMA_NULLABLE path);
         Path() noexcept : String() { }
+        
+        /// @note For a security reasons, the content will be erased with zeros, i.e. '.erase(plzma_erase_zero)'.
         virtual ~Path() noexcept;
         
         /// @brief Provides the path with the platform specific temporary directory for the library.

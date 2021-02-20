@@ -149,4 +149,3 @@ LIBPLZMA_C_API(void) plzma_print_memory(int line, const void * LIBPLZMA_NULLABLE
 #endif // #if 0
 
 #endif // !__PLZMA_PRIVATE_H__
-

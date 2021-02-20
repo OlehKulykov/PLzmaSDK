@@ -32,6 +32,7 @@
 #include "plzma_in_streams.hpp"
 #include "plzma_common.hpp"
 #include "plzma_open_callback.hpp"
+#include "plzma_c_bindings_private.hpp"
 
 #include <stdint.h>
 #include <limits.h>
@@ -692,8 +693,6 @@ namespace plzma {
 
 } // namespace plzma
 
-
-#include "plzma_c_bindings_private.hpp"
 
 #if !defined(LIBPLZMA_NO_C_BINDINGS)
 

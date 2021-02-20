@@ -29,6 +29,7 @@
 
 #include "plzma_extract_callback.hpp"
 #include "plzma_common.hpp"
+#include "plzma_c_bindings_private.hpp"
 
 #include "CPP/Common/Defs.h"
 #include "CPP/Windows/PropVariant.h"
@@ -95,10 +96,6 @@ namespace plzma {
     
     void ExtractCallback::getExtractStream(const UInt32 index, ISequentialOutStream ** outStream) {
         if (_itemsMap) {
-//            PROPVARIANT sizeProp;
-//            if (_archive->GetProperty(index, kpidSize, &sizeProp) != S_OK) {
-//                throw Exception(plzma_error_code_internal, "Can't read item size.", __FILE__, __LINE__);
-//            }
             const auto * pair = _itemsMap->bsearch<plzma_size_t>(index);
             if (pair && pair->first && pair->first->index() == index) {
                 auto base = pair->second.cast<OutStreamBase>();

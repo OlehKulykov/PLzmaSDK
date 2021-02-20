@@ -22,6 +22,7 @@ final class plzmaTests: XCTestCase, DecoderDelegate {
     }
     
     func testExample() {
+        print("\(String(utf8CString: plzma_version()))")
         do {
             var path = try Path("1\\3")
             try path &= "5\\6"

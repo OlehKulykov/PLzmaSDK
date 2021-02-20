@@ -34,7 +34,7 @@ namespace fileUtils {
     
     bool fileErase(const Path & path, const plzma_erase eraseType) {
         if (eraseType == plzma_erase_zero) {
-            const size_t buffSize = 32 * 1024;
+            const size_t buffSize = 256 * 1024;
             uint8_t buff[buffSize];
             memset(buff, 0, buffSize);
             FILE * f = path.openFile("r+b");

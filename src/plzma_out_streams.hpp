@@ -33,6 +33,7 @@
 #include "../libplzma.hpp"
 #include "plzma_private.hpp"
 #include "plzma_in_streams.hpp" // all headers + delegate
+#include "plzma_mutex.hpp"
 
 #if !defined(LIBPLZMA_NO_PROGRESS)
 #include "plzma_progress.hpp"
@@ -55,7 +56,7 @@ namespace plzma {
         virtual void release() override final;
         virtual void * base() noexcept override final { return this; }
         
-    public:        
+    public:
         virtual void open() = 0;
         virtual void close() = 0;
         

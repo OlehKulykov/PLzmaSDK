@@ -29,6 +29,7 @@
 
 #include "../libplzma.hpp"
 #include "plzma_private.hpp"
+#include "plzma_c_bindings_private.hpp"
 
 #include <stdint.h>
 #include <limits.h>
@@ -202,6 +203,14 @@ const char * LIBPLZMA_NONNULL plzma_version(void) {
     
 #if defined(SWIFT_PACKAGE)
     " : Swift Package"
+#endif
+    
+#if defined(LIBPLZMA_HAVE_STD)
+    " : std"
+#endif
+    
+#if defined(LIBPLZMA_NO_CPP_RTTI)
+    " : no rtti"
 #endif
     
 #if defined(__TIMESTAMP__)

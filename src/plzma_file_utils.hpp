@@ -45,7 +45,7 @@ namespace fileUtils {
 #elif defined(LIBPLZMA_POSIX)
         return fseeko(file, offset, origin);
 #else
-        assert(0);
+        static_assert(0, "Not implemented");
         return -1;
 #endif
     }
@@ -56,7 +56,7 @@ namespace fileUtils {
 #elif defined(LIBPLZMA_POSIX)
         return ftello(file);
 #else
-        assert(0);
+        static_assert(0, "Not implemented");
         return -1;
 #endif
     }
