@@ -126,8 +126,8 @@ do {
     let archivePath = try Path("path/to/archive.7z")
     let archivePathInStream = try InStream(path: archivePath)
 
-    //  1.2. Create a source input stream with the file content in memory.
-    let archiveData = Data(bytesNoCopy: <FILE DATA>, count: <FILE SIZE>, deallocator: .none)
+    //  1.2. Create a source input stream with the file content.
+    let archiveData = Data(...)
     let archiveDataInStream = try InStream(dataNoCopy: archiveData) // also available Data(dataCopy: Data)
 
     // 2. Create decoder with source input stream, type of archive and optional delegate.
@@ -177,7 +177,7 @@ try {
     const archivePath = plzma.Path(__dirname).append('path/to/archive.7z');
     const archivePathInStream = new plzma.InStream(archivePath /* 'path/to/archive.7z' */);
 
-    //  1.2. Create a source input stream with the file content in memory.
+    //  1.2. Create a source input stream with the file content.
     const archiveData = new ArrayBuffer(...);
     const archiveDataInStream = new plzma.InStream(archiveData);
 
@@ -226,7 +226,7 @@ try {
     Path archivePath("path/to/archive.7z"); // Path(L"C:\\\\path\\to\\archive.7z");
     auto archivePathInStream = makeSharedInStream(archivePath /* std::move(archivePath) */);
     
-    //  1.2. Create a source input stream with the file content in memory.
+    //  1.2. Create a source input stream with the file content.
     auto archiveDataInStream = makeSharedInStream(<FILE DATA>, <FILE SIZE>);
     
     // 2. Create decoder with source input stream, type of archive and provide optional delegate.
