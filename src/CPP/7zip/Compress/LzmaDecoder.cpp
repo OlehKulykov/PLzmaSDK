@@ -182,8 +182,13 @@ HRESULT CDecoder::CodeSpec(ISequentialInStream *inStream, ISequentialOutStream *
 
       if (needStop)
       {
-        if (res != 0)
+        if (res != 0) {
+          if (res == SZ_ERROR_DATA) {
+              return E_INVALIDDATA;
+          }
+            
           return S_FALSE;
+        }
 
         if (status == LZMA_STATUS_FINISHED_WITH_MARK)
         {

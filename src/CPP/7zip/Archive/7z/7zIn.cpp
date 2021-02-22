@@ -1124,6 +1124,10 @@ HRESULT CInArchive::ReadAndDecodePackedStreams(
         #endif
       );
     
+    if (result == E_INVALIDDATA && isEncrypted) {
+        ThrowInvalidPasswordException();
+    }
+      
     RINOK(result);
     
     if (dataAfterEnd_Error)

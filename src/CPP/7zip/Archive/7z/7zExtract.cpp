@@ -374,13 +374,13 @@ STDMETHODIMP CHandler::Extract(const UInt32 *indices, UInt32 numItems,
           #endif
           );
 
-      if (result == S_FALSE || result == E_NOTIMPL || dataAfterEnd_Error)
+      if (result == S_FALSE || result == E_INVALIDDATA || result == E_NOTIMPL || dataAfterEnd_Error)
       {
         bool wasFinished = folderOutStream->WasWritingFinished();
 
         int resOp = NExtract::NOperationResult::kDataError;
         
-        if (result != S_FALSE)
+        if (result != S_FALSE && result != E_INVALIDDATA)
         {
           if (result == E_NOTIMPL)
             resOp = NExtract::NOperationResult::kUnsupportedMethod;
