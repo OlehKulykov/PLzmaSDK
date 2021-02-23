@@ -224,6 +224,7 @@ typedef enum tagSTREAM_SEEK {
 #endif // _WIN32
 
 #define E_INVALIDPASSWORD ((HRESULT)0xA7770001L)
+#define E_INVALIDDATA ((HRESULT)0xA7770002L)
 
 #if !defined(LIBPLZMA_OS_WINDOWS)
 

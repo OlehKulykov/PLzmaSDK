@@ -789,7 +789,7 @@ HRESULT CMixerST::Code(
   if (res == k_My_HRESULT_WritingWasCut)
     res = S_OK;
 
-  if (res == S_OK || res == S_FALSE)
+  if (res == S_OK || res == S_FALSE || res == E_INVALIDDATA)
   {
     res = GetError(res, FinishCoder(ci));
   }
