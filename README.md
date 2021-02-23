@@ -578,3 +578,4 @@ THE SOFTWARE.
 [Swift Package Manager]:https://swift.org/package-manager
 [CocoaPods]:https://cocoapods.org/pods/PLzmaSDK
 [npm]:https://www.npmjs.com/package/plzmasdk
+
