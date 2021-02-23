@@ -35,6 +35,7 @@
 #include "../libplzma.h"
 
 
+// plzma_private.h
 #if !defined(LIBPLZMA_HAVE_STD) && defined(SWIFT_PACKAGE)
 #define LIBPLZMA_HAVE_STD 1
 #endif

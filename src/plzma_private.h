@@ -39,10 +39,13 @@
 #define LIBPLZMA 1
 #endif
 
-#if defined(DEBUG) || defined(_DEBUG)
-#if !defined(DEBUG)
+#if (defined(DEBUG) || defined(_DEBUG)) && !defined(DEBUG)
 #define DEBUG 1
-#endif // !DEBUG
+#endif
+
+// plzma_c_bindings_private.hpp
+#if !defined(LIBPLZMA_HAVE_STD) && defined(SWIFT_PACKAGE)
+#define LIBPLZMA_HAVE_STD 1
 #endif
 
 #if defined(LIBPLZMA_OS_WINDOWS)

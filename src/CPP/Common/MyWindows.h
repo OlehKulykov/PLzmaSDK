@@ -358,7 +358,7 @@ typedef struct _SYSTEMTIME final {
 #define ERROR_INVALID_HANDLE        EBADF
 #define ERROR_PATH_NOT_FOUND        ENOENT
 #define ERROR_DISK_FULL             ENOSPC
-#define ERROR_NO_MORE_FILES         0x100123 // FIXME
+#define ERROR_NO_MORE_FILES         0x100123 // F_I_X_M_E
 #define WAIT_TIMEOUT                ETIMEDOUT
 #define WAIT_OBJECT_0 0
 #define INFINITE    0xFFFFFFFF

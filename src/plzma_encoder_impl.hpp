@@ -78,7 +78,6 @@ namespace plzma {
             bool isDir = false;
         };
         struct AddedFile final {
-        public:
             Path path;
             Path archivePath;
             plzma_path_stat stat;
