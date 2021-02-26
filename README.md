@@ -18,12 +18,12 @@ Available for all Apple's platforms(iOS, macOS, tvOS, watchOS), Android, Windows
 - The SDK is available for the next programming languages:
   * [Swift] via [Swift Package Manager] or [CocoaPods].
   * JavaScript via [npm].
-  * Pure C++ via git+CMake or copy 2 main lib headers([libplzma.h] and [libplzma.hpp] files) and 'src' folder to your project.
-  * Pure C, also via git+CMake or copy 2 main lib headers([libplzma.h] and [libplzma.hpp] files) and 'src' folder to your project. But this internal C bindings code might be disabled via CMake's boolean option `LIBPLZMA_OPT_NO_C_BINDINGS:BOOL=YES` or preprocessor definition `LIBPLZMA_NO_C_BINDINGS=1`, see below.
+  * Pure C++ via git+[CMake] or copy 2 main lib headers([libplzma.h] and [libplzma.hpp] files) and [src] folder to your project.
+  * Pure C, also via git+[CMake] or copy 2 main lib headers([libplzma.h] and [libplzma.hpp] files) and [src] folder to your project. But this internal C bindings code might be disabled via [CMake]'s boolean option `LIBPLZMA_OPT_NO_C_BINDINGS:BOOL=YES` or preprocessor definition `LIBPLZMA_NO_C_BINDINGS=1`, see below.
 - Supports next archives:
   * [7z]. Both, encrypted/password-protected and unencrypted archive item-list and it's content. [Lzma] and [Lzma2] compression methods.
   * [xz]. [Lzma2] compression method.
-  * [tar]/[tarball].
+  * [tar]/[tarball]. *.tar.xz and *.tar.7z archives.
 - Supports list, test, extract and compress operations. All these operations can be executed in a separate thread and aborted during the process.
 - Thread safe encoder, decoder and progress tracking.
 - Supports memory and file IO streams. The extracting and compressing might be from ⇔ to memory or file.
@@ -36,15 +36,15 @@ Available for all Apple's platforms(iOS, macOS, tvOS, watchOS), Android, Windows
   * The [libplzma.h] - the library header for a pure C environment. Contains generic functions, types and optional bindings to the whole functionality of the library. Currently uses with [Swift Package Manager] and [CocoaPods].
   * The [libplzma.hpp] - the library header for a pure C++ environment and must be used together with [libplzma.h] header. Currently uses with [npm] native module.
   * The [swift](https://github.com/OlehKulykov/PLzmaSDK/tree/master/swift) directory contains [Swift] part of the SDK and available via the [Swift Package Manager] and [CocoaPods], see ```Installation``` section.
-  * The 'node' directory contains Node.js native, inline module implementation. 
+  * The [node](https://github.com/OlehKulykov/PLzmaSDK/tree/master/node) directory contains Node.js native, inline module implementation. 
 
 ### Optional features
 All optional features are enabled by default, but they might be disabled during the build process to reduce the binary size, and of course, if you are not planning to use them.
 
-- [tar]/[tarball] archive support. To disable, use the CMake's boolean option `LIBPLZMA_OPT_NO_TAR:BOOL=YES` or preprocessor definition `LIBPLZMA_NO_TAR=1`
-- Thread safety. To disable, use the CMake's boolean option `LIBPLZMA_OPT_THREAD_UNSAFE:BOOL=YES` or preprocessor definition `LIBPLZMA_THREAD_UNSAFE=1`
-- Progress tracking. To disable, use the CMake's boolean option `LIBPLZMA_OPT_NO_PROGRESS:BOOL=YES` or preprocessor definition `LIBPLZMA_NO_PROGRESS=1`
-- C bindings to the whole functionality of the library in [libplzma.h] header. To disable, use the CMake's boolean option `LIBPLZMA_OPT_NO_C_BINDINGS:BOOL=YES` or preprocessor definition `LIBPLZMA_NO_C_BINDINGS=1`
+- [tar]/[tarball] archive support. To disable, use the [CMake]'s boolean option `LIBPLZMA_OPT_NO_TAR:BOOL=YES` or preprocessor definition `LIBPLZMA_NO_TAR=1`
+- Thread safety. To disable, use the [CMake]'s boolean option `LIBPLZMA_OPT_THREAD_UNSAFE:BOOL=YES` or preprocessor definition `LIBPLZMA_THREAD_UNSAFE=1`
+- Progress tracking. To disable, use the [CMake]'s boolean option `LIBPLZMA_OPT_NO_PROGRESS:BOOL=YES` or preprocessor definition `LIBPLZMA_NO_PROGRESS=1`
+- C bindings to the whole functionality of the library in [libplzma.h] header. To disable, use the [CMake]'s boolean option `LIBPLZMA_OPT_NO_C_BINDINGS:BOOL=YES` or preprocessor definition `LIBPLZMA_NO_C_BINDINGS=1`
 
 
 ### Installation
@@ -575,7 +575,9 @@ THE SOFTWARE.
 [STL]:https://en.wikipedia.org/wiki/Standard_Template_Library
 [libplzma.h]:https://github.com/OlehKulykov/PLzmaSDK/blob/master/libplzma.h
 [libplzma.hpp]:https://github.com/OlehKulykov/PLzmaSDK/blob/master/libplzma.hpp
+[src]:https://github.com/OlehKulykov/PLzmaSDK/tree/master/src
 [Swift]:https://swift.org
 [Swift Package Manager]:https://swift.org/package-manager
 [CocoaPods]:https://cocoapods.org/pods/PLzmaSDK
 [npm]:https://www.npmjs.com/package/plzmasdk
+[CMake]:https://cmake.org
