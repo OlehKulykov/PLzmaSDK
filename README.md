@@ -17,7 +17,7 @@ Available for all Apple's platforms(iOS, macOS, tvOS, watchOS), Android, Windows
 -----------
 - The SDK is available for the next programming languages:
   * [Swift] via [Swift Package Manager] or [CocoaPods].
-  * JavaScript via [npm].
+  * [JavaScript] via [npm].
   * Pure C++ via [git] + [CMake] or copy 2 main lib headers([libplzma.h] and [libplzma.hpp] files) and [src] folder to your project.
   * Pure C, also via [git] + [CMake] or copy 2 main lib headers([libplzma.h] and [libplzma.hpp] files) and [src] folder to your project. But this internal C bindings code might be disabled via [CMake]'s boolean option `LIBPLZMA_OPT_NO_C_BINDINGS:BOOL=YES` or preprocessor definition `LIBPLZMA_NO_C_BINDINGS=1`, see below.
 - Supports next archives:
@@ -582,3 +582,4 @@ THE SOFTWARE.
 [npm]:https://www.npmjs.com/package/plzmasdk
 [CMake]:https://cmake.org
 [git]:https://git-scm.com
+[JavaScript]:https://en.wikipedia.org/wiki/JavaScript
