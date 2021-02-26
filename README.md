@@ -16,7 +16,7 @@ Available for all Apple's platforms(iOS, macOS, tvOS, watchOS), Android, Windows
 ### Features / detailed description
 -----------
 - The SDK is available for the next programming languages:
-  * [Swift](https://swift.org/) via [Swift Package Manager] or [CocoaPods].
+  * [Swift] via [Swift Package Manager] or [CocoaPods].
   * JavaScript via [npm].
   * Pure C++ via git+CMake or copy 2 main lib headers([libplzma.h] and [libplzma.hpp] files) and 'src' folder to your project.
   * Pure C, also via git+CMake or copy 2 main lib headers([libplzma.h] and [libplzma.hpp] files) and 'src' folder to your project. But this internal C bindings code might be disabled via CMake's boolean option `LIBPLZMA_OPT_NO_C_BINDINGS:BOOL=YES` or preprocessor definition `LIBPLZMA_NO_C_BINDINGS=1`, see below.
@@ -35,7 +35,7 @@ Available for all Apple's platforms(iOS, macOS, tvOS, watchOS), Android, Windows
 - The SDK is organized as C **and** C++ library at the same time. And supports static and dynamic linking.
   * The [libplzma.h] - the library header for a pure C environment. Contains generic functions, types and optional bindings to the whole functionality of the library. Currently uses with [Swift Package Manager] and [CocoaPods].
   * The [libplzma.hpp] - the library header for a pure C++ environment and must be used together with [libplzma.h] header. Currently uses with [npm] native module.
-  * The [swift](https://github.com/OlehKulykov/PLzmaSDK/tree/master/swift) directory contains Swift part of the SDK and available via the [Swift Package Manager] and [CocoaPods], see ```Installation``` section.
+  * The [swift](https://github.com/OlehKulykov/PLzmaSDK/tree/master/swift) directory contains [Swift] part of the SDK and available via the [Swift Package Manager] and [CocoaPods], see ```Installation``` section.
   * The 'node' directory contains Node.js native, inline module implementation. 
 
 ### Optional features
@@ -575,7 +575,7 @@ THE SOFTWARE.
 [STL]:https://en.wikipedia.org/wiki/Standard_Template_Library
 [libplzma.h]:https://github.com/OlehKulykov/PLzmaSDK/blob/master/libplzma.h
 [libplzma.hpp]:https://github.com/OlehKulykov/PLzmaSDK/blob/master/libplzma.hpp
+[Swift]:https://swift.org
 [Swift Package Manager]:https://swift.org/package-manager
 [CocoaPods]:https://cocoapods.org/pods/PLzmaSDK
 [npm]:https://www.npmjs.com/package/plzmasdk
-
