@@ -18,12 +18,12 @@ Available for all Apple's platforms(iOS, macOS, tvOS, watchOS), Android, Windows
 - The SDK is available for the next programming languages:
   * [Swift] via [Swift Package Manager] or [CocoaPods].
   * JavaScript via [npm].
-  * Pure C++ via git+[CMake] or copy 2 main lib headers([libplzma.h] and [libplzma.hpp] files) and [src] folder to your project.
-  * Pure C, also via git+[CMake] or copy 2 main lib headers([libplzma.h] and [libplzma.hpp] files) and [src] folder to your project. But this internal C bindings code might be disabled via [CMake]'s boolean option `LIBPLZMA_OPT_NO_C_BINDINGS:BOOL=YES` or preprocessor definition `LIBPLZMA_NO_C_BINDINGS=1`, see below.
+  * Pure C++ via [git] + [CMake] or copy 2 main lib headers([libplzma.h] and [libplzma.hpp] files) and [src] folder to your project.
+  * Pure C, also via [git] + [CMake] or copy 2 main lib headers([libplzma.h] and [libplzma.hpp] files) and [src] folder to your project. But this internal C bindings code might be disabled via [CMake]'s boolean option `LIBPLZMA_OPT_NO_C_BINDINGS:BOOL=YES` or preprocessor definition `LIBPLZMA_NO_C_BINDINGS=1`, see below.
 - Supports next archives:
   * [7z]. Both, encrypted/password-protected and unencrypted archive item-list and it's content. [Lzma] and [Lzma2] compression methods.
   * [xz]. [Lzma2] compression method.
-  * [tar]/[tarball]. *.tar.xz and *.tar.7z archives.
+  * [tar]/[tarball]. *.tar, *.tar.xz and *.tar.7z archives.
 - Supports list, test, extract and compress operations. All these operations can be executed in a separate thread and aborted during the process.
 - Thread safe encoder, decoder and progress tracking.
 - Supports memory and file IO streams. The extracting and compressing might be from ⇔ to memory or file.
@@ -581,3 +581,4 @@ THE SOFTWARE.
 [CocoaPods]:https://cocoapods.org/pods/PLzmaSDK
 [npm]:https://www.npmjs.com/package/plzmasdk
 [CMake]:https://cmake.org
+[git]:https://git-scm.com
