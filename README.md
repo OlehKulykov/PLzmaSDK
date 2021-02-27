@@ -1,5 +1,5 @@
 ![platform](https://img.shields.io/badge/platform-iOS%20%7C%20macOS%20%7C%20tvOS%20%7C%20watchOS%20%7C%20Android%20%7C%20Windows%20%7C%20Linux%20%7C%20Unix-lightgrey.svg)
-![Language](https://img.shields.io/badge/Language-Swift%205+%20%7C%20C%20%7C%20C++%20%7C%20JavaScript-brightgreen.svg)
+![language](https://img.shields.io/badge/language-Swift%20%7C%20C%20%7C%20C++%20%7C%20JavaScript-brightgreen.svg)
 ![Cocoapods](https://img.shields.io/cocoapods/l/PLzmaSDK)
 ![Cocoapods](https://img.shields.io/cocoapods/v/PLzmaSDK)
 [![SwiftPM compatible](https://img.shields.io/badge/SwiftPM-compatible-brightgreen.svg)](https://swift.org/package-manager/)
