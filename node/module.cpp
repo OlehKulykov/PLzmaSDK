@@ -1720,7 +1720,7 @@ namespace nplzma {
         Isolate * isolate = args.GetIsolate();
         HandleScope handleScope(isolate);
         OutStream * stream = ObjectWrap::Unwrap<OutStream>(args.Holder());
-        plzma::Pair<plzma::RawHeapMemory, size_t> content;
+        plzma::RawHeapMemorySize content;
         NPLZMA_TRY
         content = stream->_stream->copyContent();
         NPLZMA_CATCH_RET(isolate)

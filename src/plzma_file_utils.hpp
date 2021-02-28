@@ -63,7 +63,7 @@ namespace fileUtils {
     
     extern bool fileErase(const Path & path, const plzma_erase eraseType);
     
-    extern Pair<RawHeapMemory, size_t> fileContent(const Path & path);
+    extern RawHeapMemorySize fileContent(const Path & path);
     
 } // namespace fileUtils
 } // namespace plzma

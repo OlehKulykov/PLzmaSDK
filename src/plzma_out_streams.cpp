@@ -96,6 +96,7 @@ namespace plzma {
         } else {
             Exception exception(plzma_error_code_io, nullptr, __FILE__, __LINE__);
             exception.setWhat("Can't open out-stream for writing to file in binary mode with path: ", _path.utf8(), nullptr);
+            exception.setReason("You don't have write permission or parent directory doesn't exist.", nullptr);
             throw exception;
         }
     }
@@ -123,9 +124,9 @@ namespace plzma {
         return true;
     }
     
-    Pair<RawHeapMemory, size_t> OutFileStream::copyContent() const {
+    RawHeapMemorySize OutFileStream::copyContent() const {
         LIBPLZMA_LOCKGUARD(lock, _mutex)
-        return _file ? Pair<RawHeapMemory, size_t>(RawHeapMemory(), 0) : fileContent(_path);
+        return _file ? RawHeapMemorySize(RawHeapMemory(), 0) : fileContent(_path);
     }
     
     OutFileStream::OutFileStream(const Path & path) : OutStreamBase(),
@@ -256,9 +257,9 @@ namespace plzma {
         return true;
     }
     
-    Pair<RawHeapMemory, size_t> OutMemStream::copyContent() const {
+    RawHeapMemorySize OutMemStream::copyContent() const {
         LIBPLZMA_LOCKGUARD(lock, _mutex)
-        Pair<RawHeapMemory, size_t> content(RawHeapMemory(), 0);
+        RawHeapMemorySize content(RawHeapMemory(), 0);
         if (!_opened && _size > 0) {
             const size_t size = static_cast<size_t>(_size);
             content.first.resize(size);
@@ -306,10 +307,10 @@ namespace plzma {
         return !_opened; // opened -> false
     }
     
-    Pair<RawHeapMemory, size_t> OutTestStream::copyContent() const {
+    RawHeapMemorySize OutTestStream::copyContent() const {
         LIBPLZMA_LOCKGUARD(lock, _mutex)
         // nothing to copy
-        return Pair<RawHeapMemory, size_t>(RawHeapMemory(), 0);
+        return RawHeapMemorySize(RawHeapMemory(), 0);
     }
 
     SharedPtr<OutStream> makeSharedOutStream(const Path & path) {

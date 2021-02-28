@@ -54,7 +54,7 @@ All optional features are enabled by default, but they might be disabled during 
 -----------
 #### Swift Package Manager
 ```swift
-.package(url: "https://github.com/OlehKulykov/PLzmaSDK.git", .exact("1.0.6"))
+.package(url: "https://github.com/OlehKulykov/PLzmaSDK.git", .exact("1.0.7"))
 ```
 
 #### CocoaPods Podfile
@@ -75,7 +75,7 @@ end
     "npm": ">=6.0.0"
   },
   "dependencies": {
-    "plzmasdk": "1.0.6"
+    "plzmasdk": "1.0.7"
   }
 }
 ```

@@ -48,7 +48,7 @@ namespace plzma {
     /// Uses \a plzma_malloc, \a plzma_realloc and \a plzma_free functions for handling the raw heap memory.
     /// Following the \a Resource \a Acquisition \a Is \a Initialization or \a RAII technique, the allocated memory
     /// will be deallocated via \a plzma_free function during the descruction.
-    struct LIBPLZMA_CPP_API RawHeapMemory final {
+    struct LIBPLZMA_CPP_CLASS_API RawHeapMemory final {
     protected:
 #if defined(DEBUG)
         union {
@@ -132,26 +132,35 @@ namespace plzma {
         ~RawHeapMemory() noexcept;
     };
     
+    template<bool B, typename T = void>
+    struct enableIf { };
+    
+    template <typename T>
+    struct enableIf<true, T> { typedef T type; };
+    
+    template <bool B, class T = void>
+    using enableIfT = typename enableIf<B, T>::type;
     
     /// @brief The struct template that provides a way to store 2 instances/objects as a single unit.
     /// Same as \a std::pair template.
     /// @tparam FIRST The type of the \a first instance/object.
     /// @tparam SECOND The type of the \a second instance/object.
-    template<typename FIRST, typename SECOND>
+    template<typename FIRST, typename SECOND, bool FIRST_COPYABLE = true>
     struct Pair final {
         FIRST first;
         SECOND second;
         
-        Pair<FIRST, SECOND> & operator = (const Pair<FIRST, SECOND> &) = default;
-        Pair<FIRST, SECOND> & operator = (Pair<FIRST, SECOND> && pair) noexcept {
+        Pair<FIRST, SECOND, FIRST_COPYABLE> & operator = (const Pair<FIRST, SECOND, FIRST_COPYABLE> &) = default;
+        Pair<FIRST, SECOND, FIRST_COPYABLE> & operator = (Pair<FIRST, SECOND, FIRST_COPYABLE> && pair) noexcept {
             first = static_cast<FIRST &&>(pair.first);
             second = static_cast<SECOND &&>(pair.second);
             return *this;
         }
+        template <typename T = void, typename = enableIfT<FIRST_COPYABLE, T> >
         Pair(const FIRST & f, const SECOND & s) : first(f), second(s) { }
         Pair(FIRST && f, SECOND && s) : first(static_cast<FIRST &&>(f)), second(static_cast<SECOND &&>(s)) { }
-        Pair(Pair<FIRST, SECOND> && pair) noexcept : first(static_cast<FIRST &&>(pair.first)), second(static_cast<SECOND &&>(pair.second)) { }
-        Pair(const Pair<FIRST, SECOND> &) = default;
+        Pair(Pair<FIRST, SECOND, FIRST_COPYABLE> && pair) noexcept : first(static_cast<FIRST &&>(pair.first)), second(static_cast<SECOND &&>(pair.second)) { }
+        Pair(const Pair<FIRST, SECOND, FIRST_COPYABLE> &) = default;
         Pair() noexcept { }
     };
     
@@ -333,7 +342,7 @@ namespace plzma {
     
     /// @brief The exception class for all cases in the library.
     /// Similar to the \a std::exception, plus contains extended information.
-    class LIBPLZMA_CPP_API Exception final {
+    class LIBPLZMA_CPP_CLASS_API Exception final {
     private:
         mutable char * LIBPLZMA_NULLABLE _what = nullptr;
         mutable char * LIBPLZMA_NULLABLE _file = nullptr;
@@ -406,14 +415,14 @@ namespace plzma {
                                                     const int line) noexcept;
     };
     
-    template struct LIBPLZMA_CPP_API Pair<size_t, size_t>;
+    template struct LIBPLZMA_CPP_CLASS_API Pair<size_t, size_t>;
     
     /// @brief The class \a String stores and manipulates sequences of the UTF-8 and wide character strings.
     ///
     /// During the lifetime, the string might be updated with the UTF-8 or wide character string arguments,
     /// but internally stores only one type of characters, i.e. UTF-8 or wide.
     /// That's why, the conversion between UTF-8 <-> wide(16|32 bit) might take place.
-    struct LIBPLZMA_CPP_API String {
+    struct LIBPLZMA_CPP_CLASS_API String {
     protected:
         mutable RawHeapMemory _cs;
         mutable RawHeapMemory _ws;
@@ -532,7 +541,7 @@ namespace plzma {
     /// During the manipulation of the path's string presentation:
     /// @li 1. The path separator will be automatically replaced with the platform specific one.
     /// @li 2. The previous content will be erased with \a plzma_erase_zero, i.e. zero-filled.
-    struct LIBPLZMA_CPP_API Path final : public String {
+    struct LIBPLZMA_CPP_CLASS_API Path final : public String {
     public:
         class Iterator;
         virtual void set(const String & str) override final;
@@ -645,7 +654,7 @@ namespace plzma {
     
     
     /// @brief Interface to a platform specific directory path iterator.
-    class LIBPLZMA_CPP_API Path::Iterator {
+    class LIBPLZMA_CPP_CLASS_API Path::Iterator {
     private:
         friend struct SharedPtr<Path::Iterator>;
         virtual void retain() noexcept = 0;
@@ -690,10 +699,10 @@ namespace plzma {
         virtual void close() noexcept = 0;
     };
     
-    template struct LIBPLZMA_CPP_API SharedPtr<Path::Iterator>;
+    template struct LIBPLZMA_CPP_CLASS_API SharedPtr<Path::Iterator>;
     
     /// @brief The archive item.
-    class LIBPLZMA_CPP_API Item final {
+    class LIBPLZMA_CPP_CLASS_API Item final {
     private:
         friend struct SharedPtr<Item>;
         Path _path;
@@ -718,7 +727,7 @@ namespace plzma {
         Item() = delete;
         
     public:
-        /// @return Receives the item's path object.
+        /// @return Receives the item's path inside the archive.
         const Path & path() const noexcept;
         
         
@@ -734,7 +743,7 @@ namespace plzma {
         uint64_t packSize() const noexcept;
         
         
-        /// @return Receives the CRC-32 checksum of the items content.
+        /// @return Receives the CRC-32 checksum of the item's content.
         uint32_t crc32() const noexcept;
         
         
@@ -808,8 +817,8 @@ namespace plzma {
         Item(Path && path, const plzma_size_t index) noexcept;
     };
     
-    template struct LIBPLZMA_CPP_API SharedPtr<Item>;
-    template struct LIBPLZMA_CPP_API Pair<void *, size_t>;
+    template struct LIBPLZMA_CPP_CLASS_API SharedPtr<Item>;
+    template struct LIBPLZMA_CPP_CLASS_API Pair<void *, size_t>;
     
     /// @brief Interface to the input file stream.
     class InStream {
@@ -835,22 +844,20 @@ namespace plzma {
         virtual bool erase(const plzma_erase eraseType = plzma_erase_none) = 0;
     };
     
-    template struct LIBPLZMA_CPP_API SharedPtr<InStream>;
+    template struct LIBPLZMA_CPP_CLASS_API SharedPtr<InStream>;
     
     /// @brief Creates the input file stream with path.
     /// @param path The non-empty input file path.
     /// @return The shared pointer with input file stream.
     /// @exception The \a Exception with \a plzma_error_code_invalid_arguments code in case if path is empty.
-    extern LIBPLZMA_CPP_API
-    SharedPtr<InStream> makeSharedInStream(const Path & path);
+    LIBPLZMA_CPP_API(SharedPtr<InStream>) makeSharedInStream(const Path & path);
     
     
     /// @brief Creates the input file stream with path.
     /// @param path The movable non-empty input file path.
     /// @return The shared pointer with input file stream.
     /// @exception The \a Exception with \a plzma_error_code_invalid_arguments code in case if path is empty.
-    extern LIBPLZMA_CPP_API
-    SharedPtr<InStream> makeSharedInStream(Path && path);
+    LIBPLZMA_CPP_API(SharedPtr<InStream>) makeSharedInStream(Path && path);
     
     
     /// @brief Creates the input file stream with the file memory content.
@@ -860,8 +867,7 @@ namespace plzma {
     /// @return The shared pointer with input file stream.
     /// @exception The \a Exception with \a plzma_error_code_not_enough_memory code in case if can't allocate required size of memory.
     /// @exception The \a Exception with \a plzma_error_code_invalid_arguments code in case if memory/size is empty.
-    extern LIBPLZMA_CPP_API
-    SharedPtr<InStream> makeSharedInStream(const void * LIBPLZMA_NONNULL memory, const size_t size);
+    LIBPLZMA_CPP_API(SharedPtr<InStream>) makeSharedInStream(const void * LIBPLZMA_NONNULL memory, const size_t size);
     
     
     /// @brief Creates the input file stream with the file memory content.
@@ -871,8 +877,7 @@ namespace plzma {
     /// @param freeCallback The callback, which will be triggered with provided \a memory pointer at the end of stream's lifetime.
     /// @return The shared pointer with input file stream.
     /// @exception The \a Exception with \a plzma_error_code_invalid_arguments code in case if memory/size/freeCallback is empty.
-    extern LIBPLZMA_CPP_API
-    SharedPtr<InStream> makeSharedInStream(void * LIBPLZMA_NONNULL memory, const size_t size, plzma_free_callback LIBPLZMA_NONNULL freeCallback);
+    LIBPLZMA_CPP_API(SharedPtr<InStream>) makeSharedInStream(void * LIBPLZMA_NONNULL memory, const size_t size, plzma_free_callback LIBPLZMA_NONNULL freeCallback);
     
     
     /// @brief Creates the input file stream with user defined callbacks.
@@ -883,13 +888,14 @@ namespace plzma {
     /// @param context The user defined context provided to all callbacks.
     /// @return The shared pointer with input file stream.
     /// @exception The \a Exception with \a plzma_error_code_invalid_arguments code in case if not all callbacks are provided.
-    extern LIBPLZMA_CPP_API
-    SharedPtr<InStream> makeSharedInStream(plzma_in_stream_open_callback LIBPLZMA_NONNULL openCallback,
-                                           plzma_in_stream_close_callback LIBPLZMA_NONNULL closeCallback,
-                                           plzma_in_stream_seek_callback LIBPLZMA_NONNULL seekCallback,
-                                           plzma_in_stream_read_callback LIBPLZMA_NONNULL readCallback,
-                                           const plzma_context context = plzma_context{nullptr, nullptr}); // C2059 = { .context = nullptr, .deinitializer = nullptr }
+    LIBPLZMA_CPP_API(SharedPtr<InStream>) makeSharedInStream(plzma_in_stream_open_callback LIBPLZMA_NONNULL openCallback,
+                                                             plzma_in_stream_close_callback LIBPLZMA_NONNULL closeCallback,
+                                                             plzma_in_stream_seek_callback LIBPLZMA_NONNULL seekCallback,
+                                                             plzma_in_stream_read_callback LIBPLZMA_NONNULL readCallback,
+                                                             const plzma_context context = plzma_context{nullptr, nullptr}); // C2059 = { .context = nullptr, .deinitializer = nullptr }
     
+    template struct LIBPLZMA_CPP_CLASS_API Pair<RawHeapMemory, size_t, false>;
+    typedef Pair<RawHeapMemory, size_t, false> RawHeapMemorySize;
     
     /// @brief Interface to the output file stream.
     class OutStream {
@@ -921,31 +927,28 @@ namespace plzma {
         /// @return The pair with newly allocated heap memory with the stream's content.
         /// @exception The \a Exception with \a plzma_error_code_not_enough_memory code in case if required amount of memory can't be allocated.
         /// @note Thread-safe.
-        virtual Pair<RawHeapMemory, size_t> copyContent() const = 0;
+        virtual RawHeapMemorySize copyContent() const = 0;
     };
     
-    template struct LIBPLZMA_CPP_API SharedPtr<OutStream>;
+    template struct LIBPLZMA_CPP_CLASS_API SharedPtr<OutStream>;
     
     /// @brief Creates the output file stream with path.
     /// @param path The non-empty output file path.
     /// @return The output file stream.
     /// @exception The \a Exception with \a plzma_error_code_invalid_arguments code in case if path is empty.
-    extern LIBPLZMA_CPP_API
-    SharedPtr<OutStream> makeSharedOutStream(const Path & path);
+    LIBPLZMA_CPP_API(SharedPtr<OutStream>) makeSharedOutStream(const Path & path);
     
     
     /// @brief Creates the output file stream object with movable path.
     /// @param path The non-empty output file path. After the successfull creation of the stream, the path is empty.
     /// @return The output file stream.
     /// @exception The \a Exception with \a plzma_error_code_invalid_arguments code in case if path is empty.
-    extern LIBPLZMA_CPP_API
-    SharedPtr<OutStream> makeSharedOutStream(Path && path);
+    LIBPLZMA_CPP_API(SharedPtr<OutStream>) makeSharedOutStream(Path && path);
     
     
     /// @brief Creates the output file stream object for writing to memory.
     /// @return The output file stream.
-    extern LIBPLZMA_CPP_API
-    SharedPtr<OutStream> makeSharedOutStream(void);
+    LIBPLZMA_CPP_API(SharedPtr<OutStream>) makeSharedOutStream(void);
     
     //constexpr bool isPowerOf2(const size_t v) {
     //    return v && ((v & (v - 1)) == 0);
@@ -971,7 +974,7 @@ namespace plzma {
         }
     };
     
-    template struct LIBPLZMA_CPP_API Pair<SharedPtr<Item>, SharedPtr<OutStream> >;
+    template struct LIBPLZMA_CPP_CLASS_API Pair<SharedPtr<Item>, SharedPtr<OutStream> >;
     
     /// @brief The template specialization of the sorting comparator
     /// for a pair of shared pointer of the \a Item and shared pointer of the \a OutStream.
@@ -1128,12 +1131,12 @@ namespace plzma {
         }
     };
     
-    template class LIBPLZMA_CPP_API Vector<SharedPtr<Item> >;
-    template struct LIBPLZMA_CPP_API SharedPtr<Vector<SharedPtr<Item> > >;
+    template class LIBPLZMA_CPP_CLASS_API Vector<SharedPtr<Item> >;
+    template struct LIBPLZMA_CPP_CLASS_API SharedPtr<Vector<SharedPtr<Item> > >;
     typedef Vector<SharedPtr<Item> > ItemArray;
     
-    template struct LIBPLZMA_CPP_API SharedPtr<Vector<Pair<SharedPtr<Item>, SharedPtr<OutStream> > > >;
-    template class LIBPLZMA_CPP_API Vector<Pair<SharedPtr<Item>, SharedPtr<OutStream> > >;
+    template struct LIBPLZMA_CPP_CLASS_API SharedPtr<Vector<Pair<SharedPtr<Item>, SharedPtr<OutStream> > > >;
+    template class LIBPLZMA_CPP_CLASS_API Vector<Pair<SharedPtr<Item>, SharedPtr<OutStream> > >;
     typedef Vector<Pair<SharedPtr<Item>, SharedPtr<OutStream> > > ItemOutStreamArray;
     
     
@@ -1267,7 +1270,7 @@ namespace plzma {
         virtual bool test() = 0;
     };
     
-    template struct LIBPLZMA_CPP_API SharedPtr<Decoder>;
+    template struct LIBPLZMA_CPP_CLASS_API SharedPtr<Decoder>;
     
     
     /// @brief Creates the decoder for extracting or testing the archive items.
@@ -1276,10 +1279,9 @@ namespace plzma {
     /// @param type The type of the arhive file content.
     /// @param context The user provided context.
     /// @exception The \a Exception with \a plzma_error_code_invalid_arguments code in case if provided stream is empty.
-    extern LIBPLZMA_CPP_API
-    SharedPtr<Decoder> makeSharedDecoder(const SharedPtr<InStream> & stream,
-                                         const plzma_file_type type,
-                                         const plzma_context context = plzma_context{nullptr, nullptr}); // C2059 = { .context = nullptr, .deinitializer = nullptr }
+    LIBPLZMA_CPP_API(SharedPtr<Decoder>) makeSharedDecoder(const SharedPtr<InStream> & stream,
+                                                           const plzma_file_type type,
+                                                           const plzma_context context = plzma_context{nullptr, nullptr}); // C2059 = { .context = nullptr, .deinitializer = nullptr }
     
     
     /// @brief The \a Encoder for compressing the archive items.
@@ -1457,11 +1459,10 @@ namespace plzma {
     /// @param method The compresion method.
     /// @param context The user provided context to inform the progress of the operation.
     /// @exception The \a Exception with \a plzma_error_code_invalid_arguments code in case if provided stream is empty.
-    extern LIBPLZMA_CPP_API
-    SharedPtr<Encoder> makeSharedEncoder(const SharedPtr<OutStream> & stream,
-                                         const plzma_file_type type,
-                                         const plzma_method method,
-                                         const plzma_context context = plzma_context{nullptr, nullptr}); // C2059 = { .context = nullptr, .deinitializer = nullptr }
+    LIBPLZMA_CPP_API(SharedPtr<Encoder>) makeSharedEncoder(const SharedPtr<OutStream> & stream,
+                                                           const plzma_file_type type,
+                                                           const plzma_method method,
+                                                           const plzma_context context = plzma_context{nullptr, nullptr}); // C2059 = { .context = nullptr, .deinitializer = nullptr }
 
 } // namespace plzma
 

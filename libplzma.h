@@ -44,11 +44,11 @@
 /// Everything what you need to use this library in C | Objective-C | Swift env. is here.
 
 
-/// @brief Manualy defined required version parts of the library. 1.0.6
+/// @brief Manualy defined required version parts of the library. 1.0.7
 /// The optinal `LIBPLZMA_VERSION_BUILD` might be befined by the CI or via cmake during the configuration.
 #define LIBPLZMA_VERSION_MAJOR 1
 #define LIBPLZMA_VERSION_MINOR 0
-#define LIBPLZMA_VERSION_PATCH 6
+#define LIBPLZMA_VERSION_PATCH 7
 
 // check windows
 #if defined(WIN32) || defined(_WIN32) || defined(WIN32_LEAN_AND_MEAN) || defined(_WIN64) || defined(WIN64)
@@ -58,8 +58,10 @@
 // C extern
 #if defined(__cplusplus)
 #define LIBPLZMA_C_EXTERN extern "C"
+#define LIBPLZMA_CPP_EXTERN extern
 #else
 #define LIBPLZMA_C_EXTERN extern
+#define LIBPLZMA_CPP_EXTERN extern "C++"
 #endif
 
 // attribute
@@ -92,8 +94,9 @@
 #endif
 
 // combined lib api
-#define LIBPLZMA_C_API(return_type) LIBPLZMA_C_EXTERN LIBPLZMA_ATTRIB LIBPLZMA_DYLIB_API return_type
-#define LIBPLZMA_CPP_API LIBPLZMA_ATTRIB LIBPLZMA_DYLIB_API
+#define LIBPLZMA_C_API(RETURN_TYPE) LIBPLZMA_C_EXTERN LIBPLZMA_ATTRIB LIBPLZMA_DYLIB_API RETURN_TYPE
+#define LIBPLZMA_CPP_API(RETURN_TYPE) LIBPLZMA_CPP_EXTERN LIBPLZMA_ATTRIB LIBPLZMA_DYLIB_API RETURN_TYPE
+#define LIBPLZMA_CPP_CLASS_API LIBPLZMA_ATTRIB LIBPLZMA_DYLIB_API
 
 #if defined(__clang__)
 #define LIBPLZMA_NULLABLE _Nullable
@@ -797,7 +800,7 @@ LIBPLZMA_C_API(plzma_item) plzma_item_create_with_path(const plzma_path * LIBPLZ
 LIBPLZMA_C_API(plzma_item) plzma_item_create_with_pathm(plzma_path * LIBPLZMA_NONNULL path, const plzma_size_t index);
 
 
-/// @brief Receives the item's path object.
+/// @brief Receives the item's path object inside the archive.
 /// @return The new instance of the path object.
 /// @note Use \a plzma_path_release to release path object.
 LIBPLZMA_C_API(plzma_path) plzma_item_path(const plzma_item * LIBPLZMA_NONNULL item);
@@ -815,7 +818,7 @@ LIBPLZMA_C_API(uint64_t) plzma_item_size(const plzma_item * LIBPLZMA_NONNULL ite
 LIBPLZMA_C_API(uint64_t) plzma_item_pack_size(const plzma_item * LIBPLZMA_NONNULL item);
 
 
-/// @return Receives the CRC-32 checksum of the items content.
+/// @return Receives the CRC-32 checksum of the item's content.
 LIBPLZMA_C_API(uint32_t) plzma_item_crc32(const plzma_item * LIBPLZMA_NONNULL item);
 
 

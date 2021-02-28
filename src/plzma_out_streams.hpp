@@ -89,7 +89,7 @@ namespace plzma {
         
         virtual bool opened() const;
         virtual bool erase(const plzma_erase eraseType = plzma_erase_none);
-        virtual Pair<RawHeapMemory, size_t> copyContent() const;
+        virtual RawHeapMemorySize copyContent() const;
         
         OutFileStream(const Path & path);
         OutFileStream(Path && path);
@@ -117,7 +117,7 @@ namespace plzma {
         
         virtual bool opened() const;
         virtual bool erase(const plzma_erase eraseType = plzma_erase_none);
-        Pair<RawHeapMemory, size_t> copyContent() const;
+        RawHeapMemorySize copyContent() const;
         
         OutMemStream() = default;
         virtual ~OutMemStream() noexcept { }
@@ -141,7 +141,7 @@ namespace plzma {
         
         virtual bool opened() const;
         virtual bool erase(const plzma_erase eraseType = plzma_erase_none);
-        virtual Pair<RawHeapMemory, size_t> copyContent() const;
+        virtual RawHeapMemorySize copyContent() const;
         
         OutTestStream() = default;
         virtual ~OutTestStream() noexcept { }

@@ -74,8 +74,8 @@ namespace fileUtils {
         return true;
     }
     
-    Pair<RawHeapMemory, size_t> fileContent(const Path & path) {
-        Pair<RawHeapMemory, size_t> content(RawHeapMemory(), 0);
+    RawHeapMemorySize fileContent(const Path & path) {
+        RawHeapMemorySize content(RawHeapMemory(), 0);
         FILE * f = path.openFile("rb");
         if (!f) {
             return content;

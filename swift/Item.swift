@@ -35,7 +35,7 @@ public final class Item {
     private var _path: Path?
     internal let object: plzma_item
     
-    /// The item's path.
+    /// The item's path inside the archive.
     public func path() throws -> Path {
         if let p = _path {
             return p
@@ -84,7 +84,7 @@ public final class Item {
     }
     
     
-    /// The CRC-32 checksum of the items content.
+    /// The CRC-32 checksum of the item's content.
     public var crc32: UInt32 {
         get {
             var item = object
