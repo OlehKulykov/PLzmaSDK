@@ -540,6 +540,11 @@ plzma_path_release(&archivePath); // when no longer needed
 plzma_encoder_release(&encoder); // when no longer needed
 ```
 
+
+### TODO
+-----------
+- [ ] **Multivolume archive** support.
+
 ### License
 -----------
 By using this all you are accepting original [LZMA SDK] and MIT license (*see below*):
