@@ -372,7 +372,7 @@ do {
     
     // 3. Add content for archiving.
     //  3.1. Single file path with optional path inside the archive.
-    try encoder.add(path: Path("dir/my_file1.txt")) // store as "my_file1.txt"
+    try encoder.add(path: Path("dir/my_file1.txt")) // store as "dir/my_file1.txt", as is.
     try encoder.add(path: Path("dir/my_file2.txt"), mode: .default, archivePath: Path("renamed_file2.txt")) // store as "renamed_file2.txt"
     
     //  3.2. Single directory path with optional directory iteration option and optional path inside the archive.
@@ -416,7 +416,7 @@ try {
     
     // 3. Add content for archiving.
     //  3.1. Single file path with optional path inside the archive.
-    encoder.add('dir/my_file1.txt'); // store as "my_file1.txt"
+    encoder.add('dir/my_file1.txt'); // store as "dir/my_file1.txt", as is.
     encoder.add('dir/my_file2.txt', 0, 'renamed_file2.txt'); // store as "renamed_file2.txt"
     
     //  3.2. Single directory path with optional directory iteration option and optional path inside the archive.
@@ -458,7 +458,7 @@ try {
 
     // 3. Add content for archiving.
     //  3.1. Single file path with optional path inside the archive.
-    encoder->add(Path("dir/my_file1.txt"));  // store as "my_file1.txt"
+    encoder->add(Path("dir/my_file1.txt"));  // store as "dir/my_file1.txt", as is.
     encoder->add(Path("dir/my_file2.txt"), 0, Path("renamed_file2.txt")); // store as "renamed_file2.txt"
 
     //  3.2. Single directory path with optional directory iteration option and optional path inside the archive.
@@ -502,7 +502,7 @@ plzma_encoder_set_compression_level(&encoder, 9);
 // 3. Add content for archiving.
 //  3.1. Single file path with optional path inside the archive.
 plzma_path itemPath = plzma_path_create_with_utf8_string("dir/my_file1.txt");
-plzma_encoder_add_path(&encoder, &itemPath, 0, NULL); // store as "my_file1.txt"
+plzma_encoder_add_path(&encoder, &itemPath, 0, NULL); // store as "dir/my_file1.txt", as is.
 plzma_path_release(&itemPath);
 
 itemPath = plzma_path_create_with_utf8_string("dir/my_file2.txt");
