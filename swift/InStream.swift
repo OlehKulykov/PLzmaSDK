@@ -30,7 +30,9 @@ import Foundation
 import libplzma
 #endif
 
-/// The input file stream.
+/// The input stream.
+///
+/// The stream could be initialized with path or memory data.
 public class InStream {
     private final class DataNoCopyContext {
         let data: Data

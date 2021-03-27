@@ -834,7 +834,7 @@ LIBPLZMA_C_API(time_t) plzma_item_access_time(const plzma_item * LIBPLZMA_NONNUL
 LIBPLZMA_C_API(time_t) plzma_item_modification_time(const plzma_item * LIBPLZMA_NONNULL item);
 
 
-/// @return Checks the item is encrypted.
+/// @return Checks the item is encrypted or not.
 LIBPLZMA_C_API(bool) plzma_item_encrypted(const plzma_item * LIBPLZMA_NONNULL item);
 
 
@@ -1341,35 +1341,35 @@ LIBPLZMA_C_API(bool) plzma_encoder_should_encrypt_header(plzma_encoder * LIBPLZM
 LIBPLZMA_C_API(void) plzma_encoder_set_should_encrypt_header(plzma_encoder * LIBPLZMA_NONNULL encoder, const bool encrypt);
 
 
-/// @brief Should encoder store the creation time of each item to the header if such available.
+/// @brief Should encoder store the creation time of each item to the archive header, if such available.
 /// @note Enabled by default, the value is \a true.
 /// @note Thread-safe.
 LIBPLZMA_C_API(bool) plzma_encoder_should_store_creation_time(plzma_encoder * LIBPLZMA_NONNULL encoder);
 
 
-/// @brief Set encoder will store the creation time of each item to the header if such available.
+/// @brief Set encoder will store the creation time of each item to the archive header, if such available.
 /// @note Thread-safe. Must be set before opening.
 LIBPLZMA_C_API(void) plzma_encoder_set_should_store_creation_time(plzma_encoder * LIBPLZMA_NONNULL encoder, const bool store);
 
 
-/// @brief Should encoder store the access time of each item to the header if such available.
+/// @brief Should encoder store the access time of each item to the archive header, if such available.
 /// @note Enabled by default, the value is \a true.
 /// @note Thread-safe.
 LIBPLZMA_C_API(bool) plzma_encoder_should_store_access_time(plzma_encoder * LIBPLZMA_NONNULL encoder);
 
 
-/// @brief Set encoder will store the access time of each item to the header if such available.
+/// @brief Set encoder will store the access time of each item to the archive header, if such available.
 /// @note Thread-safe. Must be set before opening.
 LIBPLZMA_C_API(void) plzma_encoder_set_should_store_access_time(plzma_encoder * LIBPLZMA_NONNULL encoder, const bool store);
 
 
-/// @brief Should encoder store the last modification time of each item to the header if such available.
+/// @brief Should encoder store the last modification time of each item to the archive header, if such available.
 /// @note Enabled by default, the value is \a true.
 /// @note Thread-safe.
 LIBPLZMA_C_API(bool) plzma_encoder_should_store_modification_time(plzma_encoder * LIBPLZMA_NONNULL encoder);
 
 
-/// @brief Set encoder will store the last modification time of each item to the header if such available.
+/// @brief Set encoder will store the last modification time of each item to the archive header, if such available.
 /// @note Thread-safe. Must be set before opening.
 LIBPLZMA_C_API(void) plzma_encoder_set_should_store_modification_time(plzma_encoder * LIBPLZMA_NONNULL encoder, const bool store);
 
@@ -1377,7 +1377,7 @@ LIBPLZMA_C_API(void) plzma_encoder_set_should_store_modification_time(plzma_enco
 /// @brief Adds the physical file or directory path to the encoder.
 /// @param path The file or directory path. Duplicated path is not allowed.
 /// @param open_dir_mode The mode for opening directory in case if \a path is a directory path.
-/// @param archive_path The optional path of how the \a path will be presented in archive.
+/// @param archive_path The optional path of how the item's \a path will be presented in archive.
 /// @note Thread-safe. Must be set before opening.
 LIBPLZMA_C_API(void) plzma_encoder_add_path(plzma_encoder * LIBPLZMA_NONNULL encoder,
                                             const plzma_path * LIBPLZMA_NONNULL path,
@@ -1385,10 +1385,10 @@ LIBPLZMA_C_API(void) plzma_encoder_add_path(plzma_encoder * LIBPLZMA_NONNULL enc
                                             const plzma_path * LIBPLZMA_NULLABLE archive_path);
 
 
-/// @brief Adds the file in-sctream to the encoder.
+/// @brief Adds the in-stream to the encoder.
 /// @param stream The input file stream to add. Empty stream is not allowed.
-/// @param archive_path The optional path of how the \a path will be presented in archive. Empty path is not allowed.
-/// @note Thread-safe. Must be set before opening.
+/// @param archive_path The path of how the item's \a path will be presented in archive. Empty path is not allowed.
+/// @note Thread-safe. Must be added before opening.
 LIBPLZMA_C_API(void) plzma_encoder_add_stream(plzma_encoder * LIBPLZMA_NONNULL encoder,
                                               const plzma_in_stream * LIBPLZMA_NONNULL stream,
                                               const plzma_path * LIBPLZMA_NONNULL archive_path);

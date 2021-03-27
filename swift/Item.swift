@@ -36,6 +36,7 @@ public final class Item {
     internal let object: plzma_item
     
     /// The item's path inside the archive.
+    /// - Throws: `Exception`.
     public func path() throws -> Path {
         if let p = _path {
             return p
@@ -136,7 +137,7 @@ public final class Item {
     }
 
     
-    /// The item is encrypted.
+    /// The item is encrypted or not.
     public var encrypted: Bool {
         get {
             var item = object
@@ -166,9 +167,10 @@ public final class Item {
     }
     
     
-    /// Initializes the item with movable path and index in the archive.
+    /// Initializes the item with movable path and optional index inside the archive.
     /// - Parameter movablePath: The associated movable item's path.
-    /// - Parameter index: The index of the item in the archive.
+    /// - Parameter index: Optional index of the item inside the archive.
+    /// - Throws: `Exception`.
     public init(movablePath path: Path, index: Size = 0) throws {
         var pathObject = path.object
         let item = plzma_item_create_with_pathm(&pathObject, index)
@@ -179,9 +181,10 @@ public final class Item {
     }
     
     
-    /// Initializes the item with path and index in the archive.
+    /// Initializes the item with path and optional index inside the archive.
     /// - Parameter path: The associated item's path.
-    /// - Parameter index: The index of the item in the archive.
+    /// - Parameter index: Optional index of the item inside the archive.
+    /// - Throws: `Exception`.
     public init(path: Path, index: Size = 0) throws {
         var pathObject = path.object
         let item = plzma_item_create_with_path(&pathObject, index)
@@ -191,6 +194,10 @@ public final class Item {
         object = item
     }
     
+    /// Initializes the item with path string and optional index inside the archive.
+    /// - Parameter path: The associated item's path.
+    /// - Parameter index: Optional index of the item inside the archive.
+    /// - Throws: `Exception`.
     public convenience init(_ string: String, index: Size = 0) throws {
         try self.init(movablePath: Path(string))
     }

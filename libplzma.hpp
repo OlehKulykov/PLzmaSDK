@@ -1320,7 +1320,7 @@ namespace plzma {
         virtual void add(const Path & path, const plzma_open_dir_mode_t openDirMode = 0, const Path & archivePath = Path()) = 0;
         
         
-        /// @brief Adds the file in-stream to the encoder.
+        /// @brief Adds the in-stream to the encoder.
         /// @param stream The input file stream to add. Empty stream is not allowed.
         /// @param archivePath The optional path of how the item's \a path will be presented in archive. Empty path is not allowed.
         /// @note Thread-safe. Must be set before opening.
@@ -1419,35 +1419,35 @@ namespace plzma {
         virtual void setShouldEncryptHeader(const bool encrypt) = 0;
         
         
-        /// @brief Should encoder store the creation time of each item to the header if such available.
+        /// @brief Should encoder store the creation time of each item to the archive header, if such available.
         /// @note Enabled by default, the value is \a true.
         /// @note Thread-safe.
         virtual bool shouldStoreCreationTime() const = 0;
         
         
-        /// @brief Set encoder will store the creation time of each item to the header if such available.
+        /// @brief Set encoder will store the creation time of each item to the archive header, if such available.
         /// @note Thread-safe. Must be set before opening.
         virtual void setShouldStoreCreationTime(const bool store) = 0;
         
         
-        /// @brief Should encoder store the access time of each item to the header if such available.
+        /// @brief Should encoder store the access time of each item to the archive header, if such available.
         /// @note Enabled by default, the value is \a true.
         /// @note Thread-safe.
         virtual bool shouldStoreAccessTime() const = 0;
         
         
-        /// @brief Set encoder will store the access time of each item to the header if such available.
+        /// @brief Set encoder will store the access time of each item to the archive header, if such available.
         /// @note Thread-safe. Must be set before opening.
         virtual void setShouldStoreAccessTime(const bool store) = 0;
         
         
-        /// @brief Should encoder store the last modification time of each item to the header if such available.
+        /// @brief Should encoder store the last modification time of each item to the archive header, if such available.
         /// @note Enabled by default, the value is \a true.
         /// @note Thread-safe.
         virtual bool shouldStoreModificationTime() const = 0;
         
         
-        /// @brief Set encoder will store the last modification time of each item to the header if such available.
+        /// @brief Set encoder will store the last modification time of each item to the archive header, if such available.
         /// @note Thread-safe. Must be set before opening.
         virtual void setShouldStoreModificationTime(const bool store) = 0;
     };

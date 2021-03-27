@@ -205,7 +205,7 @@ public final class Encoder {
     
     
     /// Setter for an archive compression level.
-    /// @param level The level in a range [0; 9].
+    /// - Parameter level: The level in a range [0; 9].
     /// - Note: Thread-safe. Must be set before opening.
     /// - Throws: `Exception`.
     public func setCompressionLevel(_ level: UInt8) throws {

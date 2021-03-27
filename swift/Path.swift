@@ -30,7 +30,7 @@ import Foundation
 import libplzma
 #endif
 
-/// The class stores path's string presentation.
+/// The path.
 ///
 /// During the manipulation of the path's string presentation:
 /// - The path separator will be automatically replaced with the platform specific one.
