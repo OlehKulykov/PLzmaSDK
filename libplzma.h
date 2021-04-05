@@ -1108,7 +1108,7 @@ LIBPLZMA_C_API(plzma_out_multi_stream) plzma_out_multi_stream_create_with_direct
 
 /// @brief Creates the output multi stream object for writing to memory.
 /// All sub-streams are memory streams.
-/// @param partSize The maximum size in bytes of each out memory sub-stream.
+/// @param part_size The maximum size in bytes of each out memory sub-stream.
 /// @return The output multi stream object or NULL if exception was thrown.
 /// @note Call \a plzma_out_multi_stream_release function to release the output multi stream.
 LIBPLZMA_C_API(plzma_out_multi_stream) plzma_out_multi_stream_create_memory_with_part_size(const plzma_size_t part_size);
