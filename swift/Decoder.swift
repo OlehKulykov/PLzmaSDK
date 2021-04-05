@@ -52,8 +52,9 @@ public final class Decoder {
     
     /// Opens the archive.
     ///
-    /// During the process, the decoder is self-retained till operation is in progress.
+    /// During the process, the decoder is self-retained as long the operation is in progress.
     /// - Returns: `true` the archive was successfully opened, otherwice `false`.
+    /// - Note: After successful opening, the input stream will be opened as long as a decoder exists.
     /// - Note: The opening progress might be executed in a separate thread.
     /// - Note: The opening progress might be aborted via `abort()` method.
     /// - Note: Thread-safe.
@@ -112,7 +113,7 @@ public final class Decoder {
 
     
     /// Receives single archive item at a specific index.
-    /// - Parameter index: The index of the item inside the arhive. Must be less then the number of items reported by the `count()` method.
+    /// - Parameter index: The index of the item inside the arhive. Must be less than the number of items reported by the `count()` method.
     /// - Returns: The archive item.
     /// - Note: The decoder must be opened.
     /// - Note: Thread-safe.
@@ -129,8 +130,6 @@ public final class Decoder {
     // MARK: - Extracting
     
     /// Extracts all archive items to a specific path.
-    ///
-    /// During the process, the decoder is self-retained till operation is in progress.
     /// - Parameter path: The directory path to extract all items.
     /// - Parameter itemsFullPath: Exctract item using it's full path or only last path component.
     /// - Note: The extracting progress might be executed in a separate thread.
@@ -149,8 +148,6 @@ public final class Decoder {
     
     
     /// Extracts some archive items to a specific path.
-    ///
-    /// During the process, the decoder is self-retained till operation is in progress.
     /// - Parameter items: The array of items to extract.
     /// - Parameter path: The directory path to extract all items.
     /// - Parameter itemsFullPath: Exctract item using it's full path or only the last path component.
@@ -171,8 +168,6 @@ public final class Decoder {
     
     
     /// Extracts each archive item to a separate out-stream.
-    ///
-    /// During the process, the decoder is self-retained till operation is in progress.
     /// - Parameter items: The array with item/out-stream pairs.
     /// - Note: The extracting progress might be executed in a separate thread.
     /// - Note: The extracting progress might be aborted via `abort()` method.
@@ -191,8 +186,6 @@ public final class Decoder {
     //MARK: - Testing
     
     /// Tests specific archive items.
-    ///
-    /// During the process, the decoder is self-retained till operation is in progress.
     /// - Parameter items: The array with items to test.
     /// - Note: The testing progress might be executed in a separate thread.
     /// - Note: The testing progress might be aborted via `abort()` method.
@@ -210,8 +203,6 @@ public final class Decoder {
     
     
     /// Tests all archive items.
-    ///
-    /// During the process, the decoder is self-retained till operation is in progress.
     /// - Note: The testing progress might be executed in a separate thread.
     /// - Note: The testing progress might be aborted via `abort()` method.
     /// - Note: Thread-safe.
@@ -247,6 +238,7 @@ public final class Decoder {
     
     /// Initializes the decoder.
     /// - Parameter stream: The input stream with archive file content.
+    ///                     After successful opening, the input stream will be opened as long as a decoder exists.
     /// - Parameter fileType: The file type of the input stream.
     /// - Parameter delegate: Optional delegate.
     /// - Throws: `Exception`.

@@ -104,21 +104,21 @@ public enum FileType: UInt8, Enum {
     ///
     /// This file type supports multiple archive items, password protected items list of the arhive and
     /// password protected content.
-    /// - Note: Supports 'LZMA', 'LZMA2' and 'PPMd' compression methods.
+    /// - Note: Supports `LZMA`, `LZMA2` and `PPMd` compression methods.
     /// - Link: https://www.7-zip.org/7z.html 
     case sevenZ = 1 // 7z
     
     /// XZ type.
     ///
     /// This file type supports only one arhive item without password protection.
-    /// @note Supports only 'LZMA2' compression method which is automatically selected.
+    /// - Note: Supports only `LZMA2` compression method which is automatically selected.
     /// - Link: https://www.7-zip.org/7z.html
     case xz = 2
     
     /// TAR type.
     ///
-    /// All archive items are combined and stored as one continuous stream without compression.
-    /// - Note: For this type, the \a plzma_method is ignored.
+    /// All archive items are combined and stored as one continuous stream without compression and without password protection.
+    /// - Note: For this type, the `Method` is ignored.
     /// - Link: https://en.wikipedia.org/wiki/Tar_(computing)
     case tar = 3
 }
@@ -137,11 +137,11 @@ public enum Method: UInt8, Enum {
     /// - Link: https://www.7-zip.org/7z.html
     case LZMA = 1
     
-    /// Improved version of LZMA.
+    /// Improved version of `LZMA`.
     /// - Link: https://www.7-zip.org/7z.html
     case LZMA2 = 2
     
-    /// Dmitry Shkarin's PPMdH with small changes.
+    /// Dmitry Shkarin's `PPMdH` with small changes.
     /// - Link: https://www.7-zip.org/7z.html
     case PPMd = 3
 }
@@ -167,4 +167,17 @@ public struct OpenDirMode: OptionSet {
     
     /// Follow the symbolic links.
     public static let followSymlinks = OpenDirMode(rawValue: 1 << 0)
+}
+
+public enum MultiStreamPartNameFormat: UInt8, Enum {
+
+    public typealias EType = plzma_plzma_multi_stream_part_name_format
+    
+    /// "File"."Extension"."002". The maximum number of parts is 999.
+    case nameExt00x
+}
+
+extension plzma_plzma_multi_stream_part_name_format: Enum {
+    
+    public typealias EType = MultiStreamPartNameFormat
 }

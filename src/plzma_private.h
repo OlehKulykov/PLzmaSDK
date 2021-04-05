@@ -126,29 +126,29 @@ typedef uint32_t DWORD;
 
 #if !defined(LIBPLZMA_USING_REGISTRATORS)
 #define LIBPLZMA_USING_REGISTRATORS 1
-LIBPLZMA_C_API(uint64_t) plzma_registrator_1(void);
-LIBPLZMA_C_API(uint64_t) plzma_registrator_2(void);
-LIBPLZMA_C_API(uint64_t) plzma_registrator_3(void);
-LIBPLZMA_C_API(uint64_t) plzma_registrator_4(void);
-LIBPLZMA_C_API(uint64_t) plzma_registrator_5(void);
-LIBPLZMA_C_API(uint64_t) plzma_registrator_6(void);
-LIBPLZMA_C_API(uint64_t) plzma_registrator_7(void);
-LIBPLZMA_C_API(uint64_t) plzma_registrator_8(void);
-LIBPLZMA_C_API(uint64_t) plzma_registrator_9(void);
-LIBPLZMA_C_API(uint64_t) plzma_registrator_10(void);
-LIBPLZMA_C_API(uint64_t) plzma_registrator_11(void);
-LIBPLZMA_C_API(uint64_t) plzma_registrator_12(void);
-LIBPLZMA_C_API(uint64_t) plzma_registrator_13(void);
-LIBPLZMA_C_API(uint64_t) plzma_registrator_14(void);
-LIBPLZMA_C_API(uint64_t) plzma_registrator_15(void);
-LIBPLZMA_C_API(uint64_t) plzma_registrator_16(void);
+LIBPLZMA_C_API_PRIVATE(uint64_t) plzma_registrator_1(void);
+LIBPLZMA_C_API_PRIVATE(uint64_t) plzma_registrator_2(void);
+LIBPLZMA_C_API_PRIVATE(uint64_t) plzma_registrator_3(void);
+LIBPLZMA_C_API_PRIVATE(uint64_t) plzma_registrator_4(void);
+LIBPLZMA_C_API_PRIVATE(uint64_t) plzma_registrator_5(void);
+LIBPLZMA_C_API_PRIVATE(uint64_t) plzma_registrator_6(void);
+LIBPLZMA_C_API_PRIVATE(uint64_t) plzma_registrator_7(void);
+LIBPLZMA_C_API_PRIVATE(uint64_t) plzma_registrator_8(void);
+LIBPLZMA_C_API_PRIVATE(uint64_t) plzma_registrator_9(void);
+LIBPLZMA_C_API_PRIVATE(uint64_t) plzma_registrator_10(void);
+LIBPLZMA_C_API_PRIVATE(uint64_t) plzma_registrator_11(void);
+LIBPLZMA_C_API_PRIVATE(uint64_t) plzma_registrator_12(void);
+LIBPLZMA_C_API_PRIVATE(uint64_t) plzma_registrator_13(void);
+LIBPLZMA_C_API_PRIVATE(uint64_t) plzma_registrator_14(void);
+LIBPLZMA_C_API_PRIVATE(uint64_t) plzma_registrator_15(void);
+LIBPLZMA_C_API_PRIVATE(uint64_t) plzma_registrator_16(void);
 #if !defined(LIBPLZMA_NO_TAR)
-LIBPLZMA_C_API(uint64_t) plzma_registrator_17(void);
+LIBPLZMA_C_API_PRIVATE(uint64_t) plzma_registrator_17(void);
 #endif
 #endif // !LIBPLZMA_USING_REGISTRATORS
 
 #if 0
-LIBPLZMA_C_API(void) plzma_print_memory(int line, const void * LIBPLZMA_NULLABLE mem, const size_t len);
+LIBPLZMA_C_API_PRIVATE(void) plzma_print_memory(int line, const void * LIBPLZMA_NULLABLE mem, const size_t len);
 #endif // #if 0
 
 #endif // !__PLZMA_PRIVATE_H__

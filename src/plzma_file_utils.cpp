@@ -37,6 +37,7 @@ namespace fileUtils {
             const size_t buffSize = 256 * 1024;
             uint8_t buff[buffSize];
             memset(buff, 0, buffSize);
+            // "r+" | read/update: Open a file for update (both for input and output). The file must exist.
             FILE * f = path.openFile("r+b");
             if (!f) {
                 Exception exception(plzma_error_code_io, nullptr, __FILE__, __LINE__);
@@ -74,7 +75,7 @@ namespace fileUtils {
         return true;
     }
     
-    RawHeapMemorySize fileContent(const Path & path) {
+    RawHeapMemorySize fileContent(const Path & path, const uint64_t maxSize) {
         RawHeapMemorySize content(RawHeapMemory(), 0);
         FILE * f = path.openFile("rb");
         if (!f) {
@@ -90,11 +91,16 @@ namespace fileUtils {
         }
         
         if (fileSize > 0) {
+            if (static_cast<uint64_t>(fileSize) > maxSize) {
+                fileSize = (maxSize <= INT64_MAX) ? static_cast<int64_t>(maxSize) : INT64_MAX;
+            }
             if (static_cast<uint64_t>(fileSize) > plzma_max_size()) {
                 fclose(f);
                 Exception exception(plzma_error_code_not_enough_memory, nullptr, __FILE__, __LINE__);
                 exception.setWhat("Can't copy file content at path: ", path.utf8(), nullptr);
-                exception.setReason("The file size is more than supported.", nullptr);
+                char reason[128];
+                snprintf(reason, 128, "The content size is: %llu and greater than supported: %llu.", static_cast<unsigned long long>(fileSize), static_cast<unsigned long long>(plzma_max_size()));
+                exception.setReason(reason, nullptr);
                 throw exception;
             }
             const size_t size = static_cast<size_t>(fileSize);

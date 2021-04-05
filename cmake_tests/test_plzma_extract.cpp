@@ -266,6 +266,11 @@ int main(int argc, char* argv[]) {
         std::cout << "unknown exception:" << std::endl;
         throw;
     }
+    
+//    while (1) {
+//        usleep(50);
+//    }
+    
     return ret;
 }
 

@@ -1,6 +1,23 @@
 (Portable, Patched, Package, cross-P-latform) Lzma SDK, libplzma
 
-1.0.7 (current):
+1.1.0: (current):
+- Introduce multivolume support for 7z archives:
+-- C: added 'plzma_plzma_multi_stream_part_name_format' enum, 'plzma_in_stream_array', 'plzma_out_stream_array' and 'plzma_out_multi_stream' objects.
+      Added 'exception' field to the 'plzma_memory' object.
+      Added 'exception' field to the 'plzma_item_out_stream_array_pair' object.
+      Added additional exception handling.
+-- C++(core): added interface to instantiate 'InStream' with array of multivolume sub-streams.
+              Added 'OutMultiStream' interface.
+              Added interface to instantiate 'Encoder' with 'OutMultiStream' and options.
+-- Swift: added initializer with array of 'InStream's to 'InStream' class.
+          Added 'OutMultiStream' class.
+-- Node.js: added 'MultiStreamPartNameFormat' enum and 'OutMultiStream' object.
+- Improved code documentation.
+- Swift Package Manager, Node.js: explicitly disabled 'Run-time type information (RTTI)' by adding cxx '-fno-rtti' flag.
+- C/C++(core): changed the format of the 'plzma_version()' output string. '1.2.3.456 ...' -> '1.2.3 (456) ...'.
+- Swift: Added global 'version' property.
+
+1.0.7:
 - C++(core): export non-copyable public pair template.
 
 1.0.6:

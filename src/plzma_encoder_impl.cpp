@@ -545,10 +545,10 @@ namespace plzma {
         }
         if (errorNumber) {
             Exception exception(plzma_error_code_invalid_arguments, nullptr, __FILE__, __LINE__);
-            char tmpBuff[32];
-            sprintf(tmpBuff, "%llu", (unsigned long long)itemsCount);
-            exception.setReason("The number of items: ", tmpBuff, nullptr);
-            exception.setWhat(errorNumber == 1 ? "The 'xz' type supports only one item." : "The number of items is more than supported.", nullptr);
+            char reason[128];
+            snprintf(reason, 128, "The number of items: %llu", static_cast<unsigned long long>(itemsCount));
+            exception.setReason(reason, nullptr);
+            exception.setWhat(errorNumber == 1 ? "The 'xz' type supports only one item." : "The number of items is greater then supported.", nullptr);
             throw exception;
         }
         
@@ -593,6 +593,12 @@ namespace plzma {
                 Exception localException(static_cast<Exception &&>(*_exception));
                 delete _exception;
                 _exception = nullptr;
+                throw localException;
+            }
+            Exception * exception = _stream->takeException();
+            if (exception) {
+                Exception localException(static_cast<Exception &&>(*exception));
+                delete exception;
                 throw localException;
             }
             throw Exception(plzma_error_code_internal, "Unknown compress error.", __FILE__, __LINE__);
@@ -691,6 +697,20 @@ namespace plzma {
         throw Exception(plzma_error_code_invalid_arguments, "No output stream.", __FILE__, __LINE__);
     }
 
+    SharedPtr<Encoder> makeSharedEncoder(const SharedPtr<OutMultiStream> & stream,
+                                         const plzma_file_type type,
+                                         const plzma_method method,
+                                         const plzma_context context) {
+        if (type != plzma_file_type_7z) {
+            throw Exception(plzma_error_code_invalid_arguments, "Currently only 7-zip type archives supports multi streams.", __FILE__, __LINE__);
+        }
+        auto baseStream = stream.cast<OutStreamBase>();
+        if (baseStream) {
+            return SharedPtr<Encoder>(new EncoderImpl(CMyComPtr<OutStreamBase>(baseStream.get()), type, method, context));
+        }
+        throw Exception(plzma_error_code_invalid_arguments, "No output stream.", __FILE__, __LINE__);
+    }
+
 } // namespace plzma
 
 
@@ -704,12 +724,30 @@ plzma_encoder plzma_encoder_create(plzma_out_stream * LIBPLZMA_NONNULL stream,
                                    const plzma_context context) {
     LIBPLZMA_C_BINDINGS_CREATE_OBJECT_FROM_TRY(plzma_decoder, stream)
     SharedPtr<OutStream> outStream(static_cast<OutStream *>(stream->object));
-    auto baseStream = outStream.cast<OutStreamBase>();
-    if (!baseStream) {
+    auto baseOutStream = outStream.cast<OutStreamBase>();
+    if (!baseOutStream) {
         throw Exception(plzma_error_code_invalid_arguments, "No output stream.", __FILE__, __LINE__);
     }
-    SharedPtr<EncoderImpl> encoderImpl(new EncoderImpl(CMyComPtr<OutStreamBase>(baseStream.get()), type, method, context));
-    createdCObject.object = static_cast<void *>(encoderImpl.take());
+    SharedPtr<EncoderImpl> encoder(new EncoderImpl(CMyComPtr<OutStreamBase>(baseOutStream.get()), type, method, context));
+    createdCObject.object = static_cast<void *>(encoder.take());
+    LIBPLZMA_C_BINDINGS_CREATE_OBJECT_CATCH
+}
+
+plzma_encoder plzma_encoder_create_with_multi_stream(plzma_out_multi_stream * LIBPLZMA_NONNULL stream,
+                                                     const plzma_file_type type,
+                                                     const plzma_method method,
+                                                     const plzma_context context) {
+    LIBPLZMA_C_BINDINGS_CREATE_OBJECT_FROM_TRY(plzma_decoder, stream)
+    if (type != plzma_file_type_7z) {
+        throw Exception(plzma_error_code_invalid_arguments, "Currently only 7-zip type archives supports multi streams.", __FILE__, __LINE__);
+    }
+    SharedPtr<OutMultiStream> outStream(static_cast<OutMultiStream *>(stream->object));
+    auto baseOutStream = outStream.cast<OutStreamBase>();
+    if (!baseOutStream) {
+        throw Exception(plzma_error_code_invalid_arguments, "No output stream.", __FILE__, __LINE__);
+    }
+    SharedPtr<EncoderImpl> encoder(new EncoderImpl(CMyComPtr<OutStreamBase>(baseOutStream.get()), type, method, context));
+    createdCObject.object = static_cast<void *>(encoder.take());
     LIBPLZMA_C_BINDINGS_CREATE_OBJECT_CATCH
 }
 

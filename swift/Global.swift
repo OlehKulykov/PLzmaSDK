@@ -31,6 +31,15 @@ import libplzma
 #endif
 
 
+/// The full version string of the library generated on build time.
+///
+/// Contains version<major, minor, patch> with optional automatic build number,
+/// library type, build date/time, os, compiler, environment, usage, features, etc. and original LZMA SDK version.
+public var version: String {
+    return String(utf8CString: plzma_version())
+}
+
+
 /// Receives or changes the current size in bytes of the stream's read block per single read request.
 public var streamReadSize: Size {
     get {

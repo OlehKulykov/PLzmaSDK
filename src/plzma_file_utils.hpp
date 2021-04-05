@@ -29,6 +29,7 @@
 #define __PLZMA_FILE_UTILS_HPP__ 1
 
 #include <cstddef>
+#include <cstdint>
 
 #include "plzma_private.h"
 #include "../libplzma.hpp"
@@ -45,8 +46,7 @@ namespace fileUtils {
 #elif defined(LIBPLZMA_POSIX)
         return fseeko(file, offset, origin);
 #else
-        static_assert(0, "Not implemented");
-        return -1;
+#error "Not implemented."
 #endif
     }
     
@@ -56,14 +56,13 @@ namespace fileUtils {
 #elif defined(LIBPLZMA_POSIX)
         return ftello(file);
 #else
-        static_assert(0, "Not implemented");
-        return -1;
+#error "Not implemented."
 #endif
     }
     
-    extern bool fileErase(const Path & path, const plzma_erase eraseType);
+    LIBPLZMA_CPP_API_PRIVATE(bool) fileErase(const Path & path, const plzma_erase eraseType);
     
-    extern RawHeapMemorySize fileContent(const Path & path);
+    LIBPLZMA_CPP_API_PRIVATE(RawHeapMemorySize) fileContent(const Path & path, const uint64_t maxSize = UINT64_MAX);
     
 } // namespace fileUtils
 } // namespace plzma

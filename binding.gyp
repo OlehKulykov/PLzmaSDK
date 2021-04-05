@@ -3,7 +3,7 @@
     {
       'target_name': 'plzmasdk',
       'defines': [
-        'LIBPLZMA_VERSION_BUILD=280',
+        'LIBPLZMA_VERSION_BUILD=368',
         'LIBPLZMA_SHARED=1',
         'LIBPLZMA_NO_C_BINDINGS=1',
         'LIBPLZMA_HAVE_STD=1'
@@ -160,10 +160,12 @@
       ],
       'cflags!': [ '-fno-exceptions' ],
       'cflags_cc!': [ '-fno-exceptions' ],
+      'cflags_cc': [ '-fno-rtti' ],
       'conditions': [
         ['OS=="mac"', {
           'xcode_settings': {
-            'GCC_ENABLE_CPP_EXCEPTIONS': 'YES'
+            'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
+            'OTHER_CPLUSPLUSFLAGS': [ '-fno-rtti' ]
           }
         }]
       ]

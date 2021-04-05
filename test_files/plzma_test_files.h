@@ -24,6 +24,9 @@
 #include "file__15_tar.h"
 #include "file__16_tar_xz.h"
 #include "file__17_jpg_xz.h"
+#include "file__18_7z_001.h"
+#include "file__18_7z_002.h"
+#include "file__18_7z_003.h"
 
 // images
 #include "file__munchen_jpg.h"

@@ -103,6 +103,10 @@ int main(int argc, char* argv[]) {
     if ( (ret = test_plzma_string_test4()) ) {
         return ret;
     }
-        
+    
+//    while (1) {
+//        usleep(50);
+//    }
+    
     return ret;
 }

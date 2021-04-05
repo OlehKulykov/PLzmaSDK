@@ -51,11 +51,13 @@ public final class ItemOutStreamArray {
     /// - Throws: `Exception`.
     public func pair(at index: Size) throws -> Pair {
         var map = object
-        let cpair = plzma_item_out_stream_array_pair_at(&map, index)
-        if let exception = map.exception {
+        var pair = plzma_item_out_stream_array_pair_at(&map, index)
+        if let exception = pair.exception {
+            plzma_item_release(&pair.item)
+            plzma_out_stream_release(&pair.stream)
             throw Exception(object: exception)
         }
-        return Pair(Item(object: cpair.item), OutStream(object: cpair.stream))
+        return Pair(Item(object: pair.item), OutStream(object: pair.stream))
     }
     
     

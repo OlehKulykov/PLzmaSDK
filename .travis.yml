@@ -54,6 +54,5 @@ script:
 branches:
   only:
     - master
-    - dev
     - tmp
     - multivolume

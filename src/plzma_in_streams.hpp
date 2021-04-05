@@ -39,6 +39,7 @@
 #include "CPP/Common/MyString.h"
 #include "CPP/Common/MyCom.h"
 #include "CPP/7zip/IStream.h"
+#include "CPP/7zip/Archive/Common/MultiStream.h"
 
 namespace plzma {
     
@@ -84,11 +85,11 @@ namespace plzma {
         STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition);
         STDMETHOD(Read)(void * data, UInt32 size, UInt32 * processedSize);
         
-        virtual void open();
-        virtual void close();
+        virtual void open() final;
+        virtual void close() final;
         
-        virtual bool opened() const;
-        virtual bool erase(const plzma_erase eraseType = plzma_erase_none);
+        virtual bool opened() const final;
+        virtual bool erase(const plzma_erase eraseType = plzma_erase_none) final;
         
         const Path & path() const noexcept;
         
@@ -113,11 +114,11 @@ namespace plzma {
         STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition);
         STDMETHOD(Read)(void * data, UInt32 size, UInt32 * processedSize);
         
-        virtual void open();
-        virtual void close();
+        virtual void open() final;
+        virtual void close() final;
         
-        virtual bool opened() const;
-        virtual bool erase(const plzma_erase eraseType = plzma_erase_none);
+        virtual bool opened() const final;
+        virtual bool erase(const plzma_erase eraseType = plzma_erase_none) final;
         
         InMemStream(const void * memory, const size_t size);
         InMemStream(void * memory, const size_t size, plzma_free_callback freeCallback);
@@ -142,11 +143,11 @@ namespace plzma {
         STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition);
         STDMETHOD(Read)(void * data, UInt32 size, UInt32 * processedSize);
         
-        virtual void open();
-        virtual void close();
+        virtual void open() final;
+        virtual void close() final;
         
-        virtual bool opened() const;
-        virtual bool erase(const plzma_erase eraseType = plzma_erase_none);
+        virtual bool opened() const final;
+        virtual bool erase(const plzma_erase eraseType = plzma_erase_none) final;
         
         InCallbackStream(plzma_in_stream_open_callback openCallback,
                          plzma_in_stream_close_callback closeCallback,
@@ -156,7 +157,31 @@ namespace plzma {
         
         virtual ~InCallbackStream() noexcept;
     };
-    
+
+    class InMultiStream final : public InStreamBase {
+    private:
+        Vector<SharedPtr<InStreamBase> > _streams;
+        CMultiStream _stream;
+        bool _opened = false;
+        
+        LIBPLZMA_NON_COPYABLE_NON_MOVABLE(InMultiStream)
+        
+    public:
+        MY_UNKNOWN_IMP1(IInStream)
+        
+        STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition);
+        STDMETHOD(Read)(void * data, UInt32 size, UInt32 * processedSize);
+        
+        virtual void open() final;
+        virtual void close() final;
+        
+        virtual bool opened() const final;
+        virtual bool erase(const plzma_erase eraseType = plzma_erase_none) final;
+        
+        InMultiStream(InStreamArray && streams);
+        virtual ~InMultiStream() noexcept;
+    };
+
 } // namespace plzma
 
 #endif // !__PLZMA_IN_STREAMS_HPP__

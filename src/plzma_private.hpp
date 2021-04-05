@@ -74,18 +74,18 @@ CLASS_NAME(const CLASS_NAME &) = delete; \
 namespace plzma {
     
     /// CFilterCoder, ISequentialOutStream default: 1 << 20
-    extern plzma_size_t kStreamReadSize;
+    LIBPLZMA_CPP_API_PRIVATE(plzma_size_t) kStreamReadSize;
     
     /// CFilterCoder, ISequentialOutStream default: 1 << 20
-    extern plzma_size_t kStreamWriteSize;
+    LIBPLZMA_CPP_API_PRIVATE(plzma_size_t) kStreamWriteSize;
     
     /// CDecoder default: 1 << 20
-    extern plzma_size_t kDecoderReadSize;
+    LIBPLZMA_CPP_API_PRIVATE(plzma_size_t) kDecoderReadSize;
     
     /// CDecoder default: 1 << 22
-    extern plzma_size_t kDecoderWriteSize;
+    LIBPLZMA_CPP_API_PRIVATE(plzma_size_t) kDecoderWriteSize;
     
-    extern void initialize(void);
+    LIBPLZMA_CPP_API_PRIVATE(void) initialize(void);
 
 } // namespace plzma
 

@@ -24,6 +24,8 @@
     * [.PPMd](#enum_method_ppmd) ⇒ ```Number```
   * [OpenDirMode](#enum_opendirmode)
     * [.followSymlinks](#enum_opendirmode_followsymlinks) ⇒ ```Number```
+  * [MultiStreamPartNameFormat](#enum_multistreampartnameformat)
+    * [.nameExt00x](#enum_multistreampartnameformat_nameext00x) ⇒ ```Number```  
   * [Stat](#obj_stat)
     * [.size](#obj_stat_size) ⇒ ```BigInt```
     * [.creation](#obj_stat_creation) ⇒ ```Date```
@@ -53,6 +55,7 @@
     * [.readable](#class_path_readable) ⇒ ```Boolean```
     * [.writable](#class_path_writable) ⇒ ```Boolean```
     * [.readableAndWritable](#class_path_readableandwritable) ⇒ ```Boolean```
+    * [Path.tmpPath](#class_path_path_tmppath) ⇒ <code>[Path](#class_path)</code>
   * [PathIterator](#obj_pathiterator)
     * [.next()](#obj_pathiterator_next) ⇒ ```Boolean```
     * [.close()](#obj_pathiterator_close)
@@ -84,11 +87,22 @@
     * [.erase([type])](#class_outstream_erase) ⇒ ```Boolean```
     * [.copyContent()](#class_outstream_copycontent) ⇒ ```ArrayBuffer```
     * [.opened](#class_outstream_opened) ⇒ ```Boolean```
+  * [OutMultiStream](#class_outmultistream)
+    * [new OutMultiStream(dirPath, partName, partExtension, format, partSize)](#class_outmultistream_new_dirpath)
+    * [new OutMultiStream(partSize)](#class_outmultistream_new_partsize)  
+    * [OutMultiStream(dirPath, partName, partExtension, format, partSize)](#class_outmultistream_new_dirpath) ⇒ <code>[new OutMultiStream(dirPath, partName, partExtension, format, partSize)](#class_outmultistream_new_dirpath)</code>
+    * [OutMultiStream(partSize)](#class_outmultistream_new_partsize) ⇒ <code>[new OutMultiStream(partSize)](#class_outmultistream_new_partsize)</code>  
+    * [.erase([type])](#class_outstream_erase) ⇒ ```Boolean```
+    * [.copyContent()](#class_outstream_copycontent) ⇒ ```ArrayBuffer```
+    * [.opened](#class_outstream_opened) ⇒ ```Boolean```
+    * [.streams](#class_outmultistream_streams) ⇒ ```Array```
   * [InStream](#class_instream)
     * [new InStream(path)](#class_instream_new_path)
     * [new InStream(fileContent)](#class_instream_new_file_content)
+    * [new InStream(array <InStream>)](#class_instream_new_array_streams)
     * [InStream(path)](#class_instream_new_path) ⇒ <code>[new InStream(path)](#class_instream_new_path)</code>
     * [InStream(fileContent)](#class_instream_new_file_content) ⇒ <code>[new InStream(fileContent)](#class_instream_new_file_content)</code>
+    * [InStream(array <InStream>)](#class_instream_new_array_streams) ⇒ <code>[new InStream(array <InStream>)](#class_instream_new_array_streams)</code>
     * [.erase([type])](#class_instream_erase) ⇒ ```Boolean```
     * [.opened](#class_instream_opened) ⇒ ```Boolean```
   * [Decoder](#class_decoder)
@@ -184,7 +198,7 @@ Supports 'LZMA', 'LZMA2' and 'PPMd' compression methods.
 [XZ](https://www.7-zip.org/7z.html) type. This file type supports only one arhive item, in a rest it same as 7-zip. Supports only 'LZMA2' compression method which is automatically selected.
 
 #### <a name="enum_filetype_tar"></a>FileType.tar ⇒ Number
-[TAR](https://en.wikipedia.org/wiki/Tar_(computing)) type. All archive items are combined and stored as one continuous stream without compression. For this type, the 'Method' parameter is ignored.
+[TAR](https://en.wikipedia.org/wiki/Tar_(computing)) type. All archive items are combined and stored as one continuous stream without compression and without password protection. For this type, the 'Method' parameter is ignored.
 
 ### <a name="enum_method"></a>Method
 Exported object with compression methods.
@@ -203,6 +217,12 @@ Exported object with options for opening directory path. Currently uses for defi
 
 #### <a name="enum_opendirmode_followsymlinks"></a>OpenDirMode.followSymlinks ⇒ Number
 Follow the symbolic links.
+
+### <a name="enum_multistreampartnameformat"></a>MultiStreamPartNameFormat
+Exported object with options for generating multivolue sub-sctream file name.
+
+#### <a name="enum_multistreampartnameformat_nameext00x"></a>MultiStreamPartNameFormat.nameExt00x ⇒ Number
+"File"."Extension"."002". The maximum number of parts is 999.
 
 ### <a name="obj_stat"></a>Stat
 Exported object with stat info of the path.
@@ -302,6 +322,9 @@ Checks the path exists and has write permissions.
 #### <a name="class_path_readableandwritable"></a>Path.readableAndWritable ⇒ Boolean
 Checks the path exists and has read-write permissions.
 
+#### <a name="class_path_path_tmppath"></a>Path.tmpPath ⇒ <code>[Path](#class_path)</code>
+Provides the path with the platform specific temporary directory for the library.
+The provided directory path, if such exists, has a read-write permissions.
 
 ### <a name="obj_pathiterator"></a>PathIterator
 Path iterator object.
@@ -394,6 +417,26 @@ Copies the content of the stream to a heap memory. The stream must be closed.
 #### <a name="class_outstream_opened"></a>OutStream.opened ⇒ Boolean
 Checks the output file stream is opened.
 
+### <a name="class_outmultistream"></a>OutMultiStream
+The output multi volume/part stream.
+
+#### <a name="class_outmultistream_new_dirpath"></a>new OutMultiStream(dirPath, partName, partExtension, format, partSize)
+Constructs the output multi stream with directory path, part name, extension, format and part size.
+All sub-streams are file streams.
+* <code>dirPath</code> {String|[Path](#class_path)} The non-empty output directory path.
+* <code>partName</code> {String} The non-empty output file name.
+* <code>partExtension</code> {String} Optional extension.
+* <code>format</code> {[MultiStreamPartNameFormat](#enum_multistreampartnameformat)} Format of the result file name part.
+* <code>format</code> {Number} The maximum size in bytes of each out file sub-stream.
+
+#### <a name="class_outmultistream_new_partsize"></a>new OutMultiStream(partSize)
+Constructs the output multi stream object for writing to memory.
+All sub-streams are memory streams.
+* <code>format</code> {Number} The maximum size in bytes of each out file sub-stream.
+
+#### <a name="class_outmultistream_streams"></a>OutMultiStream.streams ⇒ Array
+Receives array of created [OutStream](#class_outstream) sub-streams. The stream must be closed.
+If stream is opened, then the list is empty.
 
 ### <a name="class_instream"></a>InStream
 The input file stream.
@@ -405,6 +448,11 @@ Constructs the input file stream object for reading a file content from path.
 #### <a name="class_instream_new_file_content"></a>new InStream(fileContent)
 Constructs the input file stream object for reading a file content.
 * <code>fileContent</code> {ArrayBuffer} Input file content.
+
+#### <a name="class_instream_new_array_streams"></a>new InStream(array <InStream>)
+Constructs the multi input stream with a list of input streams.
+The array should not be empty. The order: file.001, file.002, ..., file.XXX
+* <code>array <InStream></code> {[ [InStream](#class_instream) ]} The non-empty array of input streams. Each stream inside the list should also exist.
 
 #### <a name="class_instream_erase"></a>InStream.erase([type]) ⇒ Boolean
 Erases and removes the content of the stream.
@@ -419,7 +467,7 @@ The decoder for extracting or testing the archive items.
 
 #### <a name="class_decoder_new"></a>new Decoder(inStream, fileType)
 Constructs the decoder with input file stream and file type.
-* <code>inStream</code> {[InStream](#class_instream)} The input stream which contains the archive file content.
+* <code>inStream</code> {[InStream](#class_instream)} The input stream which contains the archive file content. After successful opening, the input stream will be opened as long as a decoder exists.
 * <code>fileType</code> {[FileType](#enum_filetype)} The type of the arhive file content.
 
 #### <a name="class_decoder_set_progress_delegate"></a>Decoder.setProgressDelegate([delegate])
@@ -435,13 +483,14 @@ Opens the archive.
 
 #### <a name="class_decoder_open"></a>Decoder.openAsync() ⇒ Promise
 Asynchronously opens the archive. The opening progress might be aborted via [abort()](#class_decoder_abort) function.
+After successful opening, the input stream will be opened as long as a decoder exists.
 
 #### <a name="class_decoder_abort"></a>Decoder.abort()
 Aborts opening, extracting or testing process. The aborted decoder is no longer valid.
 
 #### <a name="class_decoder_item_at"></a>Decoder.itemAt(index) ⇒ [Item](#class_item)
 Receives a single archive item at a specific index.
-* <code>index</code> {Number} The index of the item inside the arhive. Must be less then the number of items reported by the [count()](#class_decoder_count) property.
+* <code>index</code> {Number} The index of the item inside the arhive. Must be less than the number of items reported by the [count()](#class_decoder_count) property.
 
 #### <a name="class_decoder_extract_items_map"></a>Decoder.extract(map<[Item](#class_item), [OutStream](#class_outstream)>) ⇒ Boolean
 Extracts each archive item to a separate out-stream.
@@ -491,7 +540,7 @@ The decoder compressing the archive items.
 
 #### <a name="class_encoder_new"></a>new Encoder(outStream, fileType, method)
 Constructs the encoder with output file stream, file type and method.
-* <code>outStream</code> {[OutStream](#class_outstream)} The output file stream to write the archive's file content.
+* <code>outStream</code> {[OutStream](#class_outstream)|[OutMultiStream](#class_outmultistream)} The output file stream to write the archive's file content.
 * <code>fileType</code> {[FileType](#enum_filetype)} The type of the arhive file content.
 * <code>method</code> {[Method](#enum_method)} The compresion method.
 
@@ -501,7 +550,9 @@ Provides the compression progress delegate.
 
 #### <a name="class_encoder_set_password"></a>Encoder.setPassword([password])
 Provides the archive password.
-* <code>password</code> {String} Optional password.
+This password will be used for encrypting header and the content if such options are enabled and selected type supports password protection.
+See [.shouldEncryptHeader](#class_encoder_should_encrypt_header), [.shouldEncryptContent](#class_encoder_should_encrypt_content) properties and [FileType](#enum_filetype) enum.
+* <code>password</code> {String} Optional password. Non-string type or zero length password means no password provided.
 
 #### <a name="class_encoder_add_path"></a>Encoder.add(path, [openDirMode, [archivePath]])
 Adds the physical file or directory path to the encoder. Duplicated path is not allowed.
@@ -516,9 +567,11 @@ Adds the file in-stream to the encoder.
 
 #### <a name="class_encoder_open"></a>Encoder.open() ⇒ Boolean
 Opens the archive.
+Returns  ```false``` if nothing to compress or encoder aborted or incorrect number of items or number of items greater than supported, otherwise ```true```.
 
 #### <a name="class_encoder_open_async"></a>Encoder.openAsync() ⇒ Promise
 Asynchronously opens the archive. The testing progress might be aborted via [abort()](#class_encoder_abort) function.
+Returns  ```false``` if nothing to compress or encoder aborted or incorrect number of items or number of items greater than supported, otherwise ```true```.
 
 #### <a name="class_encoder_abort"></a>Encoder.abort()
 Aborts the opening or compressing process.
@@ -542,9 +595,13 @@ Read-Write property: should encoder compress the archive header. Default true.
 Read-Write property: should encoder fully compress the archive header. Default true.
 
 #### <a name="class_encoder_should_encrypt_content"></a>Encoder.shouldEncryptContent ⇔ Boolean
+The encryption will take place only if this option enabled, the type supports password protection and the password has been provided.
+See [.setPassword([password])](#class_encoder_set_password) function and [FileType](#enum_filetype) enum.
 Read-Write property: should encoder encrypt the content of the archive items. The password will be required to decode/extract archive items.
 
 #### <a name="class_encoder_should_encrypt_header"></a>Encoder.shouldEncryptHeader ⇔ Boolean
+The encryption will take place only if this option enabled, the type supports password protection and the password has been provided.
+See [.setPassword([password])](#class_encoder_set_password) function and [FileType](#enum_filetype) enum.
 Read-Write property: should encoder encrypt the header with the list of archive items. The password will be required to open archive and list the items.
 
 #### <a name="class_encoder_should_store_creation_date"></a>Encoder.shouldStoreCreationDate ⇔ Boolean

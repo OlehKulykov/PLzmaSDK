@@ -279,6 +279,10 @@ int main(int argc, char* argv[]) {
     if ( (ret = test_plzma_containers_test6()) ) {
         return ret;
     }
-        
+    
+//    while (1) {
+//        usleep(50);
+//    }
+    
     return ret;
 }

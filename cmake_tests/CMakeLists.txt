@@ -59,6 +59,7 @@ set(LIBPLZMA_TESTS
   "test_plzma_compress"
   "test_plzma_containers"
   "test_plzma_extract"
+  "test_plzma_multivolume"
   "test_plzma_open"
   "test_plzma_path"
   "test_plzma_streams"

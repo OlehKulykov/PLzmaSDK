@@ -65,12 +65,16 @@ public struct Exception: Error {
         plzma_exception_release(object)
     }
     
-    init(code: ErrorCode, what: String, reason: String) {
+    init(code: ErrorCode, what: String, reason: String, file: String? = nil, line: Int = 0) {
         self.code = code
         self.what = what
         self.reason = reason
-        file = ""
-        line = 0
+        if let file = file {
+            self.file = URL(fileURLWithPath: file).lastPathComponent
+        } else {
+            self.file = ""
+        }
+        self.line = line
         version = String(utf8CString: plzma_version())
     }
 }

@@ -26,6 +26,7 @@
 
 
 #include <cstddef>
+#include <cassert>
 
 #include "../libplzma.hpp"
 #include "plzma_private.hpp"
@@ -107,11 +108,13 @@ namespace StringConvertUTF {
     
     void String::syncWide() const {
         const wchar_t * w = wide();
+        assert(w);
         (void)w;
     }
     
     void String::syncUtf8() const {
         const char * c = utf8();
+        assert(c);
         (void)c;
     }
     
@@ -122,25 +125,29 @@ namespace StringConvertUTF {
             const size_t memSize = CLZMA_STRING_MAX_BYTES_PER_WCHAR * (_size + 1);
             _cs.resize(memSize);
             _cs.erase(plzma_erase_zero, memSize);
-            UTF8 * dst = _cs;
+            UTF8 * dst = static_cast<UTF8 *>(_cs);
             ConversionResult convRes = sourceIllegal;
             if (sizeof(wchar_t) == sizeof(UTF32)) {
-                const UTF32 * src = _ws;
+                const UTF32 * src = static_cast<const UTF32 *>(_ws);
                 convRes = ConvertUTF32toUTF8(&src, src + _size, &dst, dst + memSize, strictConversion);
                 if (convRes != conversionOK) {
+                    src = static_cast<const UTF32 *>(_ws);
+                    dst = static_cast<UTF8 *>(_cs);
                     convRes = ConvertUTF32toUTF8(&src, src + _size, &dst, dst + memSize, lenientConversion);
                 }
             } else if (sizeof(wchar_t) == sizeof(UTF16)) {
-                const UTF16 * src = _ws;
+                const UTF16 * src = static_cast<const UTF16 *>(_ws);
                 convRes = ConvertUTF16toUTF8(&src, src + _size, &dst, dst + memSize, strictConversion);
                 if (convRes != conversionOK) {
+                    src = static_cast<const UTF16 *>(_ws);
+                    dst = static_cast<UTF8 *>(_cs);
                     convRes = ConvertUTF16toUTF8(&src, src + _size, &dst, dst + memSize, lenientConversion);
                 }
             }
             if (convRes != conversionOK) {
                 throw Exception(plzma_error_code_internal, "Wide character to UTF8 string conversion.", __FILE__, __LINE__);
             }
-            const size_t csLen = strlen(_cs);
+            const size_t csLen = strlen(static_cast<const char *>(_cs));
             if (memSize > (csLen + 1)) {
                 _cs.resize(csLen + 1);
             }
@@ -155,18 +162,22 @@ namespace StringConvertUTF {
         
         if (!_ws && _cs) {
             _ws.resize(sizeof(wchar_t) * (_size + 1));
-            const UTF8 * src = _cs;
+            const UTF8 * src = static_cast<const UTF8 *>(_cs);
             ConversionResult convRes = sourceIllegal;
             if (sizeof(wchar_t) == sizeof(UTF32)) {
-                UTF32 * dst = _ws;
+                UTF32 * dst = static_cast<UTF32 *>(_ws);
                 convRes = ConvertUTF8toUTF32(&src, src + _cslen, &dst, dst + _size, strictConversion);
                 if (convRes != conversionOK) {
+                    src = static_cast<const UTF8 *>(_cs);
+                    dst = static_cast<UTF32 *>(_ws);
                     convRes = ConvertUTF8toUTF32(&src, src + _cslen, &dst, dst + _size, lenientConversion);
                 }
             } else if (sizeof(wchar_t) == sizeof(UTF16)) {
-                UTF16 * dst = _ws;
+                UTF16 * dst = static_cast<UTF16 *>(_ws);
                 convRes = ConvertUTF8toUTF16(&src, src + _cslen, &dst, dst + _size, strictConversion);
                 if (convRes != conversionOK) {
+                    src = static_cast<const UTF8 *>(_cs);
+                    dst = static_cast<UTF16 *>(_ws);
                     convRes = ConvertUTF8toUTF16(&src, src + _cslen, &dst, dst + _size, lenientConversion);
                 }
             }

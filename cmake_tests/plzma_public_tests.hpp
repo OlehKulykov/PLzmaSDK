@@ -36,13 +36,13 @@
 #undef LIBPLZMA_BUILD
 #endif
 
-#include <libplzma.hpp>
-#include <libplzma.h>
-
 #include <iostream>
 #include <memory>
-#include <assert.h>
-#include <string.h>
+#include <cassert>
+#include <cstring>
+
+#include <libplzma.hpp>
+#include <libplzma.h>
 
 #include "../src/plzma_private.hpp"
 #include "../src/plzma_common.hpp"

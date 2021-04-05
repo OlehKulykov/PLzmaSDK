@@ -35,19 +35,18 @@
 #include "libplzma.h"
 
 /// @file libplzma.hpp
-/// @brief Single public header of the C++ library part.
+/// @brief Single public header of the Core C++ library part.
 ///
-/// Uses types, defines and common C functions presented in a single public header of the C library part.
-/// Everything what you need to use this library in C++ | Objective-C++ env. is here.
-
+/// This header file uses types, preprocessor definitions and common C functions presented in a single public header of the C library(libplzma.h).
+/// Everything what you need to use this library in C++ | Objective-C++ | Node.js env. is here.
 
 namespace plzma {
     
     /// @brief The presentation of the allocated raw heap memory.
     ///
     /// Uses \a plzma_malloc, \a plzma_realloc and \a plzma_free functions for handling the raw heap memory.
-    /// Following the \a Resource \a Acquisition \a Is \a Initialization or \a RAII technique, the allocated memory
-    /// will be deallocated via \a plzma_free function during the descruction.
+    /// Following the \a Resource \a Acquisition \a Is \a Initialization or \a RAII technique.
+    /// The allocated memory will be automatically deallocated via \a plzma_free function.
     struct LIBPLZMA_CPP_CLASS_API RawHeapMemory final {
     protected:
 #if defined(DEBUG)
@@ -445,15 +444,15 @@ namespace plzma {
                     const plzma_erase eraseType = plzma_erase_none);
     public:
         /// @return The UTF-8, null-terminated charater string.
-        /// @note If the internal string presentation is wide than the wide chars will be conversted to UTF-8 and returned.
-        /// If the \a count of characters is zero than the \a plzma_empty_cstring will be returned.
+        /// @note If the internal string presentation is wide, then the wide chars will be converted to UTF-8 and returned.
+        /// If the \a count of characters is zero, then the \a plzma_empty_cstring will be returned.
         /// @exception The \a Exception with \a plzma_error_code_internal code in case of conversion error or any nested.
         const char * LIBPLZMA_NONNULL utf8() const;
         
         
         /// @return The wide, null-terminated charater string.
-        /// @note If the internal string presentation is UTF-8 than the UTF-8 chars will be conversted to wide and returned.
-        /// If the \a count of characters is zero than the \a plzma_empty_wstring will be returned.
+        /// @note If the internal string presentation is UTF-8, then the UTF-8 chars will be converted to wide and returned.
+        /// If the \a count of characters is zero, then the \a plzma_empty_wstring will be returned.
         /// @exception The \a Exception with \a plzma_error_code_internal code in case of conversion error or any nested.
         const wchar_t * LIBPLZMA_NONNULL wide() const;
         
@@ -893,18 +892,29 @@ namespace plzma {
                                                              plzma_in_stream_seek_callback LIBPLZMA_NONNULL seekCallback,
                                                              plzma_in_stream_read_callback LIBPLZMA_NONNULL readCallback,
                                                              const plzma_context context = plzma_context{nullptr, nullptr}); // C2059 = { .context = nullptr, .deinitializer = nullptr }
-    
+
+    template<typename T>
+    class Vector;
+
+    typedef Vector<SharedPtr<InStream> > InStreamArray;
+
+    /// @brief Creates the multi input stream with a list of input streams.
+    /// The list should not be empty. The order: file.001, file.002, ..., file.XXX
+    /// @param streams The non-empty list of input streams. Each stream inside the list should also exist.
+    /// @return The shared pointer with input file stream.
+    /// @exception The \a Exception with \a plzma_error_code_invalid_arguments code in case if streams list is empty or contains empty stream.
+    LIBPLZMA_CPP_API(SharedPtr<InStream>) makeSharedInStream(InStreamArray && streams);
+
     template struct LIBPLZMA_CPP_CLASS_API Pair<RawHeapMemory, size_t, false>;
     typedef Pair<RawHeapMemory, size_t, false> RawHeapMemorySize;
     
-    /// @brief Interface to the output file stream.
+    /// @brief Interface to the output file or memory stream.
     class OutStream {
-    private:
+    protected:
         friend struct SharedPtr<OutStream>;
         virtual void retain() = 0;
         virtual void release() = 0;
         
-    protected:
         virtual void * LIBPLZMA_NONNULL base() noexcept = 0;
         virtual ~OutStream() noexcept { }
         
@@ -950,6 +960,68 @@ namespace plzma {
     /// @return The output file stream.
     LIBPLZMA_CPP_API(SharedPtr<OutStream>) makeSharedOutStream(void);
     
+    typedef Vector<SharedPtr<OutStream> > OutStreamArray;
+
+    /// @brief Interface to the output multi volume/part stream.
+    class OutMultiStream : public OutStream {
+    private:
+        friend struct SharedPtr<OutMultiStream>;
+    
+    protected:
+        virtual ~OutMultiStream() noexcept { }
+    
+    public:
+        /// @return The list of created sub-streams. The stream must be closed.
+        ///         If stream is opened, then the list is empty.
+        virtual OutStreamArray streams() const = 0;
+    };
+
+    template struct LIBPLZMA_CPP_CLASS_API SharedPtr<OutMultiStream>;
+
+    /// @brief Creates the output multi stream with directory path, part name, extension, format and part size.
+    /// All sub-streams are file streams.
+    /// @param dirPath The non-empty output directory path.
+    /// @param partName The non-empty output file name.
+    /// @param partExtension Optional extension.
+    /// @param format Format of the result file name part.
+    /// @param partSize The maximum size in bytes of each out file sub-stream.
+    /// If the number of file parts/sub-streams will exceed the maximum for a \a format, then the runtime exception will be thrown.
+    /// @return The output multi stream.
+    /// @exception The \a Exception with \a plzma_error_code_io code in case if path doesn't exist and stream can't create new one.
+    /// @exception The \a Exception with \a plzma_error_code_invalid_arguments code in case if path is empty.
+    /// @exception The \a Exception with \a plzma_error_code_invalid_arguments code in case if path is not a directory or there are no write permissions.
+    LIBPLZMA_CPP_API(SharedPtr<OutMultiStream>) makeSharedOutMultiStream(const Path & dirPath,
+                                                                         const String & partName,
+                                                                         const String & partExtension,
+                                                                         const plzma_plzma_multi_stream_part_name_format format,
+                                                                         const plzma_size_t partSize);
+
+
+    /// @brief Creates the output multi stream with movable directory path, part name, extension, format and part size.
+    /// All sub-streams are file streams.
+    /// @param dirPath The non-empty output directory path.
+    /// @param partName The non-empty output file name.
+    /// @param partExtension Optional extension.
+    /// @param format Format of the result file name part.
+    /// @param partSize The maximum size in bytes of each out file sub-stream.
+    /// If the number of file parts/sub-streams will exceed the maximum for a \a format, then the runtime exception will be thrown.
+    /// @return The output multi stream.
+    /// @exception The \a Exception with \a plzma_error_code_io code in case if path doesn't exist and stream can't create new one.
+    /// @exception The \a Exception with \a plzma_error_code_invalid_arguments code in case if path is empty.
+    /// @exception The \a Exception with \a plzma_error_code_invalid_arguments code in case if path is not a directory or there are no write permissions.
+    LIBPLZMA_CPP_API(SharedPtr<OutMultiStream>) makeSharedOutMultiStream(Path && dirPath,
+                                                                         String && partName,
+                                                                         String && partExtension,
+                                                                         const plzma_plzma_multi_stream_part_name_format format,
+                                                                         const plzma_size_t partSize);
+
+
+    /// @brief Creates the output multi stream object for writing to memory.
+    /// All sub-streams are memory streams.
+    /// @param partSize The maximum size in bytes of each out memory sub-stream.
+    /// @return The output multi stream.
+    LIBPLZMA_CPP_API(SharedPtr<OutMultiStream>) makeSharedOutMultiStream(const plzma_size_t partSize);
+
     //constexpr bool isPowerOf2(const size_t v) {
     //    return v && ((v & (v - 1)) == 0);
     //}
@@ -1139,7 +1211,9 @@ namespace plzma {
     template class LIBPLZMA_CPP_CLASS_API Vector<Pair<SharedPtr<Item>, SharedPtr<OutStream> > >;
     typedef Vector<Pair<SharedPtr<Item>, SharedPtr<OutStream> > > ItemOutStreamArray;
     
-    
+    template class LIBPLZMA_CPP_CLASS_API Vector<SharedPtr<InStream> >;
+    template class LIBPLZMA_CPP_CLASS_API Vector<SharedPtr<OutStream> >;
+
     /// @brief The interface to a progress delegate of the encoder and decoder.
     class ProgressDelegate {
     public:
@@ -1151,7 +1225,7 @@ namespace plzma {
     };
     
     
-    /// @brief The \a Decoder for extracting or testing the archive items.
+    /// @brief The \a Decoder for extracting or testing archive items.
     class Decoder {
     private:
         friend struct SharedPtr<Decoder>;
@@ -1169,7 +1243,7 @@ namespace plzma {
         
         
         /// @brief Provides the archive password for opening, extracting or testing items.
-        /// @param password The password UTF-8 character presentation.
+        /// @param password The password UTF-8 character presentation. NULL or zero length password means no password provided.
         /// @note Thread-safe.
         virtual void setPassword(const char * LIBPLZMA_NULLABLE password) = 0;
         
@@ -1181,8 +1255,9 @@ namespace plzma {
         
         /// @brief Opens the archive.
         ///
-        /// During the process, the decoder is self-retained till operation is in progress.
+        /// During the process, the decoder is self-retained as long as the operation is in progress.
         /// @return \a true the archive was successfully opened, otherwice \a false.
+        /// @note After successful opening, the input stream will be opened as long as the decoder exists.
         /// @note The opening progress might be executed in a separate thread.
         /// @note The opening progress might be aborted via \a abort() method.
         /// @note Thread-safe.
@@ -1209,7 +1284,7 @@ namespace plzma {
         
         
         /// @brief Receives a single archive item at a specific index.
-        /// @param index The index of the item inside the arhive. Must be less then the number of items reported by the \a count() method.
+        /// @param index The index of the item inside the arhive. Must be less than the number of items reported by the \a count() method.
         /// @return The archive item.
         /// @note The decoder must be opened.
         /// @note Thread-safe.
@@ -1218,7 +1293,7 @@ namespace plzma {
         
         /// @brief Extracts all archive items to a specific path.
         ///
-        /// During the process, the decoder is self-retained till operation is in progress.
+        /// During the process, the decoder is self-retained as long as the operation is in progress.
         /// @param path The directory path to extract all items.
         /// @param usingItemsFullPath Extract item using it's full path or only last path component.
         /// @note The extracting progress might be executed in a separate thread.
@@ -1229,7 +1304,7 @@ namespace plzma {
         
         /// @brief Extracts some archive items to a specific path.
         ///
-        /// During the process, the decoder is self-retained till operation is in progress.
+        /// During the process, the decoder is self-retained as long as the operation is in progress.
         /// @param items The array of items to extract.
         /// @param path The directory path to extract all items.
         /// @param usingItemsFullPath Extract item using it's full path or only the last path component.
@@ -1243,7 +1318,7 @@ namespace plzma {
         
         /// @brief Extracts each archive item to a separate out-stream.
         ///
-        /// During the process, the decoder is self-retained till operation is in progress.
+        /// During the process, the decoder is self-retained as long as the operation is in progress.
         /// @param items The array with item/out-stream pairs.
         /// @note The extracting progress might be executed in a separate thread.
         /// @note The extracting progress might be aborted via \a abort() method.
@@ -1253,7 +1328,7 @@ namespace plzma {
         
         /// @brief Tests specific archive items.
         ///
-        /// During the process, the decoder is self-retained till operation is in progress.
+        /// During the process, the decoder is self-retained as long as the operation is in progress.
         /// @param items The array with items to test.
         /// @note The testing progress might be executed in a separate thread.
         /// @note The testing progress might be aborted via \a abort() method.
@@ -1263,7 +1338,7 @@ namespace plzma {
         
         /// @brief Tests all archive items.
         ///
-        /// During the process, the decoder is self-retained till operation is in progress.
+        /// During the process, the decoder is self-retained as long as the operation is in progress.
         /// @note The testing progress might be executed in a separate thread.
         /// @note The testing progress might be aborted via \a abort() method.
         /// @note Thread-safe.
@@ -1273,9 +1348,10 @@ namespace plzma {
     template struct LIBPLZMA_CPP_CLASS_API SharedPtr<Decoder>;
     
     
-    /// @brief Creates the decoder for extracting or testing the archive items.
+    /// @brief Creates the decoder for extracting or testing archive items.
     ///
     /// @param stream The input stream which contains the archive file content.
+    ///               After successful opening, the input stream will be opened as long as the decoder exists.
     /// @param type The type of the arhive file content.
     /// @param context The user provided context.
     /// @exception The \a Exception with \a plzma_error_code_invalid_arguments code in case if provided stream is empty.
@@ -1284,7 +1360,7 @@ namespace plzma {
                                                            const plzma_context context = plzma_context{nullptr, nullptr}); // C2059 = { .context = nullptr, .deinitializer = nullptr }
     
     
-    /// @brief The \a Encoder for compressing the archive items.
+    /// @brief The \a Encoder for compressing archive items.
     class Encoder {
     private:
         friend struct SharedPtr<Encoder>;
@@ -1296,13 +1372,21 @@ namespace plzma {
         
     public:
         /// @brief Provides the password for archive.
-        /// @param password The password wide character presentation.
+        ///
+        /// This password will be used for encrypting header and the content if such options are enabled
+        /// and selected type supports password protection.
+        /// See \a setShouldEncryptHeader, \a setShouldEncryptContent methods and \a plzma_file_type enum.
+        /// @param password The password wide character presentation. NULL or zero length password means no password provided.
         /// @note Thread-safe. Must be set before opening.
         virtual void setPassword(const wchar_t * LIBPLZMA_NULLABLE password) = 0;
         
         
         /// @brief Provides the password for archive.
-        /// @param password The password UTF-8 character presentation.
+        ///
+        /// This password will be used for encrypting header and the content if such options are enabled
+        /// and selected type supports password protection.
+        /// See \a setShouldEncryptHeader, \a setShouldEncryptContent methods and \a plzma_file_type enum.
+        /// @param password The password UTF-8 character presentation. NULL or zero length password means no password provided.
         /// @note Thread-safe. Must be set before opening.
         virtual void setPassword(const char * LIBPLZMA_NULLABLE password) = 0;
         
@@ -1329,7 +1413,9 @@ namespace plzma {
         
         /// @brief Opens the encoder for compressing.
         ///
-        /// During the process, the encoder is self-retained till operation is in progress.
+        /// During the process, the encoder is self-retained as long as the operation is in progress.
+        /// @return \a false if nothing to compress or encoder aborted or incorrect number of items or number of items greater than supported,
+        /// otherwise \a true.
         /// @note The opening progress might be executed in a separate thread.
         /// @note The opening progress might be aborted via \a abort() method.
         /// @note Thread-safe.
@@ -1343,7 +1429,7 @@ namespace plzma {
         
         /// @brief Compresses the provided paths and streams.
         ///
-        /// During the process, the encoder is self-retained till operation is in progress.
+        /// During the process, the encoder is self-retained as long as the operation is in progress.
         /// @note The compress progress might be executed in a separate thread.
         /// @note The compress progress might be aborted via \a abort() method.
         /// @note Thread-safe.
@@ -1395,13 +1481,17 @@ namespace plzma {
         virtual void setShouldCompressHeaderFull(const bool compress) = 0;
         
         
-        /// @brief Should encoder encrypt the content of the archive items.
+        /// @brief Should encoder encrypt the content of archive items.
         /// @note The password will be required to decode/extract archive items.
         /// @note Thread-safe.
         virtual bool shouldEncryptContent() const = 0;
         
         
-        /// @brief Set encoder will encrypt the content of the archive items.
+        /// @brief Set encoder will encrypt the content of archive items.
+        ///
+        /// The encryption will take place only if this option enabled, the type supports password protection
+        /// and the password has been provided.
+        /// See \a setPassword method and \a plzma_file_type enum.
         /// @note The password will be required to decode/extract archive items.
         /// @note Thread-safe. Must be set before opening.
         virtual void setShouldEncryptContent(const bool encrypt) = 0;
@@ -1414,6 +1504,10 @@ namespace plzma {
         
         
         /// @brief Set encoder will encrypt the header with the list of archive items.
+        ///
+        /// The encryption will take place only if this option enabled, the type supports password protection
+        /// and the password has been provided.
+        /// See \a setPassword method and \a plzma_file_type enum.
         /// @note The password will be required to open archive and list the items.
         /// @note Thread-safe. Must be set before opening.
         virtual void setShouldEncryptHeader(const bool encrypt) = 0;
@@ -1460,6 +1554,19 @@ namespace plzma {
     /// @param context The user provided context to inform the progress of the operation.
     /// @exception The \a Exception with \a plzma_error_code_invalid_arguments code in case if provided stream is empty.
     LIBPLZMA_CPP_API(SharedPtr<Encoder>) makeSharedEncoder(const SharedPtr<OutStream> & stream,
+                                                           const plzma_file_type type,
+                                                           const plzma_method method,
+                                                           const plzma_context context = plzma_context{nullptr, nullptr}); // C2059 = { .context = nullptr, .deinitializer = nullptr }
+
+
+    /// @brief Creates the encoder with output multi stream.
+    /// @param stream The output multi stream to write the archive's file content.
+    /// @param type The type of the archive. Currently supports only 7-zip archive type.
+    /// @param method The compresion method.
+    /// @param context The user provided context to inform the progress of the operation.
+    /// @exception The \a Exception with \a plzma_error_code_invalid_arguments code in case if provided stream is empty.
+    /// @exception The \a Exception with \a plzma_error_code_invalid_arguments code in case if provided archive type is not 7-zip.
+    LIBPLZMA_CPP_API(SharedPtr<Encoder>) makeSharedEncoder(const SharedPtr<OutMultiStream> & stream,
                                                            const plzma_file_type type,
                                                            const plzma_method method,
                                                            const plzma_context context = plzma_context{nullptr, nullptr}); // C2059 = { .context = nullptr, .deinitializer = nullptr }

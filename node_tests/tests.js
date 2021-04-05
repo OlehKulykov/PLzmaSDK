@@ -178,12 +178,12 @@ async function decoderAsyncTest1() {
     console.log(`${t}. decoderAsyncTest1 enter`);
     const path = plzma.Path(__dirname).append('../test_files/1.7z');
     const decoder = plzma.Decoder(plzma.InStream(path), plzma.FileType.sevenZ);
-    decoder.setProgressDelegate((path, progress) => console.log(`testing: ${path} progress: ${progress}`) );
+    decoder.setProgressDelegate((path, progress) => console.log(`${t}. testing: ${path} progress: ${progress}`) );
     const openRes = await decoder.openAsync();
     console.log(`${t}. openRes: ${openRes}`);
     const testRes = await decoder.testAsync();
     console.log(`${t}. testRes: ${testRes}`);
-    decoder.setProgressDelegate((path, progress) => console.log(`testing2: ${path} progress: ${progress}`) );
+    decoder.setProgressDelegate((path, progress) => console.log(`${t}. testing2: ${path} progress: ${progress}`) );
     console.log(`${t}. trying test 2`);
     const testRes2 = await decoder.testAsync([]);
     console.log(`${t}. testRes2: ${testRes2}`);
@@ -192,7 +192,7 @@ async function decoderAsyncTest1() {
     for (let i = 0, n = decoder.count; i < n; i++) { 
         items.push(decoder.itemAt(i)); 
     }
-    decoder.setProgressDelegate((path, progress) => console.log(`testing3: ${path} progress: ${progress}`) );
+    decoder.setProgressDelegate((path, progress) => console.log(`${t}. testing3: ${path} progress: ${progress}`) );
     const testRes3 = await decoder.testAsync(items);
     console.log(`${t}. testRes3: ${testRes3}`);
     console.log(`${t}. decoderAsyncTest1 exit`);
@@ -202,7 +202,7 @@ async function decoderAsyncTest1() {
         itemsMap.set(decoder.itemAt(i), plzma.OutStream()); 
     }
     console.log(`${t}. itemsMap: ${itemsMap}`);
-    decoder.setProgressDelegate((path, progress) => console.log(`extracting1: ${path} progress: ${progress}`) );
+    decoder.setProgressDelegate((path, progress) => console.log(`${t}. extracting1: ${path} progress: ${progress}`) );
     const extractRes1 = await decoder.extractAsync(itemsMap);
     console.log(`${t}. extractRes1: ${extractRes1}`);
 }
@@ -225,7 +225,7 @@ async function decoderAsyncExample1() {
 
         // 2. Create decoder with source input stream, type of archive and optional delegate.
         const decoder = new plzma.Decoder(archivePathInStream, plzma.FileType.sevenZ);
-        decoder.setProgressDelegate((path, progress) => console.log(`Delegating progress, path: ${path}, progress: ${progress}`) );
+        decoder.setProgressDelegate((path, progress) => console.log(`${t}. Delegating progress, path: ${path}, progress: ${progress}`) );
 
         //  2.1. Optionaly provide the password to open/list/test/extract the archive items.
         decoder.setPassword('1234');
@@ -247,65 +247,279 @@ async function decoderAsyncExample1() {
 
         const extracted = await decoder.extractAsync(selectedItemsToStreams);
     } catch (error) {
-        console.log(`Exception: ${error}`);
+        console.log(`${t}. Exception: ${error}`);
     }
 }
 
 decoderAsyncExample1();
 
-test++; // encoder.open
-async function encoderAsyncTest1() {
+test++; // testDecodeMultiVolume
+async function testDecodeMultiVolume() {
     const t = test;
-    console.log(`${t}. encoderAsyncTest1 enter`);
+    console.log(`${t}. testDecodeMultiVolume enter`);
     try {
-       
+        let streams = [ 
+            plzma.InStream(plzma.Path(__dirname).append('../test_files/18.7z.001')),
+            plzma.InStream(plzma.Path(__dirname).append('../test_files/18.7z.002')),
+            plzma.InStream(plzma.Path(__dirname).append('../test_files/18.7z.003')) 
+        ];
+        
+        let decoder = plzma.Decoder(plzma.InStream(streams), plzma.FileType.sevenZ);
+        decoder.setPassword('1234');
+        let opened = await decoder.openAsync();
+        if (!opened) { throw 'opened' }
+        let numberOfArchiveItems = decoder.count;
+        if (numberOfArchiveItems !== 5) { throw 'numberOfArchiveItems !== 5' }
+
+        let memoryMap = new Map();
+        let i = 0;
+        while (i < 5) {
+            memoryMap.set(decoder.itemAt(i), new plzma.OutStream());
+            i++;
+        }
+        if (!(memoryMap.size === 5)) { throw 'memoryMap.size === 5' }
+        
+        let extracted = await decoder.extractAsync(memoryMap);
+        if (!extracted) { throw 'extracted' }
+
+        for (const [item, stream] of memoryMap) {
+            let content = stream.copyContent();
+            let erased = stream.erase(plzma.Erase.zero);
+            if (!erased) { throw 'erased' }
+            let itemPathString = item.path.toString();
+            switch (itemPathString) {
+                case 'shutuptakemoney.jpg':
+                    if (!(content.byteLength === 33398)) { throw 'content.byteLength === 33398' }
+                    console.log(`${t}. Check ${itemPathString} ok`);
+                    break;
+                case 'SouthPark.jpg':
+                    if (!(content.byteLength === 40778)) { throw 'content.byteLength === 40778' }
+                    console.log(`${t}. Check ${itemPathString} ok`);
+                    break;
+                case 'zombies.jpg':
+                    if (!(content.byteLength === 83127)) { throw 'content.byteLength === 83127' }
+                    console.log(`${t}. Check ${itemPathString} ok`);
+                    break;
+                case 'Мюнхен.jpg':
+                case 'München.jpg':
+                    if (!(content.byteLength === 8764)) { throw 'content.byteLength === 8764' }
+                    console.log(`${t}. Check ${itemPathString} ok`);
+                    break;
+                default:
+                    throw '';
+            }
+        }
     } catch (error) {
-        console.log(`Exception: ${error}`);
+        console.log(`${t}. Exception: ${error}`);
     }
+    console.log(`${t}. testDecodeMultiVolume exit`);
 }
 
-encoderAsyncTest1();
+testDecodeMultiVolume();
 
-// let decoder = plzma.Decoder(plzma.InStream('/tmp/7z1900-src.7z'), plzma.FileType.sevenZ);
-// if (decoder.open() !== true) throw '';
-// decoder = plzma.Decoder(plzma.InStream('/tmp/7z1900-src.7z'), plzma.FileType.sevenZ);
-// decoder.openAsync()
-// .then(() => {
-//     console.log(`${test}. resolve: decoder.openAsync`);
-// })
-// .catch((error) => {
-//     console.log(`${test}. catch: decoder.openAsync error: ${error}`);
-// });
+test++; // testEncodeMultiVolume
+async function testEncodeMultiVolume() {
+    const t = test;
+    console.log(`${t}. testEncodeMultiVolume enter`);
+    try {
+        //case fileNoPassword = 0 , memNoPassword = 1, fileWithPassword = 2, memWithPassword = 3
+        for (let useCaseIndex = 0; useCaseIndex < 4; useCaseIndex++) {
+            console.log(`${t}. testEncodeMultiVolume useCaseIndex: ${useCaseIndex}`);
+            let path = plzma.Path.tmpPath.appendingRandomComponent();
+            let partSize = 32 * 1024;
+            let multiStream;
+            switch (useCaseIndex) {
+                case 0:
+                case 2:
+                    multiStream = new plzma.OutMultiStream(path, 'file', '7z', plzma.MultiStreamPartNameFormat.nameExt00x, partSize);
+                    break;
+                case 1:
+                case 3:
+                    multiStream = new plzma.OutMultiStream(partSize);
+                    break;
+                default:
+                    break;
+            }
+            let encoder = new plzma.Encoder(multiStream, plzma.FileType.sevenZ, plzma.Method.LZMA);
+            if (useCaseIndex === 2 || useCaseIndex === 3) {
+                encoder.setPassword('hello');
+            }
+            encoder.add(plzma.InStream(plzma.Path(__dirname).append('../test_files/shutuptakemoney.jpg')), 'shutuptakemoney.jpg');
+            encoder.add(plzma.InStream(plzma.Path(__dirname).append('../test_files/SouthPark.jpg')), plzma.Path('SouthPark.jpg'));
+            encoder.add(plzma.InStream(plzma.Path(__dirname).append('../test_files/zombies.jpg')), plzma.Path('zombies.jpg'));
+            encoder.add(plzma.InStream(plzma.Path(__dirname).append('../test_files/Мюнхен.jpg')), 'Мюнхен.jpg');
+            encoder.add(plzma.InStream(plzma.Path(__dirname).append('../test_files/München.jpg')), 'München.jpg');
+            //encoder.setProgressDelegate((path, progress) => console.log(`${t}. Encode ${useCaseIndex}: delegating progress, path: ${path}, progress: ${progress}`) );
 
-// if (decoder.count <= 0) throw '';
-// 
-// // console.log(`${test}. decoder.items: ${decoder.items}`);
-// console.log(`${test}. decoder.itemAt: ${decoder.itemAt(1)}`);
-// decoder.setProgressDelegate((itemPath, progress) => {
-//     console.log(`path: ${itemPath} progress: ${progress}`);
-// });
-// let res;
-// res = decoder.test();
-// console.log(`${test}.1 res: ${res}`);
-// let wait = { value: true };
-// res = decoder.testAsync(null, (ar) => {
-//     console.log(`async result: ${ar}`);
-//     wait.value = false;
-// });
-// console.log(`${test}.1 res: ${res}`);
+            let opened;
+            if (useCaseIndex % 2) {
+                opened = await encoder.openAsync();
+            } else {
+                opened = encoder.open();
+            }
+            if (!opened) { throw 'opened' }
+            
+            let compressed;
+            if (useCaseIndex % 2) {
+                compressed = encoder.compress();
+            } else {
+                compressed = await encoder.compressAsync();
+            }
+            if (!compressed) { throw 'compressed' }
 
-// let counter = 1;
-// while (wait.value) {
-//     counter++;
-//     if (counter === 999999) {
-//         counter = 1;
-//     }
-// }
+            encoder.abort();
 
-// iterator = plzma.Path.tmpPath.openDir(plzma.OpenDirMode.followSymlinks);
-// while (iterator.next()) {
-//     iterator.fullPath.remove();
-// }
-// iterator.close();
+            let content = multiStream.copyContent();
+            let totalPartsSize = 0;
+            switch (useCaseIndex) {
+                case 0:
+                case 2: {
+                    let pathIterator = path.openDir();
+                    while (pathIterator.next()) {
+                        let fullPath = pathIterator.fullPath;
+                        console.log(`${fullPath}`);
+                        let partStat = fullPath.stat;
+                        totalPartsSize += Number(partStat.size);
+                    }
+                    if (content.byteLength !== totalPartsSize) { throw 'content.byteLength !== totalPartsSize' }
+                } break;
+            
+                default:
+                    break;
+            }
+            
+            let outMultiStreams = multiStream.streams;
+            if (!(outMultiStreams.length > 0)) { throw 'outMultiStreams.length > 0' }
 
-console.log('exit.');
+            totalPartsSize = 0;
+            let i = 0;
+            for (let outMultiStream of outMultiStreams) {
+                let partContent = outMultiStream.copyContent();
+                if (i + 1 == outMultiStreams.length) {
+                    if (!(partContent.byteLength <= partSize)) { throw 'partContent.byteLength <= partSize' }
+                } else {
+                    if (!(partContent.byteLength === partSize)) { throw 'partContent.byteLength === partSize' }
+                }
+                totalPartsSize += partContent.byteLength;
+                i += 1;
+            }
+            if (!(content.byteLength === totalPartsSize)) { throw 'content.byteLength === totalPartsSize' }
+            let erased = multiStream.erase();
+            if (!erased) { throw 'erased' }
+            
+            let decoder = plzma.Decoder(plzma.InStream(content), plzma.FileType.sevenZ);
+            //decoder.setProgressDelegate((path, progress) => console.log(`${t}. Decode ${useCaseIndex}: delegating progress, path: ${path}, progress: ${progress}`) );
+            if (useCaseIndex === 2 || useCaseIndex === 3) {
+                decoder.setPassword('hello');
+            }
+            console.log(`${t}. `);
+            opened = decoder.open();
+            if (!erased) { throw 'opened' }
+            
+            let itemsCount = decoder.count;
+            if (!(itemsCount === 5)) { throw 'itemsCount === 5' }
+                
+            let memoryMap = new Map();
+            let fileMap = new Map();
+            i = 0;
+            while (i < 5) {
+                memoryMap.set(decoder.itemAt(i), new plzma.OutStream());
+                fileMap.set(decoder.itemAt(i), new plzma.OutStream(plzma.Path.tmpPath.appendingRandomComponent()));
+                i += 1;
+            }
+            if (!(memoryMap.size === 5)) { throw 'memoryMap.size === 5' }
+            if (!(fileMap.size === 5)) { throw 'fileMap.size === 5' }
+            
+
+            let extracted;
+            if (useCaseIndex % 2) {
+                extracted = decoder.extract(memoryMap);
+                if (!extracted) { throw 'extracted' }
+                console.log(`${t}. `);
+                extracted = await decoder.extractAsync(fileMap);
+                if (!extracted) { throw 'extracted' }
+            } else {
+                extracted = await decoder.extractAsync(memoryMap);
+                if (!extracted) { throw 'extracted' }
+                console.log(`${t}. `);
+                extracted = decoder.extract(fileMap);
+                if (!extracted) { throw 'extracted' }
+            }
+            
+            for (const [item, stream] of memoryMap) {
+                let content = stream.copyContent();
+                erased = stream.erase(plzma.Erase.zero);
+                if (!erased) { throw 'erased' }
+                let itemPathString = item.path.toString();
+                switch (itemPathString) {
+                    case 'shutuptakemoney.jpg':
+                        if (!(content.byteLength === 33398)) { throw 'content.byteLength === 33398' }
+                        console.log(`${t}. Check ${itemPathString} ok`);
+                        break;
+                    case 'SouthPark.jpg':
+                        if (!(content.byteLength === 40778)) { throw 'content.byteLength === 40778' }
+                        console.log(`${t}. Check ${itemPathString} ok`);
+                        break;
+                    case 'zombies.jpg':
+                        if (!(content.byteLength === 83127)) { throw 'content.byteLength === 83127' }
+                        console.log(`${t}. Check ${itemPathString} ok`);
+                        break;
+                    case 'Мюнхен.jpg':
+                    case 'München.jpg':
+                        if (!(content.byteLength === 8764)) { throw 'content.byteLength === 8764' }
+                        console.log(`${t}. Check ${itemPathString} ok`);
+                        break;
+                    default:
+                        throw '';
+                }
+            }
+
+            for (const [item, stream] of fileMap) {
+                let content = stream.copyContent();
+                erased = stream.erase(plzma.Erase.zero);
+                if (!erased) { throw 'erased' }
+                let itemPathString = item.path.toString();
+                switch (itemPathString) {
+                    case 'shutuptakemoney.jpg':
+                        if (!(content.byteLength === 33398)) { throw 'content.byteLength === 33398' }
+                        console.log(`${t}. Check ${itemPathString} ok`);
+                        break;
+                    case 'SouthPark.jpg':
+                        if (!(content.byteLength === 40778)) { throw 'content.byteLength === 40778' }
+                        console.log(`${t}. Check ${itemPathString} ok`);
+                        break;
+                    case 'zombies.jpg':
+                        if (!(content.byteLength === 83127)) { throw 'content.byteLength === 83127' }
+                        console.log(`${t}. Check ${itemPathString} ok`);
+                        break;
+                    case 'Мюнхен.jpg':
+                    case 'München.jpg':
+                        if (!(content.byteLength === 8764)) { throw 'content.byteLength === 8764' }
+                        console.log(`${t}. Check ${itemPathString} ok`);
+                        break;
+                    default:
+                        throw '';
+                }
+            }
+            
+            decoder.abort();
+            path.remove();
+            
+            for (const [item, stream] of memoryMap) {
+                erased = stream.erase();
+                if (!erased) { throw 'erased' }
+            }
+            for (const [item, stream] of fileMap) {
+                erased = stream.erase();
+                if (!erased) { throw 'erased' }
+            }
+        }
+    } catch (error) {
+        console.log(`${t}. Exception: ${error}`);
+    }
+    console.log(`${t}. testMultiVolume exit`);
+}
+
+testEncodeMultiVolume();
+
+console.log('Global exit.');

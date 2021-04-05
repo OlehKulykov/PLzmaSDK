@@ -527,7 +527,7 @@ namespace pathUtils {
             blen--;
         }
         if (alen == blen) {
-            return alen ? memcmp(a, b, sizeof(T) * alen) == 0 : true;
+            return alen ? (memcmp(a, b, sizeof(T) * alen) == 0) : true;
         }
         return false;
     }
@@ -544,7 +544,7 @@ namespace pathUtils {
         }
     };
     
-    extern bool removeDir(Path & path, const bool skipErrors);
+    LIBPLZMA_CPP_API_PRIVATE(bool) removeDir(Path & path, const bool skipErrors);
 #elif defined(LIBPLZMA_POSIX)
     struct RAIIDIR final {
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(RAIIDIR)
@@ -557,7 +557,7 @@ namespace pathUtils {
         }
     };
     
-    extern bool removeDir(Path & path, const bool skipErrors);
+    LIBPLZMA_CPP_API_PRIVATE(bool) removeDir(Path & path, const bool skipErrors);
 #endif
     template<typename T>
     bool removePath(const T * LIBPLZMA_NONNULL path, const bool skipErrors) {

@@ -64,6 +64,8 @@ try { \
     createdCObject.exception = static_cast<void *>(exception.moveToHeapCopy()); \
 } catch (const std::exception & exception) { \
     createdCObject.exception = static_cast<void *>(Exception::create(plzma_error_code_internal, exception.what(), __FILE__, __LINE__)); \
+} catch (...) { \
+    createdCObject.exception = static_cast<void *>(Exception::create(plzma_error_code_unknown, nullptr, __FILE__, __LINE__)); \
 } \
 return createdCObject; \
 
@@ -113,6 +115,8 @@ try { \
     OBJ_PTR->exception = static_cast<void *>(exception.moveToHeapCopy()); \
 } catch (const std::exception & exception) { \
     OBJ_PTR->exception = static_cast<void *>(Exception::create(plzma_error_code_internal, exception.what(), __FILE__, __LINE__)); \
+} catch (...) { \
+    OBJ_PTR->exception = static_cast<void *>(Exception::create(plzma_error_code_unknown, nullptr, __FILE__, __LINE__)); \
 } \
 return FAIL_RES; \
 
@@ -136,6 +140,8 @@ return FAIL_RES; \
     OBJ_PTR->exception = static_cast<void *>(exception.moveToHeapCopy()); \
 } catch (const std::exception & exception) { \
     OBJ_PTR->exception = static_cast<void *>(Exception::create(plzma_error_code_internal, exception.what(), __FILE__, __LINE__)); \
+}  catch (...) { \
+    OBJ_PTR->exception = static_cast<void *>(Exception::create(plzma_error_code_unknown, nullptr, __FILE__, __LINE__)); \
 } \
 
 

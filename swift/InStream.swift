@@ -114,7 +114,9 @@ public class InStream {
             guard let address = ptr.baseAddress else {
                 throw Exception(code: .invalidArguments,
                                 what: "Can't get data memory.",
-                                reason: "The memory is null.")
+                                reason: "The memory is null.",
+                                file: #file,
+                                line: #line)
             }
             return plzma_in_stream_create_with_memory_copy(address, size)
         })
@@ -126,14 +128,16 @@ public class InStream {
     
     
     /// Initializes the input file stream with the file data.
-    /// During the creation, the data will not be copyed.
+    /// During the creation and lifetime the data will not be copyed.
     /// - Parameter dataNoCopy: The file data.
     /// - Throws: `Exception` with `.invalidArguments` code in case if file data is empty.
     public init(dataNoCopy: Data) throws {
         if dataNoCopy.isEmpty {
             throw Exception(code: .invalidArguments,
                             what: "Can't instantiate in-stream without memory.",
-                            reason: "The memory size is zero.")
+                            reason: "The memory size is zero.",
+                            file: #file,
+                            line: #line)
         }
         let context = DataNoCopyContext(dataNoCopy)
         let unmanagedContext = Unmanaged<DataNoCopyContext>.passRetained(context)
@@ -201,6 +205,47 @@ public class InStream {
             unmanagedContext.release()
             throw Exception(object: exception)
         }
+        object = stream
+    }
+    
+    /// Initializes multi input stream with an array of input streams.
+    /// The array should not be empty. The order: file.001, file.002, ..., file.XXX
+    /// - Parameter streams: The non-empty array of input streams. Each stream inside array should also exist.
+    /// - Note: The content of array will be moved to the newly created stream.
+    /// - Note: The array should not be empty.
+    /// - Throws: `Exception` with `.invalidArguments` code in case if streams array is empty or contains empty stream.
+    public init(streams: [InStream]) throws {
+        let count = streams.count
+        if count < 0 || count > plzma_max_size() {
+            throw Exception(code: .invalidArguments,
+                            what: "Invalid number of streams.",
+                            reason: "The number should be positive and less than maximum supported size.",
+                            file: #file,
+                            line: #line)
+        }
+        
+        var streamsArrayObject = plzma_in_stream_array_create_with_capacity(Size(count))
+        if let exception = streamsArrayObject.exception {
+            throw Exception(object: exception)
+        }
+        
+        defer {
+            plzma_in_stream_array_release(&streamsArrayObject)
+        }
+        
+        for subStream in streams {
+            var subStreamObject = subStream.object
+            plzma_in_stream_array_add(&streamsArrayObject, &subStreamObject)
+            if let exception = streamsArrayObject.exception {
+                throw Exception(object: exception)
+            }
+        }
+        
+        let stream = plzma_in_stream_create_with_stream_arraym(&streamsArrayObject)
+        if let exception = stream.exception {
+            throw Exception(object: exception)
+        }
+        
         object = stream
     }
     

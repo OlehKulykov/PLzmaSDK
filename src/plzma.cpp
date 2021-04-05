@@ -52,6 +52,20 @@
 #define RAND_MAX 0x7fffffff
 #endif
 
+#if defined(__clang__)
+  #if __has_feature(cxx_rtti)
+    #define RTTI_ENABLED 1
+  #endif
+#elif defined(__GNUG__)
+  #if defined(__GXX_RTTI)
+    #define RTTI_ENABLED 1
+  #endif
+#elif defined(_MSC_VER)
+  #if defined(_CPPRTTI)
+    #define RTTI_ENABLED 1
+  #endif
+#endif
+
 int32_t plzma_random_in_range(const int32_t low, const int32_t up) {
     static bool notInitalized = true;
     if (notInitalized) {
@@ -184,7 +198,7 @@ const char * LIBPLZMA_NONNULL plzma_version(void) {
     LIBPLZMA_TOSTRING(LIBPLZMA_VERSION_MINOR) "."
     LIBPLZMA_TOSTRING(LIBPLZMA_VERSION_PATCH)
 #if defined(LIBPLZMA_VERSION_BUILD)
-    "." LIBPLZMA_TOSTRING(LIBPLZMA_VERSION_BUILD)
+    " (" LIBPLZMA_TOSTRING(LIBPLZMA_VERSION_BUILD) ")"
 #endif
     
 #if defined(LIBPLZMA_STATIC)
@@ -208,8 +222,10 @@ const char * LIBPLZMA_NONNULL plzma_version(void) {
 #if defined(LIBPLZMA_HAVE_STD)
     " : std"
 #endif
-    
-#if defined(LIBPLZMA_NO_CPP_RTTI)
+
+#if defined(RTTI_ENABLED)
+    " : rtti"
+#elif defined(LIBPLZMA_NO_CPP_RTTI)
     " : no rtti"
 #endif
     
@@ -528,12 +544,11 @@ plzma_size_t plzma_item_array_count(const plzma_item_array * LIBPLZMA_NONNULL ar
 }
 
 plzma_item plzma_item_array_at(plzma_item_array * LIBPLZMA_NONNULL array,
-                                   const plzma_size_t index) {
+                               const plzma_size_t index) {
     LIBPLZMA_C_BINDINGS_CREATE_OBJECT_FROM_TRY(plzma_item, array)
     auto item = static_cast<const ItemArray *>(array->object)->at(index);
     createdCObject.object = static_cast<void *>(item.take());
-    return createdCObject;
-    LIBPLZMA_C_BINDINGS_OBJECT_EXEC_CATCH_RETURN(array, createdCObject)
+    LIBPLZMA_C_BINDINGS_CREATE_OBJECT_CATCH
 }
 
 void plzma_item_array_sort(plzma_item_array * LIBPLZMA_NONNULL array) {
@@ -573,14 +588,15 @@ plzma_size_t plzma_item_out_stream_array_count(const plzma_item_out_stream_array
 
 plzma_item_out_stream_array_pair plzma_item_out_stream_array_pair_at(plzma_item_out_stream_array * LIBPLZMA_NONNULL map,
                                                                      const plzma_size_t index) {
-    plzma_item_out_stream_array_pair cpair;
-    cpair.item.object = cpair.item.exception = cpair.stream.object = cpair.stream.exception = nullptr;
-    LIBPLZMA_C_BINDINGS_OBJECT_EXEC_TRY_RETURN(map, cpair)
+    plzma_item_out_stream_array_pair createdCObject;
+    createdCObject.item.object = createdCObject.item.exception = nullptr;
+    createdCObject.stream.object = createdCObject.stream.exception = nullptr;
+    createdCObject.exception = nullptr;
+    LIBPLZMA_C_BINDINGS_OBJECT_EXEC_TRY_RETURN(map, createdCObject)
     auto pair = static_cast<ItemOutStreamArray *>(map->object)->at(index);
-    cpair.item.object = static_cast<void *>(pair.first.take());
-    cpair.stream.object = static_cast<void *>(pair.second.take());
-    return cpair;
-    LIBPLZMA_C_BINDINGS_OBJECT_EXEC_CATCH_RETURN(map, cpair)
+    createdCObject.item.object = static_cast<void *>(pair.first.take());
+    createdCObject.stream.object = static_cast<void *>(pair.second.take());
+    LIBPLZMA_C_BINDINGS_CREATE_OBJECT_CATCH
 }
 
 void plzma_item_out_stream_array_sort(plzma_item_out_stream_array * LIBPLZMA_NONNULL map) {
@@ -588,6 +604,8 @@ void plzma_item_out_stream_array_sort(plzma_item_out_stream_array * LIBPLZMA_NON
 }
 
 void plzma_item_out_stream_array_pair_release(plzma_item_out_stream_array_pair * LIBPLZMA_NONNULL pair) {
+    plzma_exception_release(pair->exception);
+    pair->exception = nullptr;
     plzma_item_release(&pair->item);
     plzma_out_stream_release(&pair->stream);
 }

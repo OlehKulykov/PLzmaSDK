@@ -28,6 +28,7 @@ Available for all Apple's platforms(iOS, macOS, tvOS, watchOS), Android, Windows
   * [xz]. [Lzma2] compression method.
   * [tar]/[tarball]. *.tar, *.tar.xz and *.tar.7z archives.
 - Supports list, test, extract and compress operations. All these operations can be executed in a separate thread and aborted during the process.
+- Supports [7z] multivolume archives.
 - Thread safe encoder, decoder and progress tracking.
 - Supports memory and file IO streams. The extracting and compressing might be from ⇔ to memory or file.
 - Support extracting and compressing archive files with size more than 4GB(x64 support).
@@ -54,7 +55,7 @@ All optional features are enabled by default, but they might be disabled during 
 -----------
 #### Swift Package Manager
 ```swift
-.package(url: "https://github.com/OlehKulykov/PLzmaSDK.git", .exact("1.0.7"))
+.package(url: "https://github.com/OlehKulykov/PLzmaSDK.git", .exact("1.1.0"))
 ```
 
 #### CocoaPods Podfile
@@ -63,7 +64,7 @@ use_frameworks!
 platform :ios, '9.0'
 
 target '<REPLACE_WITH_YOUR_TARGET>' do
-    pod 'PLzmaSDK', :inhibit_warnings => true
+    pod 'PLzmaSDK', '1.1.0'
 end
 ```
 
@@ -75,7 +76,7 @@ end
     "npm": ">=6.0.0"
   },
   "dependencies": {
-    "plzmasdk": "1.0.7"
+    "plzmasdk": "1.1.0"
   }
 }
 ```
@@ -452,8 +453,8 @@ try {
     encoder->setPassword("1234");
     
     //  2.2. Setup archive properties.
-    encoder->setShouldEncryptHeader(true);
-    encoder->setShouldEncryptContent(true);
+    encoder->setShouldEncryptHeader(true);   // use this option with password.
+    encoder->setShouldEncryptContent(true);  // use this option with password.
     encoder->setCompressionLevel(9);
 
     // 3. Add content for archiving.
@@ -495,8 +496,8 @@ plzma_encoder_set_progress_delegate_utf8_callback(&encoder, <C_CALLBACK_FUNCTION
 plzma_encoder_set_password_utf8_string(&encoder, "1234");
 
 //  2.2. Setup archive properties.
-plzma_encoder_set_should_encrypt_header(&encoder, true);
-plzma_encoder_set_should_encrypt_content(&encoder, true);
+plzma_encoder_set_should_encrypt_header(&encoder, true);   // use this option with password.
+plzma_encoder_set_should_encrypt_content(&encoder, true);  // use this option with password.
 plzma_encoder_set_compression_level(&encoder, 9);
 
 // 3. Add content for archiving.
@@ -540,10 +541,6 @@ plzma_path_release(&archivePath); // when no longer needed
 plzma_encoder_release(&encoder); // when no longer needed
 ```
 
-
-### TODO
------------
-- [ ] **Multivolume archive** support.
 
 ### License
 -----------

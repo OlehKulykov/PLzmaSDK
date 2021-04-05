@@ -2,6 +2,7 @@ build
 build_xcode
 .swiftpm
 .build
+package-lock.json
 
 # Prerequisites
 *.d

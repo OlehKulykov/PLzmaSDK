@@ -563,11 +563,16 @@ namespace plzma {
     
     bool Path::createDir(const bool withIntermediates) const {
         if (withIntermediates) {
+            if (_size > 0) {
 #if defined(LIBPLZMA_MSC)
-            return (_size > 0) ? createIntermediateDirs<wchar_t>(wide(), _size) : false;
+                const wchar_t * w = wide(); // syncWide
+                return createIntermediateDirs<wchar_t>(w, _size);
 #elif defined(LIBPLZMA_POSIX)
-            return (_size > 0) ? createIntermediateDirs<char>(utf8(), _cslen) : false;
+                const char * c = utf8(); // syncUtf8
+                return createIntermediateDirs<char>(c, _cslen);
 #endif
+            }
+            return false;
         }
 #if defined(LIBPLZMA_MSC)
         return (_size > 0) ? createSingleDir<wchar_t>(wide()) : false;
@@ -601,9 +606,13 @@ namespace plzma {
     
     bool Path::operator == (const Path & path) const {
 #if defined(LIBPLZMA_MSC)
-        return pathsAreEqual<wchar_t>(wide(), path.wide(), _size, path._size);
+        const wchar_t * a = wide();       // syncWide
+        const wchar_t * b = path.wide();  // syncWide
+        return pathsAreEqual<wchar_t>(a, b, _size, path._size);
 #elif defined(LIBPLZMA_POSIX)
-        return pathsAreEqual<char>(utf8(), path.utf8(), _cslen, path._cslen);
+        const char * a = utf8();        // syncUtf8
+        const char * b = path.utf8();   // syncUtf8
+        return pathsAreEqual<char>(a, b, _cslen, path._cslen);
 #endif
     }
     

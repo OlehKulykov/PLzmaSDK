@@ -469,6 +469,10 @@ int main(int argc, char* argv[]) {
         return ret;
     }
         
+//    while (1) {
+//        usleep(50);
+//    }
+    
 	return ret;
 }
 
