@@ -16,8 +16,7 @@ let package = Package(
                     .define("LIBPLZMA_VERSION_BUILD", to: "368")
                 ],
                 cxxSettings: [
-                    .define("LIBPLZMA_VERSION_BUILD", to: "368"),
-                    .unsafeFlags(["-fno-rtti"])
+                    .define("LIBPLZMA_VERSION_BUILD", to: "368")
         ]),
         .target(name: "PLzmaSDK",
                 dependencies: [
