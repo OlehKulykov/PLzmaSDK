@@ -9,6 +9,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/1mb5w6nlht1ar2p8/branch/master?svg=true)](https://ci.appveyor.com/project/OlehKulykov/plzmasdk/branch/master)
 [![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/OlehKulykov/PLzmaSDK.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/OlehKulykov/PLzmaSDK/context:cpp)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/OlehKulykov/PLzmaSDK.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/OlehKulykov/PLzmaSDK/context:javascript)
+[![Tier badge](https://opencollective.com/plzmasdk/tiers/backer/badge.svg?label=backer&color=brightgreen)](https://opencollective.com/plzmasdk)
 
 
 **P**LzmaSDK is (**P**ortable, **P**atched, **P**ackage, cross-**P**-latform) Lzma SDK.
