@@ -31,6 +31,10 @@ script:
   - make -j4
   - ctest --verbose
   - rm -rf *
+  - cmake -DLIBPLZMA_OPT_NO_PROGRESS:BOOL=ON -DCMAKE_BUILD_TYPE=Debug -DLIBPLZMA_OPT_BUILD_NUMBER=${TRAVIS_BUILD_NUMBER} ..
+  - make -j4
+  - ctest --verbose
+  - rm -rf *
   - cmake -DLIBPLZMA_OPT_NO_TAR:BOOL=ON -DCMAKE_BUILD_TYPE=Debug -DLIBPLZMA_OPT_BUILD_NUMBER=${TRAVIS_BUILD_NUMBER} ..
   - make -j4
   - ctest --verbose

@@ -60,11 +60,19 @@ namespace plzma {
     }
     
     STDMETHODIMP ExtractCallback::SetTotal(UInt64 size) {
+#if defined(LIBPLZMA_NO_PROGRESS)
+        return S_OK;
+#else
         return setProgressTotal(size);
+#endif
     }
     
     STDMETHODIMP ExtractCallback::SetCompleted(const UInt64 * completeValue) {
+#if defined(LIBPLZMA_NO_PROGRESS)
+        return S_OK;
+#else
         return completeValue ? setProgressCompleted(*completeValue) : S_OK;
+#endif
     }
     
     STDMETHODIMP ExtractCallback::CryptoGetTextPassword(BSTR * password) {
@@ -76,6 +84,7 @@ namespace plzma {
     }
     
     void ExtractCallback::getTestStream(const UInt32 index, ISequentialOutStream ** outStream) {
+#if !defined(LIBPLZMA_NO_PROGRESS)
         Path itemPath;
         NWindows::NCOM::CPropVariant pathProp;
         if (_archive->GetProperty(index, kpidPath, &pathProp) == S_OK &&
@@ -86,10 +95,13 @@ namespace plzma {
         if (_type != plzma_file_type_xz && itemPath.count() == 0) {
             throw Exception(plzma_error_code_internal, "Can't read item path.", __FILE__, __LINE__);
         }
+#endif
         
         OutTestStream * stream = new OutTestStream();
         _currentOutStream = stream;
+#if !defined(LIBPLZMA_NO_PROGRESS)
         _progress->setPath(static_cast<Path &&>(itemPath));
+#endif
         stream->AddRef(); // for '*outStream'
         *outStream = stream;
     }
@@ -101,7 +113,9 @@ namespace plzma {
                 auto base = pair->second.cast<OutStreamBase>();
                 OutStreamBase * stream = base.get();
                 _currentOutStream = stream;
+#if !defined(LIBPLZMA_NO_PROGRESS)
                 _progress->setPath(pair->first->path());
+#endif
                 stream->AddRef(); // for '*outStream'
                 *outStream = stream;
                 return;
@@ -169,7 +183,9 @@ namespace plzma {
         
         OutFileStream * stream = new OutFileStream(static_cast<Path &&>(fullPath));
         _currentOutStream = stream;
+#if !defined(LIBPLZMA_NO_PROGRESS)
         _progress->setPath(static_cast<Path &&>(itemPath));
+#endif
         stream->AddRef(); // for '*outStream'
         *outStream = stream;
     }
@@ -297,14 +313,16 @@ namespace plzma {
             itemsCount = numItems;
         }
         
-        _progress->reset();
         const UInt32 maxIndicies = 256;
+#if !defined(LIBPLZMA_NO_PROGRESS)
+        _progress->reset();
         UInt32 partsCount = itemsCount / maxIndicies;
         partsCount = MyMax<UInt32>(1, partsCount);
         if (itemsCount > partsCount * maxIndicies) {
             partsCount++;
         }
         _progress->setPartsCount(partsCount);
+#endif
         
         do {
             UInt32 indicies[maxIndicies];
@@ -329,7 +347,9 @@ namespace plzma {
             }
             _extractingFirstIndex = fromIndex;
             _extractingLastIndex = toIndex;
+#if !defined(LIBPLZMA_NO_PROGRESS)
             _progress->startPart();
+#endif
             _extracting = true;
             
             LIBPLZMA_LOCKGUARD_UNLOCK(lock)
@@ -355,7 +375,9 @@ namespace plzma {
             }
         } while (itemIndex < itemsCount);
         
+#if !defined(LIBPLZMA_NO_PROGRESS)
         _progress->finish();
+#endif
     }
     
     void ExtractCallback::process(const Int32 mode, const SharedPtr<ItemArray> & items, const Path & path, const bool itemsFullPath) {
@@ -401,12 +423,16 @@ namespace plzma {
     
     ExtractCallback::ExtractCallback(const CMyComPtr<IInArchive> & archive,
                                      const String & passwd,
+#if !defined(LIBPLZMA_NO_PROGRESS)
                                      const SharedPtr<Progress> & progress,
+#endif
                                      const plzma_file_type type) : CMyUnknownImp(),
         _archive(archive),
         _type(type) {
             _password = passwd;
+#if !defined(LIBPLZMA_NO_PROGRESS)
             _progress = progress;
+#endif
     }
     
 } // namespace plzma

@@ -101,7 +101,9 @@ namespace plzma {
         void abort();
         ExtractCallback(const CMyComPtr<IInArchive> & archive,
                         const String & passwd,
+#if !defined(LIBPLZMA_NO_PROGRESS)
                         const SharedPtr<Progress> & progress,
+#endif
                         const plzma_file_type type);
         virtual ~ExtractCallback() { }
     };

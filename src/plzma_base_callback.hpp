@@ -47,14 +47,18 @@ namespace plzma {
     class BaseCallback {
     protected:
         LIBPLZMA_MUTEX(_mutex)
+#if !defined(LIBPLZMA_NO_PROGRESS)
         SharedPtr<Progress> _progress;
+#endif
         String _password;
         Exception * _exception = nullptr;   // execution thread only
         HRESULT _result = S_OK;             // shared between threads
         
         HRESULT getTextPassword(Int32 * passwordIsDefined, BSTR * password) noexcept;
+#if !defined(LIBPLZMA_NO_PROGRESS)
         HRESULT setProgressTotal(const uint64_t total) noexcept;
         HRESULT setProgressCompleted(const uint64_t completed) noexcept;
+#endif
         
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(BaseCallback)
         

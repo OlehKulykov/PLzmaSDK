@@ -31,7 +31,7 @@ import libplzma
 #endif
 
 /// The interface to a progress delegate of the encoder.
-public protocol EncoderDelegate: class {
+public protocol EncoderDelegate: AnyObject {
     /// Reports the progress of the operation.
     /// - Parameter encoder: The encoder.
     /// - Parameter path: The currently processing item's path.

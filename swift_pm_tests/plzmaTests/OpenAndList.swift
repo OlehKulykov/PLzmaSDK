@@ -11,8 +11,8 @@ final class OpenAndList: XCTestCase, DecoderDelegate {
 
     func testOpen() {
         do {
-            let archivePath = try Path("path/to/archive")
-            let archivePathInStream = try InStream(path: archivePath)
+            //let archivePath = try Path("path/to/archive")
+            //let archivePathInStream = try InStream(path: archivePath)
             
             let archiveData = Data(bytesNoCopy: FILE__7_7z_PTR!, count: Int(FILE__7_7z_SIZE), deallocator: .none)
             let archiveDataInStream = try InStream(dataNoCopy: archiveData)

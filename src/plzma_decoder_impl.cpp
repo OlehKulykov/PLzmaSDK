@@ -60,7 +60,9 @@ namespace plzma {
     }
     
     void DecoderImpl::setProgressDelegate(ProgressDelegate * LIBPLZMA_NULLABLE delegate) {
+#if !defined(LIBPLZMA_NO_PROGRESS)
         _progress->setDelegate(delegate);
+#endif
     }
     
     bool DecoderImpl::open() {
@@ -148,11 +150,15 @@ namespace plzma {
     
 #if !defined(LIBPLZMA_NO_C_BINDINGS)
     void DecoderImpl::setUtf8Callback(plzma_progress_delegate_utf8_callback LIBPLZMA_NULLABLE callback) {
+#if !defined(LIBPLZMA_NO_PROGRESS)
         _progress->setUtf8Callback(callback);
+#endif
     }
     
     void DecoderImpl::setWideCallback(plzma_progress_delegate_wide_callback LIBPLZMA_NULLABLE callback) {
+#if !defined(LIBPLZMA_NO_PROGRESS)
         _progress->setWideCallback(callback);
+#endif
     }
 #endif
     
@@ -160,7 +166,9 @@ namespace plzma {
                              const plzma_file_type type,
                              const plzma_context context) : CMyUnknownImp(),
         _stream(stream),
+#if !defined(LIBPLZMA_NO_PROGRESS)
         _progress(makeShared<Progress>(context)),
+#endif
         _type(type) {
             plzma::initialize();
     }

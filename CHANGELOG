@@ -1,6 +1,10 @@
 (Portable, Patched, Package, cross-P-latform) Lzma SDK, libplzma
 
-1.1.0: (current):
+1.1.1: (current):
+- C++(core): fix build with 'LIBPLZMA_OPT_NO_PROGRESS' flag and added unit test.
+- Swift Package Manager: remove unsafe cxx flags(compatible with old Xcode versions).
+
+1.1.0:
 - Introduce multivolume support for 7z archives:
 -- C: added 'plzma_plzma_multi_stream_part_name_format' enum, 'plzma_in_stream_array', 'plzma_out_stream_array' and 'plzma_out_multi_stream' objects.
       Added 'exception' field to the 'plzma_memory' object.
@@ -68,4 +72,3 @@
 
 0.0.1:
 - Initial implementation.
-

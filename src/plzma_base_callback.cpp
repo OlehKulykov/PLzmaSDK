@@ -64,6 +64,7 @@ namespace plzma {
         return S_OK;
     }
     
+#if !defined(LIBPLZMA_NO_PROGRESS)
     HRESULT BaseCallback::setProgressTotal(const uint64_t total) noexcept {
         try {
             LIBPLZMA_LOCKGUARD(lock, _mutex)
@@ -111,7 +112,8 @@ namespace plzma {
         }
         return S_OK;
     }
-    
+#endif // !LIBPLZMA_NO_PROGRESS
+
     BaseCallback::~BaseCallback() {
         delete _exception;
         _exception = nullptr; // virtual base

@@ -57,11 +57,19 @@ namespace plzma {
     
     // IProgress
     STDMETHODIMP EncoderImpl::SetTotal(UInt64 size) {
+#if defined(LIBPLZMA_NO_PROGRESS)
+        return S_OK;
+#else
         return setProgressTotal(size);
+#endif
     }
     
     STDMETHODIMP EncoderImpl::SetCompleted(const UInt64 *completeValue) {
+#if defined(LIBPLZMA_NO_PROGRESS)
+        return S_OK;
+#else
         return completeValue ? setProgressCompleted(*completeValue) : S_OK;
+#endif
     }
     
     // IUpdateCallback2
@@ -164,7 +172,9 @@ namespace plzma {
             *inStream = baseStream;
             baseStream->open();
             
+#if !defined(LIBPLZMA_NO_PROGRESS)
             _progress->setPath(_source.archivePath);
+#endif
             
             return S_OK;
         } catch (const Exception & exception) {
@@ -254,7 +264,9 @@ namespace plzma {
     }
     
     void EncoderImpl::setProgressDelegate(ProgressDelegate * delegate) {
+#if !defined(LIBPLZMA_NO_PROGRESS)
         _progress->setDelegate(delegate);
+#endif
     }
     
     void EncoderImpl::add(const Path & path, const plzma_open_dir_mode_t openDirMode, const Path & archivePath) {
@@ -576,8 +588,10 @@ namespace plzma {
         }
         
         _compressing = true;
+#if !defined(LIBPLZMA_NO_PROGRESS)
         _progress->setPartsCount(1);
         _progress->startPart();
+#endif
         LIBPLZMA_LOCKGUARD_UNLOCK(lock)
         result = _archive->UpdateItems(_stream, _itemsCount, this);
         LIBPLZMA_LOCKGUARD_LOCK(lock)
@@ -659,11 +673,15 @@ namespace plzma {
     
 #if !defined(LIBPLZMA_NO_C_BINDINGS)
     void EncoderImpl::setUtf8Callback(plzma_progress_delegate_utf8_callback LIBPLZMA_NULLABLE callback) {
+#if !defined(LIBPLZMA_NO_PROGRESS)
         _progress->setUtf8Callback(callback);
+#endif
     }
     
     void EncoderImpl::setWideCallback(plzma_progress_delegate_wide_callback LIBPLZMA_NULLABLE callback) {
+#if !defined(LIBPLZMA_NO_PROGRESS)
         _progress->setWideCallback(callback);
+#endif
     }
 #endif
     
@@ -675,7 +693,9 @@ namespace plzma {
         _type(type),
         _method(method) {
             plzma::initialize();
+#if !defined(LIBPLZMA_NO_PROGRESS)
             _progress = makeShared<Progress>(context);
+#endif
             // docs
             _options |= (OptionSolid | OptionCompressHeader | OptionCompressHeaderFull);
             _options |= (OptionStoreCTime | OptionStoreMTime | OptionStoreATime);

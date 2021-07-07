@@ -62,7 +62,9 @@ namespace plzma {
         CMyComPtr<InStreamBase> _stream;
         CMyComPtr<OpenCallback> _openCallback;
         CMyComPtr<ExtractCallback> _extractCallback;
+#if !defined(LIBPLZMA_NO_PROGRESS)
         SharedPtr<Progress> _progress;
+#endif
         plzma_file_type _type = plzma_file_type_7z;
         bool _opened = false;
         bool _opening = false;
@@ -80,8 +82,12 @@ namespace plzma {
             
             CMyComPtr<DecoderImpl> selfPtr(this);
             
+#if defined(LIBPLZMA_NO_PROGRESS)
+            CMyComPtr<ExtractCallback> extractCallback(new ExtractCallback(_openCallback->archive(), _password, _type));
+#else
             _progress->reset();
             CMyComPtr<ExtractCallback> extractCallback(new ExtractCallback(_openCallback->archive(), _password, _progress, _type));
+#endif
             _extractCallback = extractCallback;
             
             LIBPLZMA_LOCKGUARD_UNLOCK(lock)
