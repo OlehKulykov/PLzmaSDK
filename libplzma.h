@@ -44,13 +44,13 @@
 /// and all optional C bindings to the internal C++ part(Core) of the library.
 /// Everything what you need to use this library in C | Objective-C | Swift env. is here.
 
-/// @brief Manualy defined version of the library, i.e. 1.1.1
+/// @brief Manualy defined version of the library, i.e. 1.1.2
 /// The optinal \a LIBPLZMA_VERSION_BUILD might be befined by the CI or CMake or manualy.
 /// Conforms 'Semantic Versioning 2.0.0'.
 /// @link https://semver.org
 #define LIBPLZMA_VERSION_MAJOR 1
 #define LIBPLZMA_VERSION_MINOR 1
-#define LIBPLZMA_VERSION_PATCH 1
+#define LIBPLZMA_VERSION_PATCH 2
 
 // check windows
 #if defined(WIN32) || defined(_WIN32) || defined(WIN32_LEAN_AND_MEAN) || defined(_WIN64) || defined(WIN64)
@@ -1259,12 +1259,14 @@ LIBPLZMA_C_API(void) plzma_decoder_set_progress_delegate_wide_callback(plzma_dec
 /// @brief Provides the archive password for opening, extracting or testing items.
 /// @param password The password wide character presentation.
 /// @note Thread-safe.
+/// @throws \a Exception in case if crypto disabled.
 LIBPLZMA_C_API(void) plzma_decoder_set_password_wide_string(plzma_decoder * LIBPLZMA_NONNULL decoder, const wchar_t * LIBPLZMA_NULLABLE password);
 
 
 /// @brief Provides the archive password for opening, extracting or testing items.
 /// @param password The password UTF-8 character presentation.
 /// @note Thread-safe.
+/// @throws \a Exception in case if crypto disabled.
 LIBPLZMA_C_API(void) plzma_decoder_set_password_utf8_string(plzma_decoder * LIBPLZMA_NONNULL decoder, const char * LIBPLZMA_NULLABLE password);
 
 
@@ -1417,6 +1419,7 @@ LIBPLZMA_C_API(void) plzma_encoder_set_progress_delegate_wide_callback(plzma_enc
 /// See \a plzma_encoder_set_should_encrypt_header, \a plzma_encoder_set_should_encrypt_content methods and \a plzma_file_type enum.
 /// @param password The password wide character presentation. NULL or zero length password means no password provided.
 /// @note Thread-safe. Must be set before opening.
+/// @throws \a Exception in case if crypto disabled.
 LIBPLZMA_C_API(void) plzma_encoder_set_password_wide_string(plzma_encoder * LIBPLZMA_NONNULL encoder, const wchar_t * LIBPLZMA_NULLABLE password);
 
 
@@ -1427,6 +1430,7 @@ LIBPLZMA_C_API(void) plzma_encoder_set_password_wide_string(plzma_encoder * LIBP
 /// See \a plzma_encoder_set_should_encrypt_header, \a plzma_encoder_set_should_encrypt_content methods and \a plzma_file_type enum.
 /// @param password The password UTF-8 character presentation. NULL or zero length password means no password provided.
 /// @note Thread-safe. Must be set before opening.
+/// @throws \a Exception in case if crypto disabled.
 LIBPLZMA_C_API(void) plzma_encoder_set_password_utf8_string(plzma_encoder * LIBPLZMA_NONNULL encoder, const char * LIBPLZMA_NULLABLE password);
 
 

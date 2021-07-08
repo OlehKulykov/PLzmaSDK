@@ -35,6 +35,9 @@
 namespace plzma {
     
     HRESULT BaseCallback::getTextPassword(Int32 * passwordIsDefined, BSTR * password) noexcept {
+#if defined(LIBPLZMA_NO_CRYPTO)
+        LIBPLZMA_SET_VALUE_TO_PTR(passwordIsDefined, BoolToInt(false))
+#else
         try {
             LIBPLZMA_LOCKGUARD(lock, _mutex)
             if (_result != S_OK) {
@@ -61,6 +64,7 @@ namespace plzma {
             _exception = Exception::create(plzma_error_code_not_enough_memory, "Can't convert string to a binary string.", __FILE__, __LINE__);
             return E_FAIL;
         }
+#endif
         return S_OK;
     }
     
@@ -117,7 +121,9 @@ namespace plzma {
     BaseCallback::~BaseCallback() {
         delete _exception;
         _exception = nullptr; // virtual base
+#if !defined(LIBPLZMA_NO_CRYPTO)
         _password.clear(plzma_erase_zero);
+#endif
     }
     
     static GUID CLSIDType7z(void) noexcept {
@@ -152,7 +158,7 @@ namespace plzma {
             }
             case plzma_file_type_tar: {
 #if defined(LIBPLZMA_NO_TAR)
-                throw Exception(plzma_error_code_invalid_arguments, "The tar(tarball) support was explicitly disabled. Use cmake option 'LIBPLZMA_OPT_NO_TAR' or 'LIBPLZMA_NO_TAR' preprocessor definition to enable tar(tarball) support.", __FILE__, __LINE__);
+                throw Exception(plzma_error_code_invalid_arguments, LIBPLZMA_NO_TAR_EXCEPTION_WHAT, __FILE__, __LINE__);
 #else
                 const GUID clsidTar = CLSIDTypeTar();
                 res = CreateObject(&clsidTar, archiveGUID, reinterpret_cast<void**>(&ptr));

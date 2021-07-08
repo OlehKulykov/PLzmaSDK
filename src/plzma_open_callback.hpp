@@ -81,7 +81,9 @@ namespace plzma {
         SharedPtr<Item> itemAt(const plzma_size_t index);
         SharedPtr<ItemArray> allItems();
         OpenCallback(const CMyComPtr<InStreamBase> & stream,
+#if !defined(LIBPLZMA_NO_CRYPTO)
                      const String & passwd,
+#endif
                      const plzma_file_type type);
         virtual ~OpenCallback() { }
     };

@@ -77,7 +77,12 @@ namespace plzma {
             _exception = nullptr;
             throw localException;
         }
-        throw Exception(plzma_error_code_internal, "Can't open in archive.", __FILE__, __LINE__);
+        
+        Exception internalException(plzma_error_code_internal, "Can't open in archive.", __FILE__, __LINE__);
+#if defined(LIBPLZMA_NO_CRYPTO)
+        internalException.setReason("no crypto", nullptr);
+#endif
+        throw internalException;
     }
     
     void OpenCallback::abort() {
@@ -159,11 +164,15 @@ namespace plzma {
     }
     
     OpenCallback::OpenCallback(const CMyComPtr<InStreamBase> & stream,
+#if !defined(LIBPLZMA_NO_CRYPTO)
                                const String & passwd,
+#endif
                                const plzma_file_type type) : CMyUnknownImp(),
         _archive(createArchive<IInArchive>(type)),
         _stream(stream) {
+#if !defined(LIBPLZMA_NO_CRYPTO)
             _password = passwd;
+#endif
     }
     
 } // namespace plzma

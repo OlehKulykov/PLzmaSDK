@@ -128,9 +128,9 @@ namespace plzma {
                         prop = L"";
                     }
                     break;
-                case kpidPosixAttrib: // 53, tar
-                case kpidUser: // 25, tar
-                case kpidGroup: // 26, tar
+                case kpidPosixAttrib:   // 53, tar
+                case kpidUser:          // 25, tar
+                case kpidGroup:         // 26, tar
                     break;
                 default:
                     break;
@@ -252,15 +252,23 @@ namespace plzma {
     }
     
     void EncoderImpl::setPassword(const wchar_t * password) {
+#if defined(LIBPLZMA_NO_CRYPTO)
+        throw Exception(plzma_error_code_invalid_arguments, LIBPLZMA_NO_CRYPTO_EXCEPTION_WHAT, __FILE__, __LINE__);
+#else
         LIBPLZMA_LOCKGUARD(lock, _mutex)
         _password.clear(plzma_erase_zero);
         _password.set(password);
+#endif
     }
     
     void EncoderImpl::setPassword(const char * password) {
+#if defined(LIBPLZMA_NO_CRYPTO)
+        throw Exception(plzma_error_code_invalid_arguments, LIBPLZMA_NO_CRYPTO_EXCEPTION_WHAT, __FILE__, __LINE__);
+#else
         LIBPLZMA_LOCKGUARD(lock, _mutex)
         _password.clear(plzma_erase_zero);
         _password.set(password);
+#endif
     }
     
     void EncoderImpl::setProgressDelegate(ProgressDelegate * delegate) {
@@ -438,6 +446,19 @@ namespace plzma {
             
             L"hcf"  // compress header full, true - add, false - don't add/ignore
         };
+        
+#if defined(LIBPLZMA_NO_CRYPTO)
+        if (_options & OptionEncryptHeader) {
+            Exception exception(plzma_error_code_invalid_arguments, "Can't use 'encrypt header' property.", __FILE__, __LINE__);
+            exception.setReason("The crypto functionality disabled.", nullptr);
+            throw exception;
+        }
+        if (_options & OptionEncryptContent) {
+            Exception exception(plzma_error_code_invalid_arguments, "Can't use 'encrypt content' property.", __FILE__, __LINE__);
+            exception.setReason("The crypto functionality disabled.", nullptr);
+            throw exception;
+        }
+#endif
         
         CPropVariant values[settingsCount] = {
             CPropVariant(static_cast<UInt32>(0)),                           // method dummy value

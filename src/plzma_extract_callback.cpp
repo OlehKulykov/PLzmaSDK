@@ -422,14 +422,18 @@ namespace plzma {
     }
     
     ExtractCallback::ExtractCallback(const CMyComPtr<IInArchive> & archive,
+#if !defined(LIBPLZMA_NO_CRYPTO)
                                      const String & passwd,
+#endif
 #if !defined(LIBPLZMA_NO_PROGRESS)
                                      const SharedPtr<Progress> & progress,
 #endif
                                      const plzma_file_type type) : CMyUnknownImp(),
         _archive(archive),
         _type(type) {
+#if !defined(LIBPLZMA_NO_CRYPTO)
             _password = passwd;
+#endif
 #if !defined(LIBPLZMA_NO_PROGRESS)
             _progress = progress;
 #endif

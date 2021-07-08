@@ -50,7 +50,9 @@ namespace plzma {
 #if !defined(LIBPLZMA_NO_PROGRESS)
         SharedPtr<Progress> _progress;
 #endif
+#if !defined(LIBPLZMA_NO_CRYPTO)
         String _password;
+#endif
         Exception * _exception = nullptr;   // execution thread only
         HRESULT _result = S_OK;             // shared between threads
         

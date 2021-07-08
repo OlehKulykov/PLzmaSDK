@@ -58,7 +58,9 @@ namespace plzma {
     private:
         friend struct SharedPtr<DecoderImpl>;
         LIBPLZMA_MUTEX(_mutex)
+#if !defined(LIBPLZMA_NO_CRYPTO)
         String _password;
+#endif
         CMyComPtr<InStreamBase> _stream;
         CMyComPtr<OpenCallback> _openCallback;
         CMyComPtr<ExtractCallback> _extractCallback;
@@ -83,10 +85,18 @@ namespace plzma {
             CMyComPtr<DecoderImpl> selfPtr(this);
             
 #if defined(LIBPLZMA_NO_PROGRESS)
+#  if defined(LIBPLZMA_NO_CRYPTO)
+            CMyComPtr<ExtractCallback> extractCallback(new ExtractCallback(_openCallback->archive(), _type));
+#  else
             CMyComPtr<ExtractCallback> extractCallback(new ExtractCallback(_openCallback->archive(), _password, _type));
+#  endif
 #else
             _progress->reset();
+#  if defined(LIBPLZMA_NO_CRYPTO)
+            CMyComPtr<ExtractCallback> extractCallback(new ExtractCallback(_openCallback->archive(), _progress, _type));
+#  else
             CMyComPtr<ExtractCallback> extractCallback(new ExtractCallback(_openCallback->archive(), _password, _progress, _type));
+#  endif
 #endif
             _extractCallback = extractCallback;
             

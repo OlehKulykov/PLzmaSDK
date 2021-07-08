@@ -382,6 +382,10 @@ const char * LIBPLZMA_NONNULL plzma_version(void) {
     " : no C bindings"
 #endif
     
+#if defined(LIBPLZMA_NO_CRYPTO)
+    " : no crypto"
+#endif
+    
 #if defined(LIBPLZMA_NO_TAR)
     " : no tar"
 #endif

@@ -66,6 +66,7 @@ public:
 static TestProgressDelegate * _progressDelegate = new TestProgressDelegate();
 
 int test_plzma_extract_test1(void) {
+#if !defined(LIBPLZMA_NO_CRYPTO)
     auto stream = makeSharedInStream(FILE__1_7z_PTR, FILE__1_7z_SIZE, &dummy_free_callback);
     auto decoder = makeSharedDecoder(stream, plzma_file_type_7z, plzma_context{nullptr, nullptr});
     decoder->setPassword("1234");
@@ -73,6 +74,7 @@ int test_plzma_extract_test1(void) {
     PLZMA_TESTS_ASSERT(decoder->count() == 5)
     decoder->setProgressDelegate(_progressDelegate);
     PLZMA_TESTS_ASSERT(decoder->test() == true)
+#endif
     
     return 0;
 }

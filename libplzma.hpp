@@ -1239,12 +1239,14 @@ namespace plzma {
         /// @brief Provides the archive password for opening, extracting or testing items.
         /// @param password The password wide character presentation.
         /// @note Thread-safe.
+        /// @throws \a Exception in case if crypto disabled.
         virtual void setPassword(const wchar_t * LIBPLZMA_NULLABLE password) = 0;
         
         
         /// @brief Provides the archive password for opening, extracting or testing items.
         /// @param password The password UTF-8 character presentation. NULL or zero length password means no password provided.
         /// @note Thread-safe.
+        /// @throws \a Exception in case if crypto disabled.
         virtual void setPassword(const char * LIBPLZMA_NULLABLE password) = 0;
         
         
@@ -1378,6 +1380,7 @@ namespace plzma {
         /// See \a setShouldEncryptHeader, \a setShouldEncryptContent methods and \a plzma_file_type enum.
         /// @param password The password wide character presentation. NULL or zero length password means no password provided.
         /// @note Thread-safe. Must be set before opening.
+        /// @throws \a Exception in case if crypto disabled.
         virtual void setPassword(const wchar_t * LIBPLZMA_NULLABLE password) = 0;
         
         
@@ -1388,6 +1391,7 @@ namespace plzma {
         /// See \a setShouldEncryptHeader, \a setShouldEncryptContent methods and \a plzma_file_type enum.
         /// @param password The password UTF-8 character presentation. NULL or zero length password means no password provided.
         /// @note Thread-safe. Must be set before opening.
+        /// @throws \a Exception in case if crypto disabled.
         virtual void setPassword(const char * LIBPLZMA_NULLABLE password) = 0;
         
         
@@ -1419,6 +1423,7 @@ namespace plzma {
         /// @note The opening progress might be executed in a separate thread.
         /// @note The opening progress might be aborted via \a abort() method.
         /// @note Thread-safe.
+        /// @throws \a Exception in case if crypto disabled and archive's type/settings depends on it.
         virtual bool open() = 0;
         
         

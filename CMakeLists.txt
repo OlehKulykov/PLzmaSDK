@@ -33,11 +33,11 @@ set(PACKAGE "libplzma")
 set(CPACK_PACKAGE_NAME "${PACKAGE}")
 set(CPACK_PACKAGE_VERSION_MAJOR "1")
 set(CPACK_PACKAGE_VERSION_MINOR "1")
-set(CPACK_PACKAGE_VERSION_PATCH "1")
+set(CPACK_PACKAGE_VERSION_PATCH "2")
 set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}")
 set(CPACK_PACKAGE_VENDOR "olehkulykov@gmail.com")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PACKAGE} ${PACKAGE_VERSION}")
-set(SOVERSION "1.1.1")
+set(SOVERSION "1.1.2")
 set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
 set(VERSION "${CPACK_PACKAGE_VERSION}")
 
@@ -55,17 +55,24 @@ option(LIBPLZMA_OPT_STATIC "Build static lib." ON)
 option(LIBPLZMA_OPT_TESTS "Build libplzma tests." ON)
 option(LIBPLZMA_OPT_BUILD_NUMBER "Number of the libplzma build." 0)
 option(LIBPLZMA_OPT_ANDROID "Build for Android." OFF)
+
 option(LIBPLZMA_OPT_NO_C_BINDINGS "Do not build C bindings.
 The library can't be fully used in C environment." OFF)
+
+option(LIBPLZMA_OPT_NO_CRYPTO "Disable internal crypto functionality.
+The library can't read/write password protected archives.
+Accessing to crypto functionality will throw an exception!
+This option will define 'LIBPLZMA_NO_CRYPTO' preprocessor definition as 'LIBPLZMA_NO_CRYPTO=1'.
+Not recommended! But possible. Do this only if you know what are you doing!" OFF)
 
 option(LIBPLZMA_OPT_HAVE_STD "Use std in a private part of the library.
 This option will not affects to the public exported interface.
 It's recommented to use this option only in a case of building the dynamic library or any other bindings.
-This option wiil enable the 'LIBPLZMA_HAVE_STD' preprocessor definition as 'LIBPLZMA_HAVE_STD=1'
-and might be enabled automatically depending on the build type and/or platform" OFF)
+This option will define 'LIBPLZMA_HAVE_STD' preprocessor definition as 'LIBPLZMA_HAVE_STD=1',
+but also might be defined automatically depending on the build type and/or platform." OFF)
 
 option(LIBPLZMA_OPT_NO_TAR "Do not build tar(tarball) specific sources.
-Accessing to the Tar archive type will throw an exception. No Tar support." OFF)
+Accessing to Tar archive types will throw an exception! No Tar support." OFF)
 
 option(LIBPLZMA_OPT_NO_PROGRESS "Build without encode/decode progressing.
 During the execution, the progress will not be notified to the delegate and C callbacks." OFF)
@@ -160,6 +167,10 @@ endif()
 
 if(LIBPLZMA_OPT_NO_C_BINDINGS)
   add_definitions(-DLIBPLZMA_NO_C_BINDINGS=1)
+endif()
+
+if(LIBPLZMA_OPT_NO_CRYPTO)
+  add_definitions(-DLIBPLZMA_NO_CRYPTO=1)
 endif()
 
 if(LIBPLZMA_OPT_HAVE_STD)

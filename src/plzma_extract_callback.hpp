@@ -100,7 +100,9 @@ namespace plzma {
         void process(const Int32 mode);
         void abort();
         ExtractCallback(const CMyComPtr<IInArchive> & archive,
+#if !defined(LIBPLZMA_NO_CRYPTO)
                         const String & passwd,
+#endif
 #if !defined(LIBPLZMA_NO_PROGRESS)
                         const SharedPtr<Progress> & progress,
 #endif

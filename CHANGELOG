@@ -1,6 +1,10 @@
 (Portable, Patched, Package, cross-P-latform) Lzma SDK, libplzma
 
-1.1.1: (current):
+1.1.2: (current):
+- CMake, C++(core): introduced 'LIBPLZMA_OPT_NO_CRYPTO' CMake option and 'LIBPLZMA_NO_CRYPTO' preprocessor definition.
+                    Disables read/write encrypted archives.
+
+1.1.1:
 - C++(core): fix build with 'LIBPLZMA_OPT_NO_PROGRESS' flag and added unit test.
 - Swift Package Manager: remove unsafe cxx flags(compatible with old Xcode versions).
 

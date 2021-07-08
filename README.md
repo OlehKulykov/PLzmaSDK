@@ -51,13 +51,13 @@ All optional features are enabled by default, but they might be disabled during 
 - Thread safety. To disable, use the [CMake]'s boolean option `LIBPLZMA_OPT_THREAD_UNSAFE:BOOL=YES` or preprocessor definition `LIBPLZMA_THREAD_UNSAFE=1`
 - Progress tracking. To disable, use the [CMake]'s boolean option `LIBPLZMA_OPT_NO_PROGRESS:BOOL=YES` or preprocessor definition `LIBPLZMA_NO_PROGRESS=1`
 - C bindings to the whole functionality of the library in [libplzma.h] header. To disable, use the [CMake]'s boolean option `LIBPLZMA_OPT_NO_C_BINDINGS:BOOL=YES` or preprocessor definition `LIBPLZMA_NO_C_BINDINGS=1`
-
+- Crypto functionality. Not recommended! But possible. Do this only if you know what are you doing! To disable, use the [CMake]'s boolean option `LIBPLZMA_OPT_NO_CRYPTO:BOOL=YES` or preprocessor definition `LIBPLZMA_NO_CRYPTO=1`
 
 ### Installation
 -----------
 #### Swift Package Manager
 ```swift
-.package(url: "https://github.com/OlehKulykov/PLzmaSDK.git", .exact("1.1.1"))
+.package(url: "https://github.com/OlehKulykov/PLzmaSDK.git", .exact("1.1.2"))
 ```
 
 #### CocoaPods Podfile
@@ -66,7 +66,7 @@ use_frameworks!
 platform :ios, '9.0'
 
 target '<REPLACE_WITH_YOUR_TARGET>' do
-    pod 'PLzmaSDK', '1.1.1'
+    pod 'PLzmaSDK', '1.1.2'
 end
 ```
 
@@ -78,7 +78,7 @@ end
     "npm": ">=6.0.0"
   },
   "dependencies": {
-    "plzmasdk": "1.1.1"
+    "plzmasdk": "1.1.2"
   }
 }
 ```

@@ -48,15 +48,23 @@ namespace plzma {
     }
     
     void DecoderImpl::setPassword(const wchar_t * LIBPLZMA_NULLABLE password) {
+#if defined(LIBPLZMA_NO_CRYPTO)
+        throw Exception(plzma_error_code_invalid_arguments, LIBPLZMA_NO_CRYPTO_EXCEPTION_WHAT, __FILE__, __LINE__);
+#else
         LIBPLZMA_LOCKGUARD(lock, _mutex)
         _password.clear(plzma_erase_zero);
         _password.set(password);
+#endif
     }
     
     void DecoderImpl::setPassword(const char * LIBPLZMA_NULLABLE password) {
+#if defined(LIBPLZMA_NO_CRYPTO)
+        throw Exception(plzma_error_code_invalid_arguments, LIBPLZMA_NO_CRYPTO_EXCEPTION_WHAT, __FILE__, __LINE__);
+#else
         LIBPLZMA_LOCKGUARD(lock, _mutex)
         _password.clear(plzma_erase_zero);
         _password.set(password);
+#endif
     }
     
     void DecoderImpl::setProgressDelegate(ProgressDelegate * LIBPLZMA_NULLABLE delegate) {
@@ -72,7 +80,11 @@ namespace plzma {
         }
         
         CMyComPtr<DecoderImpl> selfPtr(this);
+#if defined(LIBPLZMA_NO_CRYPTO)
+        _openCallback = CMyComPtr<OpenCallback>(new OpenCallback(_stream, _type));
+#else
         _openCallback = CMyComPtr<OpenCallback>(new OpenCallback(_stream, _password, _type));
+#endif
         bool opened = false;
         _opening = true;
         
@@ -174,7 +186,9 @@ namespace plzma {
     }
     
     DecoderImpl::~DecoderImpl() {
+#if !defined(LIBPLZMA_NO_CRYPTO)
         _password.clear(plzma_erase_zero);
+#endif
         _stream->close();
     }
     

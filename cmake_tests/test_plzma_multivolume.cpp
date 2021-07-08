@@ -62,9 +62,7 @@ static void dummyFreeCallback(void * LIBPLZMA_NULLABLE memory) {
 using namespace plzma;
 
 int test_plzma_multivolume_test1(void) {
-//    auto leak1 = makeSharedOutStream();
-//    leak1.take();
-    
+#if !defined(LIBPLZMA_NO_CRYPTO)
     InStreamArray streams(3);
     streams.push(makeSharedInStream(FILE__18_7z_001_PTR, FILE__18_7z_001_SIZE));
     
@@ -132,12 +130,13 @@ int test_plzma_multivolume_test1(void) {
     
     PLZMA_TESTS_ASSERT(secondPartPath.remove() == true)
     PLZMA_TESTS_ASSERT(secondPartPath.exists() == false)
+#endif
     
     return 0;
 }
 
 int test_plzma_multivolume_test2(void) {
-#if !defined(LIBPLZMA_NO_C_BINDINGS)
+#if !defined(LIBPLZMA_NO_C_BINDINGS) && !defined(LIBPLZMA_NO_CRYPTO)
     plzma_in_stream_array streams = plzma_in_stream_array_create_with_capacity(3);
     PLZMA_TESTS_ASSERT(streams.exception == nullptr)
     PLZMA_TESTS_ASSERT(plzma_in_stream_array_count(&streams) == 0)
@@ -268,7 +267,7 @@ int test_plzma_multivolume_test2(void) {
     
     plzma_path_release(&secondPartPath);
     
-#endif // !LIBPLZMA_NO_C_BINDINGS
+#endif // !LIBPLZMA_NO_C_BINDINGS && !LIBPLZMA_NO_CRYPTO
     return 0;
 }
 
@@ -310,6 +309,7 @@ enum Test4Case {
 };
 
 int test_plzma_multivolume_test4(void) {
+#if !defined(LIBPLZMA_NO_CRYPTO)
     for (int caseIndex = 0; caseIndex < static_cast<int>(Test4CaseCount); caseIndex++) {
         const Test4Case testCase = static_cast<Test4Case>(caseIndex);
         
@@ -458,15 +458,13 @@ int test_plzma_multivolume_test4(void) {
             fileMap->at(i).second->erase();
         }
     }
+#endif
     
     return 0;
 }
 
 int test_plzma_multivolume_test5(void) {
-#if !defined(LIBPLZMA_NO_C_BINDINGS)
-//    plzma_out_stream leak1 = plzma_out_stream_create_memory_stream();
-//    leak1.object = nullptr;
-    
+#if !defined(LIBPLZMA_NO_C_BINDINGS) && !defined(LIBPLZMA_NO_CRYPTO)
     for (int caseIndex = 0; caseIndex < static_cast<int>(Test4CaseCount); caseIndex++) {
         const Test4Case testCase = static_cast<Test4Case>(caseIndex);
         
@@ -681,7 +679,7 @@ int test_plzma_multivolume_test5(void) {
         plzma_item_out_stream_array_release(&memoryMap);
         plzma_item_out_stream_array_release(&fileMap);
     }
-#endif // !LIBPLZMA_NO_C_BINDINGS
+#endif // !LIBPLZMA_NO_C_BINDINGS && !LIBPLZMA_NO_CRYPTO
     return 0;
 }
 

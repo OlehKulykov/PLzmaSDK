@@ -166,11 +166,28 @@ int test_plzma_open_1(void) {
                 decoder = makeSharedDecoder(stream, plzma_file_type_tar, plzma_context{nullptr, nullptr});
 #endif
                 break;
+#if defined(LIBPLZMA_NO_CRYPTO)
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+            case 10:
+            case 11:
+            case 13:
+            case 14:
+                continue;
+#endif
             default:
                 decoder = makeSharedDecoder(stream, plzma_file_type_7z, plzma_context{nullptr, nullptr});
                 break;
         }
-        decoder->setPassword("1234");
+        
+        bool didCatchExpectedException = false;
+        try { decoder->setPassword("1234"); } catch (...) { didCatchExpectedException = true; }
+#if defined(LIBPLZMA_NO_CRYPTO)
+        PLZMA_TESTS_ASSERT(didCatchExpectedException == true)
+#endif
+        
         auto allItems = decoder->items();
         PLZMA_TESTS_ASSERT(allItems.get() == nullptr)
         decoder->open();
@@ -230,6 +247,17 @@ int test_plzma_open_1(void) {
                 decoder = plzma_decoder_create(&stream, plzma_file_type_tar, plzma_context{nullptr, nullptr});
 #endif
                 break;
+#if defined(LIBPLZMA_NO_CRYPTO)
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+            case 10:
+            case 11:
+            case 13:
+            case 14:
+                continue;
+#endif
             default:
                 decoder = plzma_decoder_create(&stream, plzma_file_type_7z, plzma_context{nullptr, nullptr});
                 break;
@@ -238,7 +266,13 @@ int test_plzma_open_1(void) {
         PLZMA_TESTS_ASSERT(decoder.exception == nullptr)
         PLZMA_TESTS_ASSERT(decoder.object != nullptr)
         plzma_decoder_set_password_wide_string(&decoder, L"1234");
+#if defined(LIBPLZMA_NO_CRYPTO)
+        PLZMA_TESTS_ASSERT(decoder.exception != nullptr)
+        plzma_exception_release(decoder.exception);
+        decoder.exception = nullptr;
+#else
         PLZMA_TESTS_ASSERT(decoder.exception == nullptr)
+#endif
         plzma_item_array allItems = plzma_decoder_items(&decoder);
         PLZMA_TESTS_ASSERT(decoder.exception == nullptr)
         PLZMA_TESTS_ASSERT(allItems.object == nullptr)
@@ -321,7 +355,12 @@ int test_plzma_open_1(void) {
 int test_plzma_open_2(void) {
     auto stream = makeSharedInStream(FILE__1_7z_PTR, FILE__1_7z_SIZE, &dummy_free_callback);
     auto decoder = makeSharedDecoder(stream, plzma_file_type_7z, plzma_context{nullptr, nullptr});
-    decoder->setPassword("1234");
+    bool didCatchExpectedException = false;
+    try { decoder->setPassword("1234"); } catch (...) { didCatchExpectedException = true; }
+#if defined(LIBPLZMA_NO_CRYPTO)
+    PLZMA_TESTS_ASSERT(didCatchExpectedException == true)
+    return 0;
+#endif
     bool opened = false;
     std::thread thread([&](){
         opened = decoder->open();
@@ -338,6 +377,14 @@ int test_plzma_open_3(void) {
     plzma_in_stream stream = plzma_in_stream_create_with_memory(FILE__1_7z_PTR, FILE__1_7z_SIZE, &dummy_free_callback);
     plzma_decoder decoder = plzma_decoder_create(&stream, plzma_file_type_7z, plzma_context{nullptr, nullptr});
     plzma_decoder_set_password_utf8_string(&decoder, "1234");
+#if defined(LIBPLZMA_NO_CRYPTO)
+    PLZMA_TESTS_ASSERT(decoder.exception != nullptr)
+    plzma_exception_release(decoder.exception);
+    decoder.exception = nullptr;
+    return 0;
+#else
+    PLZMA_TESTS_ASSERT(decoder.exception == nullptr)
+#endif
     bool opened = false;
     std::thread thread([&](){
         opened = plzma_decoder_open(&decoder);
@@ -352,6 +399,7 @@ int test_plzma_open_3(void) {
 }
 
 int test_plzma_open_cpp_doc(void) {
+#if !defined(LIBPLZMA_NO_CRYPTO)
     try {
         Path archivePath("path/to/archive"); // Path(L"C:\\\\path\\to\\archive");
         auto archivePathInStream = makeSharedInStream(archivePath /* std::move(archivePath) */);
@@ -386,11 +434,12 @@ int test_plzma_open_cpp_doc(void) {
     } catch (const Exception & exception) {
         std::cout << "Exception: " << exception.what() << std::endl;
     }
+#endif
     return 0;
 }
 
 int test_plzma_open_c_doc(void) {
-#if !defined(LIBPLZMA_NO_C_BINDINGS)
+#if !defined(LIBPLZMA_NO_C_BINDINGS) && !defined(LIBPLZMA_NO_CRYPTO)
     plzma_path archivePath = plzma_path_create_with_utf8_string("path/to/archive"); // plzma_path_create_with_wide_string(L"C:\\\\path\\to\\archive");
     
     plzma_in_stream archivePathInStream = plzma_in_stream_create_with_path(&archivePath); // plzma_in_stream_create_with_pathm(...);
