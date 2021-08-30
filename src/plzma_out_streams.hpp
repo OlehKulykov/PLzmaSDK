@@ -50,7 +50,7 @@ namespace plzma {
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(OutStreamBase)
         
     protected:
-        LIBPLZMA_MUTEX(_mutex)
+        LIBPLZMA_MUTEX(mutable _mutex)
         
         virtual void retain();
         virtual void release();

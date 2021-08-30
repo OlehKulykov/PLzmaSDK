@@ -49,19 +49,19 @@ namespace plzma {
     }
     
     bool OpenCallback::open() {
-        LIBPLZMA_LOCKGUARD(lock, _mutex)
+        LIBPLZMA_UNIQUE_LOCK(lock, _mutex)
         if (_result != S_OK) {
             return false;
         }
         CMyComPtr<OpenCallback> selfPtr(this);
         
-        LIBPLZMA_LOCKGUARD_UNLOCK(lock)
+        LIBPLZMA_UNIQUE_LOCK_UNLOCK(lock)
         HRESULT result = _archive->Open(_stream, nullptr, this);
         UInt32 numItems = 0;
         if (result == S_OK) {
             result = _archive->GetNumberOfItems(&numItems);
         }
-        LIBPLZMA_LOCKGUARD_LOCK(lock)
+        LIBPLZMA_UNIQUE_LOCK_LOCK(lock)
         
         if (result == S_OK && _result == S_OK) {
             _itemsCount = numItems;

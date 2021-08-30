@@ -52,7 +52,7 @@ namespace plzma {
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(InStreamBase)
         
     protected:
-        LIBPLZMA_MUTEX(_mutex)
+        LIBPLZMA_MUTEX(mutable _mutex)
         
         virtual void retain() override final;
         virtual void release() override final;

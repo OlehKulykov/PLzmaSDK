@@ -365,7 +365,7 @@ namespace plzma {
             } else {
                 AddedFile item;
                 item.path = static_cast<Path &&>(addedPath.path); // full path, move
-                item.archivePath = static_cast<Path &&>(rootArchivePath); // move
+                item.archivePath = static_cast<Path &&>(rootArchivePath); // move, no longer needed
                 item.stat = item.path.stat();
                 _files.push(static_cast<AddedFile &&>(item));
                 itemsCount++;
@@ -596,7 +596,7 @@ namespace plzma {
     }
     
     bool EncoderImpl::compress() {
-        LIBPLZMA_LOCKGUARD(lock, _mutex)
+        LIBPLZMA_UNIQUE_LOCK(lock, _mutex)
         if (!_archive || _opening || _compressing || _result == E_ABORT) {
             return false;
         }
@@ -613,9 +613,9 @@ namespace plzma {
         _progress->setPartsCount(1);
         _progress->startPart();
 #endif
-        LIBPLZMA_LOCKGUARD_UNLOCK(lock)
+        LIBPLZMA_UNIQUE_LOCK_UNLOCK(lock)
         result = _archive->UpdateItems(_stream, _itemsCount, this);
-        LIBPLZMA_LOCKGUARD_LOCK(lock)
+        LIBPLZMA_UNIQUE_LOCK_LOCK(lock)
         
         _compressing = false;
         _stream->close();

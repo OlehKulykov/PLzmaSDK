@@ -46,7 +46,7 @@ namespace plzma {
     
     class BaseCallback {
     protected:
-        LIBPLZMA_MUTEX(_mutex)
+        LIBPLZMA_MUTEX(mutable _mutex)
 #if !defined(LIBPLZMA_NO_PROGRESS)
         SharedPtr<Progress> _progress;
 #endif

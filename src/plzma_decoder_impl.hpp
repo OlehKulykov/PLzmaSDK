@@ -57,7 +57,7 @@ namespace plzma {
     class DecoderImpl final : public CMyUnknownImp, public Decoder {
     private:
         friend struct SharedPtr<DecoderImpl>;
-        LIBPLZMA_MUTEX(_mutex)
+        LIBPLZMA_MUTEX(mutable _mutex)
 #if !defined(LIBPLZMA_NO_CRYPTO)
         String _password;
 #endif
@@ -77,7 +77,7 @@ namespace plzma {
         
         template<typename ... ARGS>
         bool process(ARGS&&... args) {
-            LIBPLZMA_LOCKGUARD(lock, _mutex)
+            LIBPLZMA_UNIQUE_LOCK(lock, _mutex)
             if (!_opened || _extractCallback) {
                 return false;
             }
@@ -100,9 +100,9 @@ namespace plzma {
 #endif
             _extractCallback = extractCallback;
             
-            LIBPLZMA_LOCKGUARD_UNLOCK(lock)
+            LIBPLZMA_UNIQUE_LOCK_UNLOCK(lock)
             extractCallback->process(static_cast<ARGS &&>(args)...);
-            LIBPLZMA_LOCKGUARD_LOCK(lock)
+            LIBPLZMA_UNIQUE_LOCK_LOCK(lock)
             
             CMyComPtr<ExtractCallback> tmpExtractCallback(static_cast<CMyComPtr<ExtractCallback> &&>(_extractCallback));
             tmpExtractCallback.Release();

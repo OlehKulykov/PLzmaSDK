@@ -228,35 +228,31 @@ int test_plzma_encode_example(void) {
 }
 
 int test_plzma_encode_test3(void) {
-////    inStream = inStreamCreate(FILE__southpark_jpg_PTR, FILE__southpark_jpg_SIZE, dummy_free_callback);
-////    PLZMA_TESTS_ASSERT(inStream != nullptr)
-////    PLZMA_TESTS_ASSERT(archivePath.set("SouthPark.jpg") == true)
-////    PLZMA_TESTS_ASSERT(encoder->add(inStream, static_cast<Path &&>(archivePath)) == true)
-////    inStream->release();
-//    
-////    path.set("/Users/<>/Downloads/3");
-////    encoder->add(path, true);
-//    
-//    path = Path::tmpPath();
-//    path.removeLastComponent();
-//    encoder->add(path, true);
-//    
-//    PLZMA_TESTS_ASSERT(encoder->open() == true)
-//    PLZMA_TESTS_ASSERT(encoder->open() == false)
-//    
-//    time_t t = time(nullptr);
-//    std::cout << t << " Start compressing ... \n";
-//    bool compressed = false;
-//    std::thread thread([&](){
-//        encoder->retain();
-//        compressed = encoder->compress();
-//        encoder->release();
-//    });
-//    thread.join();
-//    //PLZMA_TESTS_ASSERT(compressed == true)
-//    std::cout << time(nullptr) - t << " Compressing done.\n";
-//    
-//    encoder->release();
+    const auto tmpPath = Path::tmpPath();
+    const auto emptyDir = tmpPath.appendingRandomComponent();
+    bool res = emptyDir.createDir(false);
+    PLZMA_TESTS_ASSERT(res == true)
+    bool isDir = false;
+    res = emptyDir.exists(&isDir);
+    PLZMA_TESTS_ASSERT(res == true)
+    PLZMA_TESTS_ASSERT(isDir == true)
+    
+    const auto emptyFile = emptyDir.appendingRandomComponent();
+    FILE * filePtr = emptyFile.openFile("w+b");
+    PLZMA_TESTS_ASSERT(filePtr != nullptr)
+    fclose(filePtr);
+    const auto stat = emptyFile.stat();
+    PLZMA_TESTS_ASSERT(stat.size == 0)
+    PLZMA_TESTS_ASSERT(stat.creation != 0)
+    PLZMA_TESTS_ASSERT(stat.last_access != 0)
+    PLZMA_TESTS_ASSERT(stat.last_modification != 0)
+    
+    
+    
+    
+    res = emptyDir.remove();
+    PLZMA_TESTS_ASSERT(res == true)
+    
     return 0;
 }
 

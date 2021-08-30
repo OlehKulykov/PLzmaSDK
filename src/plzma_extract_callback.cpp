@@ -43,7 +43,7 @@ namespace plzma {
 #if defined(LIBPLZMA_THREAD_UNSAFE)
         return _result;
 #else
-        FailableLockGuard lock(_mutex);
+        const FailableLockGuard lock(_mutex);
         RINOK(lock.res())
         return _result;
 #endif
@@ -53,7 +53,7 @@ namespace plzma {
 #if defined(LIBPLZMA_THREAD_UNSAFE)
         return _result;
 #else
-        FailableLockGuard lock(_mutex);
+        const FailableLockGuard lock(_mutex);
         RINOK(lock.res())
         return _result;
 #endif
@@ -289,7 +289,7 @@ namespace plzma {
     }
     
     void ExtractCallback::process() {
-        LIBPLZMA_LOCKGUARD(lock, _mutex)
+        LIBPLZMA_UNIQUE_LOCK(lock, _mutex)
         
         CMyComPtr<ExtractCallback> selfPtr(this);
         NWindows::NCOM::CPropVariant prop;
@@ -352,9 +352,9 @@ namespace plzma {
 #endif
             _extracting = true;
             
-            LIBPLZMA_LOCKGUARD_UNLOCK(lock)
+            LIBPLZMA_UNIQUE_LOCK_UNLOCK(lock)
             const HRESULT result = (indicesCount > 0) ? _archive->Extract(indicies, indicesCount, _mode, this) : S_OK;
-            LIBPLZMA_LOCKGUARD_LOCK(lock)
+            LIBPLZMA_UNIQUE_LOCK_LOCK(lock)
             
             _extracting = false;
             if (_currentOutStream) {

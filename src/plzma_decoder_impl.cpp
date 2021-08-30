@@ -74,7 +74,7 @@ namespace plzma {
     }
     
     bool DecoderImpl::open() {
-        LIBPLZMA_LOCKGUARD(lock, _mutex)
+        LIBPLZMA_UNIQUE_LOCK(lock, _mutex)
         if (_opened || _opening) {
             return _opened;
         }
@@ -88,10 +88,10 @@ namespace plzma {
         bool opened = false;
         _opening = true;
         
-        LIBPLZMA_LOCKGUARD_UNLOCK(lock)
+        LIBPLZMA_UNIQUE_LOCK_UNLOCK(lock)
         _stream->open();
         opened = _openCallback->open();
-        LIBPLZMA_LOCKGUARD_LOCK(lock)
+        LIBPLZMA_UNIQUE_LOCK_LOCK(lock)
         
         if (_aborted) {
             _stream->close();

@@ -33,6 +33,10 @@
 #include "../libplzma.hpp"
 #include "plzma_private.hpp"
 
+#if defined(LIBPLZMA_HAVE_STD)
+#include <mutex>
+#endif
+
 #include "CPP/Common/Common.h"
 #include "CPP/Common/MyWindows.h"
 
@@ -47,6 +51,9 @@
 
 namespace plzma {
     
+#if defined(LIBPLZMA_HAVE_STD)
+    typedef std::mutex Mutex;
+#else
     struct Mutex final {
     private:
 #if defined(LIBPLZMA_MSC)
@@ -57,7 +64,7 @@ namespace plzma {
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(Mutex)
         
     public:
-        void lock() const {
+        void lock() {
 #if defined(LIBPLZMA_MSC)
             EnterCriticalSection(static_cast<LPCRITICAL_SECTION>(&_criticalSection));
 #elif defined(LIBPLZMA_POSIX)
@@ -67,7 +74,7 @@ namespace plzma {
 #endif
         }
         
-        void unlock() const {
+        void unlock() {
 #if defined(LIBPLZMA_MSC)
             LeaveCriticalSection(static_cast<LPCRITICAL_SECTION>(&_criticalSection));
 #elif defined(LIBPLZMA_POSIX)
@@ -105,10 +112,10 @@ namespace plzma {
 #endif
         }
     };
-    
+
     struct LockGuard final {
     private:
-        const Mutex & _mutex;
+        Mutex & _mutex;
         bool _locked = true;
         
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(LockGuard)
@@ -124,7 +131,7 @@ namespace plzma {
             _locked = false;
         }
         
-        LockGuard(const Mutex & mutex) :
+        LockGuard(Mutex & mutex) :
             _mutex(mutex) {
                 _mutex.lock();
         }
@@ -135,10 +142,11 @@ namespace plzma {
             }
         }
     };
+#endif // !LIBPLZMA_HAVE_STD
     
     struct FailableLockGuard final {
     private:
-        const Mutex & _mutex;
+        Mutex & _mutex;
         HRESULT _res = S_OK;
         bool _locked = true;
         
@@ -169,7 +177,7 @@ namespace plzma {
             }
         }
         
-        FailableLockGuard(const Mutex & mutex) noexcept :
+        FailableLockGuard(Mutex & mutex) noexcept :
             _mutex(mutex) {
                 try {
                     _mutex.lock();
@@ -179,23 +187,39 @@ namespace plzma {
         }
         
         ~FailableLockGuard() noexcept {
-            if (_locked && _res == S_OK) {
+            if (_locked && (_res == S_OK)) {
                 try {
                     _mutex.unlock();
                 } catch (...) {
-                    
+                    // do nothing
                 }
             }
         }
     };
 
+#if defined(LIBPLZMA_HAVE_STD)
+#define LIBPLZMA_MUTEX(NAME) std::mutex NAME;
+
+#define LIBPLZMA_LOCKGUARD(NAME,MUTEX) const std::lock_guard<std::mutex> NAME(MUTEX);
+
+#define LIBPLZMA_UNIQUE_LOCK(NAME,MUTEX) std::unique_lock<std::mutex> NAME(MUTEX);
+
+#define LIBPLZMA_UNIQUE_LOCK_LOCK(NAME) NAME.lock();
+
+#define LIBPLZMA_UNIQUE_LOCK_UNLOCK(NAME) NAME.unlock();
+
+#else
 #define LIBPLZMA_MUTEX(NAME) Mutex NAME;
-    
-#define LIBPLZMA_LOCKGUARD(NAME,MUTEX) LockGuard NAME(MUTEX);
 
-#define LIBPLZMA_LOCKGUARD_LOCK(NAME) NAME.lock();
+#define LIBPLZMA_LOCKGUARD(NAME,MUTEX) const LockGuard NAME(MUTEX);
 
-#define LIBPLZMA_LOCKGUARD_UNLOCK(NAME) NAME.unlock();
+#define LIBPLZMA_UNIQUE_LOCK(NAME,MUTEX) LockGuard NAME(MUTEX);
+
+#define LIBPLZMA_UNIQUE_LOCK_LOCK(NAME) NAME.lock();
+
+#define LIBPLZMA_UNIQUE_LOCK_UNLOCK(NAME) NAME.unlock();
+
+#endif // !LIBPLZMA_HAVE_STD
 
 } // namespace plzma
 
@@ -206,9 +230,11 @@ namespace plzma {
 
 #define LIBPLZMA_LOCKGUARD(NAME,MUTEX)
 
-#define LIBPLZMA_LOCKGUARD_LOCK(NAME)
+#define LIBPLZMA_UNIQUE_LOCK(NAME,MUTEX)
 
-#define LIBPLZMA_LOCKGUARD_UNLOCK(NAME)
+#define LIBPLZMA_UNIQUE_LOCK_LOCK(NAME)
+
+#define LIBPLZMA_UNIQUE_LOCK_UNLOCK(NAME)
 
 #endif // LIBPLZMA_THREAD_UNSAFE
 
