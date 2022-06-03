@@ -48,6 +48,17 @@
 #define LIBPLZMA_HAVE_STD 1
 #endif
 
+#if defined(__GNUC__) || defined(__clang__)
+#define LIBPLZMA_PACKED_ALIGNED_START(ALIGN)
+#define LIBPLZMA_PACKED_ALIGNED_END(ALIGN) __attribute__((packed, aligned(ALIGN)))
+#elif defined(_MSC_VER)
+#define LIBPLZMA_PACKED_ALIGNED_START(ALIGN) __pragma( pack(push, ALIGN) )
+#define LIBPLZMA_PACKED_ALIGNED_END(ALIGN) __pragma( pack(pop) )
+#else
+#define LIBPLZMA_PACKED_ALIGNED_START(ALIGN)
+#define LIBPLZMA_PACKED_ALIGNED_END(ALIGN)
+#endif
+
 #if defined(LIBPLZMA_OS_WINDOWS)
 
 #ifndef _WIN32
