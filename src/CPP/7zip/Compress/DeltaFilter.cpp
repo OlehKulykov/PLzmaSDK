@@ -129,6 +129,6 @@ REGISTER_FILTER_E(Delta,
 
 #if defined(LIBPLZMA_USING_REGISTRATORS)
 uint64_t plzma_registrator_11(void) {
-    return static_cast<uint64_t>(NCompress::NDelta::g_CodecInfo.Id);
+    return static_cast<uint64_t>(NCompress::NDelta::g_CodecInfo_Delta.Id);
 }
 #endif

@@ -3,9 +3,6 @@
 #ifndef __WINDOWS_FILE_NAME_H
 #define __WINDOWS_FILE_NAME_H
 
-#include "../../plzma_private.h"
-
-#if defined(LIBPLZMA_OS_WINDOWS)
 #include "../Common/MyString.h"
 
 namespace NWindows {
@@ -19,6 +16,10 @@ int FindSepar(const FChar *s) throw();
 
 void NormalizeDirPathPrefix(FString &dirPath); // ensures that it ended with '\\', if dirPath is not epmty
 void NormalizeDirPathPrefix(UString &dirPath);
+
+#ifdef _WIN32
+void NormalizeDirSeparators(FString &s);
+#endif
 
 bool IsDrivePath(const wchar_t *s) throw();  // first 3 chars are drive chars like "a:\\"
 
@@ -115,5 +116,4 @@ bool GetFullPath(CFSTR path, FString &fullPath);
 
 }}}
 
-#endif // LIBPLZMA_OS_WINDOWS
 #endif

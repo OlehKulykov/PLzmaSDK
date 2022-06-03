@@ -47,17 +47,35 @@ UString GetOsPath_Remove_TailSlash(const UString &name)
 }
 
 
-void ReplaceToOsSlashes_Remove_TailSlash(UString &name)
-{
-  if (!name.IsEmpty())
-  {
+void ReplaceToOsSlashes_Remove_TailSlash(UString &name, bool
     #if WCHAR_PATH_SEPARATOR != L'/'
-      name.Replace(kUnixPathSepar, kOsPathSepar);
+      useBackslashReplacement
     #endif
-    
-    if (name.Back() == kOsPathSepar)
-      name.DeleteBack();
+    )
+{
+  if (name.IsEmpty())
+    return;
+
+  #if WCHAR_PATH_SEPARATOR != L'/'
+  {
+    // name.Replace(kUnixPathSepar, kOsPathSepar);
+    const unsigned len = name.Len();
+    for (unsigned i = 0; i < len; i++)
+    {
+      wchar_t c = name[i];
+      if (c == L'/')
+        c = WCHAR_PATH_SEPARATOR;
+      else if (useBackslashReplacement && c == L'\\')
+        c = WCHAR_IN_FILE_NAME_BACKSLASH_REPLACEMENT; // WSL scheme
+      else
+        continue;
+      name.ReplaceOneCharAtPos(i, c);
+    }
   }
+  #endif
+    
+  if (name.Back() == kOsPathSepar)
+    name.DeleteBack();
 }
 
 
@@ -69,12 +87,15 @@ bool HasTailSlash(const AString &name, UINT
 {
   if (name.IsEmpty())
     return false;
-  char c =
+  char c;
     #if defined(_WIN32) && !defined(UNDER_CE)
-      *CharPrevExA((WORD)codePage, name, name.Ptr(name.Len()), 0);
-    #else
-      name.Back();
+    if (codePage != CP_UTF8)
+      c = *CharPrevExA((WORD)codePage, name, name.Ptr(name.Len()), 0);
+    else
     #endif
+    {
+      c = name.Back();
+    }
   return (c == '/');
 }
 

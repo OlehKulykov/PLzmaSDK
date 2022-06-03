@@ -3,9 +3,6 @@
 #ifndef __WINDOWS_NT_CHECK_H
 #define __WINDOWS_NT_CHECK_H
 
-#include "StdAfx.h"
-
-#if defined(LIBPLZMA_OS_WINDOWS)
 #ifdef _WIN32
 
 #include "../Common/MyWindows.h"
@@ -20,6 +17,8 @@ static inline bool IsItWindowsNT()
 #endif
 
 #ifndef _UNICODE
+    extern
+    bool g_IsNT;
   #if defined(_WIN64) || defined(UNDER_CE)
     bool g_IsNT = true;
     #define SET_IS_NT
@@ -46,5 +45,4 @@ static inline bool IsItWindowsNT()
 
 #endif
 
-#endif // LIBPLZMA_OS_WINDOWS
 #endif

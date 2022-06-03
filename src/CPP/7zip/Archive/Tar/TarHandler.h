@@ -3,7 +3,6 @@
 #ifndef __TAR_HANDLER_H
 #define __TAR_HANDLER_H
 
-#include "../../../../C/7zTypes.h"
 #include "../../../Common/MyCom.h"
 
 #include "../../../Windows/PropVariant.h"
@@ -48,6 +47,8 @@ private:
   UInt32 _specifiedCodePage;
   UInt32 _curCodePage;
   UInt32 _openCodePage;
+
+  CEncodingCharacts _encodingCharacts;
 
   NCompress::CCopyCoder *copyCoderSpec;
   CMyComPtr<ICompressCoder> copyCoder;

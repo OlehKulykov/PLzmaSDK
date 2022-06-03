@@ -9,7 +9,7 @@
 
 #include "../7zip/Common/RegisterCodec.h"
 
-class CXzCrc64Hasher final :
+class CXzCrc64Hasher:
   public IHasher,
   public CMyUnknownImp
 {
@@ -17,7 +17,7 @@ class CXzCrc64Hasher final :
   Byte mtDummy[1 << 7];
 
 public:
-  CXzCrc64Hasher(): _crc(CRC64_INIT_VAL) { (void)mtDummy; }
+  CXzCrc64Hasher(): _crc(CRC64_INIT_VAL) {}
 
   MY_UNKNOWN_IMP1(IHasher)
   INTERFACE_IHasher(;)

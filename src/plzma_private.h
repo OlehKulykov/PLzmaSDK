@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2021 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2022 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -64,7 +64,7 @@
 
 #else // !LIBPLZMA_OS_WINDOWS
 
-#if __has_include(<unistd.h>) || defined(HAVE_UNISTD_H)
+#if __has_include(<unistd.h>) || defined(HAVE_UNISTD_H) || defined(HAS_UNISTD_H) || defined(_UNISTD_H_)
 #define LIBPLZMA_POSIX 1
 #endif
 
@@ -95,9 +95,9 @@ typedef void* HANDLE;
 typedef uint32_t DWORD;
 #endif
 
-#if !defined(BOOL)
-#define BOOL int
-#endif
+//#if !defined(BOOL)
+//#define BOOL int
+//#endif
 
 #if !defined(TRUE)
 #define TRUE 1

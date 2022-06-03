@@ -31,7 +31,7 @@ static const Byte kArcProps[] =
   kpidTotalPhySize
 };
 
-class CHandler final :
+class CHandler:
   public IInArchive,
   public IInArchiveGetStream,
   public CMyUnknownImp
@@ -65,7 +65,7 @@ STDMETHODIMP CHandler::GetArchiveProperty(PROPID propID, PROPVARIANT *value)
   return S_OK;
 }
 
-struct CSeqName final
+struct CSeqName
 {
   UString _unchangedPart;
   UString _changedPart;
@@ -142,8 +142,8 @@ HRESULT CHandler::Open2(IInStream *stream, IArchiveOpenCallback *callback)
   }
   
   int dotPos = name.ReverseFind_Dot();
-  const UString prefix = name.Left(dotPos + 1);
-  const UString ext = name.Ptr(dotPos + 1);
+  const UString prefix = name.Left((unsigned)(dotPos + 1));
+  const UString ext = name.Ptr((unsigned)(dotPos + 1));
   UString ext2 = ext;
   ext2.MakeLower_Ascii();
   

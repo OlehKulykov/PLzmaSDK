@@ -11,7 +11,7 @@
 namespace NArchive {
 namespace N7z {
 
-struct CPropMap final
+struct CPropMap
 {
   UInt32 FilePropID;
   CStatProp StatProp;

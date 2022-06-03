@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2021 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2022 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -41,9 +41,10 @@ namespace nplzma {
     std::string exceptionToString(const plzma::Exception & e) {
         std::ostringstream oss;
         oss << "code: " << e.code();
-        if (e.what()) { oss << "\nwhat: " << e.what(); }
-        if (e.reason()) { oss << "\nreason: " << e.reason(); }
-        if (e.file()) { oss << "\nfile: " << e.file(); }
+        const char * str;
+        if ( (str = e.what()) ) { oss << "\nwhat: " << str; }
+        if ( (str = e.reason()) ) { oss << "\nreason: " << str; }
+        if ( (str = e.file()) ) { oss << "\nfile: " << str; }
         oss << "\nline: " << e.line();
         oss << "\nversion: " << plzma_version();
         return oss.str();
@@ -52,7 +53,8 @@ namespace nplzma {
     std::string exceptionToString(const std::exception & e) {
         std::ostringstream oss;
         oss << "code: 0";
-        if (e.what()) { oss << "\nwhat: " << e.what(); }
+        const char * str;
+        if ( (str = e.what()) ) { oss << "\nwhat: " << str; }
         oss << "\nversion: " << plzma_version();
         return oss.str();
     }

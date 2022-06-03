@@ -26,7 +26,9 @@ using namespace NWindows;
 namespace NArchive {
 namespace NTar {
 
-static const UINT k_DefaultCodePage = CP_OEMCP; // it uses it if UTF8 check in names shows error
+// 21.02: we use UTF8 code page by default, even if some files show error
+// before 21.02 : CP_OEMCP;
+// static const UINT k_DefaultCodePage = CP_UTF8;
 
 
 static const Byte kProps[] =
@@ -41,13 +43,15 @@ static const Byte kProps[] =
   kpidGroup,
   kpidSymLink,
   kpidHardLink,
+  kpidCharacts
   // kpidLinkType
 };
 
 static const Byte kArcProps[] =
 {
   kpidHeadersSize,
-  kpidCodePage
+  kpidCodePage,
+  kpidCharacts
 };
 
 IMP_IInArchive_Props
@@ -69,9 +73,12 @@ STDMETHODIMP CHandler::GetArchiveProperty(PROPID propID, PROPVARIANT *value)
       {
         case k_ErrorType_UnexpectedEnd: flags = kpv_ErrorFlags_UnexpectedEnd; break;
         case k_ErrorType_Corrupted: flags = kpv_ErrorFlags_HeadersError; break;
+        // case k_ErrorType_OK: break;
+        // case k_ErrorType_Warning: break;
         default: break;
       }
-      prop = flags;
+      if (flags != 0)
+        prop = flags;
       break;
     }
 
@@ -99,6 +106,12 @@ STDMETHODIMP CHandler::GetArchiveProperty(PROPID propID, PROPVARIANT *value)
       prop = name;
       break;
     }
+
+    case kpidCharacts:
+    {
+      prop = _encodingCharacts.GetCharactsString();
+      break;
+    }
   }
   prop.Detach(value);
   return S_OK;
@@ -122,11 +135,63 @@ HRESULT CHandler::ReadItem2(ISequentialInStream *stream, bool &filled, CItemEx &
     */
     if (item.IsPaxExtendedHeader())
       _thereIsPaxExtendedHeader = true;
+    if (item.IsThereWarning())
+      _warning = true;
   }
   _phySize += item.HeaderSize;
   _headersSize += item.HeaderSize;
   return S_OK;
 }
+
+
+void CEncodingCharacts::Check(const AString &s)
+{
+  IsAscii = s.IsAscii();
+  if (!IsAscii)
+  {
+    /*
+    {
+      Oem_Checked = true;
+      UString u;
+      MultiByteToUnicodeString2(u, s, CP_OEMCP);
+      Oem_Ok = (u.Find((wchar_t)0xfffd) <= 0);
+    }
+    Utf_Checked = true;
+    */
+    UtfCheck.Check_AString(s);
+  }
+}
+
+
+AString CEncodingCharacts::GetCharactsString() const
+{
+  AString s;
+  if (IsAscii)
+  {
+    s += "ASCII";
+  }
+  /*
+  if (Oem_Checked)
+  {
+    s.Add_Space_if_NotEmpty();
+    s += (Oem_Ok ? "oem-ok" : "oem-error");
+  }
+  if (Utf_Checked)
+  */
+  else
+  {
+    s.Add_Space_if_NotEmpty();
+    s += (UtfCheck.IsOK() ? "UTF8" : "UTF8-ERROR"); // "UTF8-error"
+    {
+      AString s2;
+      UtfCheck.PrintStatus(s2);
+      s.Add_Space_if_NotEmpty();
+      s += s2;
+    }
+  }
+  return s;
+}
+
 
 HRESULT CHandler::Open2(IInStream *stream, IArchiveOpenCallback *callback)
 {
@@ -138,12 +203,7 @@ HRESULT CHandler::Open2(IInStream *stream, IArchiveOpenCallback *callback)
   
   _phySizeDefined = true;
   
-  bool utf8_OK = true;
-  if (!_forceCodePage)
-  {
-    if (!utf8_OK)
-      _curCodePage = k_DefaultCodePage;
-  }
+  // bool utf8_OK = true;
 
   for (;;)
   {
@@ -154,8 +214,8 @@ HRESULT CHandler::Open2(IInStream *stream, IArchiveOpenCallback *callback)
       break;
 
     _isArc = true;
-    _items.Add(item);
 
+    /*
     if (!_forceCodePage)
     {
       if (utf8_OK) utf8_OK = CheckUTF8(item.Name, item.NameCouldBeReduced);
@@ -163,8 +223,14 @@ HRESULT CHandler::Open2(IInStream *stream, IArchiveOpenCallback *callback)
       if (utf8_OK) utf8_OK = CheckUTF8(item.User);
       if (utf8_OK) utf8_OK = CheckUTF8(item.Group);
     }
-    
-    RINOK(stream->Seek(item.GetPackSizeAligned(), STREAM_SEEK_CUR, &_phySize));
+    */
+ 
+    item.EncodingCharacts.Check(item.Name);
+    _encodingCharacts.Update(item.EncodingCharacts);
+
+    _items.Add(item);
+
+    RINOK(stream->Seek((Int64)item.GetPackSizeAligned(), STREAM_SEEK_CUR, &_phySize));
     if (_phySize > endPos)
     {
       _error = k_ErrorType_UnexpectedEnd;
@@ -191,11 +257,13 @@ HRESULT CHandler::Open2(IInStream *stream, IArchiveOpenCallback *callback)
     }
   }
 
+  /*
   if (!_forceCodePage)
   {
     if (!utf8_OK)
       _curCodePage = k_DefaultCodePage;
   }
+  */
   _openCodePage = _curCodePage;
 
   if (_items.Size() == 0)
@@ -258,6 +326,7 @@ STDMETHODIMP CHandler::Close()
   _latestIsRead = false;
   // _isSparse = false;
   _thereIsPaxExtendedHeader = false;
+  _encodingCharacts.Clear();
   _items.Clear();
   _seqStream.Release();
   _stream.Release();
@@ -318,7 +387,8 @@ void CHandler::TarStringToUnicode(const AString &s, NWindows::NCOM::CPropVariant
   else
     MultiByteToUnicodeString2(dest, s, _curCodePage);
   if (toOs)
-    NItemName::ReplaceToOsSlashes_Remove_TailSlash(dest);
+    NItemName::ReplaceToOsSlashes_Remove_TailSlash(dest,
+        true); // useBackslashReplacement
   prop = dest;
 }
 
@@ -361,6 +431,17 @@ STDMETHODIMP CHandler::GetProperty(UInt32 index, PROPID propID, PROPVARIANT *val
     case kpidSymLink:  if (item->LinkFlag == NFileHeader::NLinkFlag::kSymLink  && !item->LinkName.IsEmpty()) TarStringToUnicode(item->LinkName, prop); break;
     case kpidHardLink: if (item->LinkFlag == NFileHeader::NLinkFlag::kHardLink && !item->LinkName.IsEmpty()) TarStringToUnicode(item->LinkName, prop); break;
     // case kpidLinkType: prop = (int)item->LinkFlag; break;
+    case kpidCharacts:
+    {
+      AString s = item->EncodingCharacts.GetCharactsString();
+      if (item->IsThereWarning())
+      {
+        s.Add_Space_if_NotEmpty();
+        s += "HEADER_ERROR";
+      }
+      prop = s;
+      break;
+    }
   }
   prop.Detach(value);
   return S_OK;
@@ -410,7 +491,7 @@ HRESULT CHandler::Extract(const UInt32 *indices, UInt32 numItems,
     Int32 askMode = testMode ?
         NExtract::NAskMode::kTest :
         NExtract::NAskMode::kExtract;
-    Int32 index = allFilesMode ? i : indices[i];
+    const UInt32 index = allFilesMode ? i : indices[i];
     const CItemEx *item;
     if (seqMode)
     {
@@ -478,7 +559,7 @@ HRESULT CHandler::Extract(const UInt32 *indices, UInt32 numItems,
       {
         if (!seqMode)
         {
-          RINOK(_stream->Seek(item->GetDataPosition(), STREAM_SEEK_SET, NULL));
+          RINOK(_stream->Seek((Int64)item->GetDataPosition(), STREAM_SEEK_SET, NULL));
         }
         streamSpec->Init(item->GetPackSizeAligned());
         RINOK(copyCoder->Code(inStream2, outStream, NULL, NULL, progress));
@@ -569,7 +650,7 @@ STDMETHODIMP CSparseStream::Read(void *data, UInt32 size, UInt32 *processedSize)
       UInt64 phyPos = PhyOffsets[left] + relat;
       if (_needStartSeek || _phyPos != phyPos)
       {
-        RINOK(Handler->_stream->Seek(item.GetDataPosition() + phyPos, STREAM_SEEK_SET, NULL));
+        RINOK(Handler->_stream->Seek((Int64)(item.GetDataPosition() + phyPos), STREAM_SEEK_SET, NULL));
         _needStartSeek = false;
         _phyPos = phyPos;
       }
@@ -607,7 +688,7 @@ STDMETHODIMP CSparseStream::Seek(Int64 offset, UInt32 seekOrigin, UInt64 *newPos
   }
   if (offset < 0)
     return HRESULT_WIN32_ERROR_NEGATIVE_SEEK;
-  _virtPos = offset;
+  _virtPos = (UInt64)offset;
   if (newPosition)
     *newPosition = _virtPos;
   return S_OK;
@@ -653,7 +734,6 @@ STDMETHODIMP CHandler::GetStream(UInt32 index, ISequentialInStream **stream)
 void CHandler::Init()
 {
   _forceCodePage = false;
-  // _codePage = CP_OEMCP;
   _curCodePage = _specifiedCodePage = CP_UTF8;  // CP_OEMCP;
   _thereIsPaxExtendedHeader = false;
 }
@@ -683,6 +763,12 @@ STDMETHODIMP CHandler::SetProperties(const wchar_t * const *names, const PROPVAR
       RINOK(ParsePropToUInt32(L"", prop, cp));
       _forceCodePage = true;
       _curCodePage = _specifiedCodePage = cp;
+    }
+    else if (name.IsPrefixedBy_Ascii_NoCase("mt"))
+    {
+    }
+    else if (name.IsPrefixedBy_Ascii_NoCase("memuse"))
+    {
     }
     else
       return E_INVALIDARG;

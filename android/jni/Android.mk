@@ -17,6 +17,7 @@ ALL_SOURCES := \
     ../../src/C/Delta.c \
     ../../src/C/LzFind.c \
     ../../src/C/LzFindMt.c \
+    ../../src/C/LzFindOpt.c \
     ../../src/C/Lzma2Dec.c \
     ../../src/C/Lzma2DecMt.c \
     ../../src/C/Lzma2Enc.c \
@@ -27,6 +28,7 @@ ALL_SOURCES := \
     ../../src/C/Ppmd7Dec.c \
     ../../src/C/Ppmd7Enc.c \
     ../../src/C/Sha256.c \
+    ../../src/C/Sha256Opt.c \
     ../../src/C/Threads.c \
     ../../src/C/Xz.c \
     ../../src/C/XzCrc64.c \
@@ -34,7 +36,6 @@ ALL_SOURCES := \
     ../../src/C/XzDec.c \
     ../../src/C/XzEnc.c \
     ../../src/C/XzIn.c \
-    ../../src/CPP/7zip/Archive/7z/7zCompressionMode.cpp \
     ../../src/CPP/7zip/Archive/7z/7zDecode.cpp \
     ../../src/CPP/7zip/Archive/7z/7zEncode.cpp \
     ../../src/CPP/7zip/Archive/7z/7zExtract.cpp \
@@ -74,7 +75,6 @@ ALL_SOURCES := \
     ../../src/CPP/7zip/Common/InBuffer.cpp \
     ../../src/CPP/7zip/Common/InOutTempBuffer.cpp \
     ../../src/CPP/7zip/Common/LimitedStreams.cpp \
-    ../../src/CPP/7zip/Common/MethodId.cpp \
     ../../src/CPP/7zip/Common/MethodProps.cpp \
     ../../src/CPP/7zip/Common/OffsetStream.cpp \
     ../../src/CPP/7zip/Common/OutBuffer.cpp \
@@ -111,14 +111,12 @@ ALL_SOURCES := \
     ../../src/CPP/7zip/Crypto/MyAes.cpp \
     ../../src/CPP/7zip/Crypto/MyAesReg.cpp \
     ../../src/CPP/7zip/Crypto/RandGen.cpp \
-    ../../src/CPP/Common/C_FileIO.cpp \
     ../../src/CPP/Common/CommandLineParser.cpp \
     ../../src/CPP/Common/CRC.cpp \
     ../../src/CPP/Common/CrcReg.cpp \
     ../../src/CPP/Common/IntToString.cpp \
     ../../src/CPP/Common/MyString.cpp \
     ../../src/CPP/Common/MyWindows.cpp \
-    ../../src/CPP/Common/NewHandler.cpp \
     ../../src/CPP/Common/Sha256Reg.cpp \
     ../../src/CPP/Common/StringConvert.cpp \
     ../../src/CPP/Common/StringToInt.cpp \
@@ -126,10 +124,13 @@ ALL_SOURCES := \
     ../../src/CPP/Common/UTFConvert.cpp \
     ../../src/CPP/Common/Wildcard.cpp \
     ../../src/CPP/Common/XzCrc64Reg.cpp \
+    ../../src/CPP/Windows/FileDir.cpp \
+    ../../src/CPP/Windows/FileFind.cpp \
     ../../src/CPP/Windows/FileIO.cpp \
     ../../src/CPP/Windows/FileName.cpp \
     ../../src/CPP/Windows/PropVariant.cpp \
     ../../src/CPP/Windows/PropVariantConv.cpp \
+    ../../src/CPP/Windows/System.cpp \
     ../../src/CPP/Windows/TimeUtils.cpp \
     ../../src/plzma.cpp \
     ../../src/plzma_base_callback.cpp \

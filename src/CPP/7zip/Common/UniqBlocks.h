@@ -17,19 +17,10 @@ struct CUniqBlocks final
   UInt64 GetTotalSizeInBytes() const;
   void GetReverseMap();
 
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wlogical-op-parentheses"
-#endif
-
   bool IsOnlyEmpty() const
   {
-    return (Bufs.Size() == 0 || Bufs.Size() == 1 && Bufs[0].Size() == 0);
+    return (Bufs.Size() == 0 || (Bufs.Size() == 1 && Bufs[0].Size() == 0));
   }
-
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#endif
 };
 
 #endif

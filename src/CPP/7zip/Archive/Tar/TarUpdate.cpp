@@ -17,13 +17,10 @@
 namespace NArchive {
 namespace NTar {
 
-HRESULT GetPropString(IArchiveUpdateCallback *callback, UInt32 index, PROPID propId,
-    AString &res, UINT codePage, bool convertSlash = false);
-
 HRESULT UpdateArchive(IInStream *inStream, ISequentialOutStream *outStream,
     const CObjectVector<NArchive::NTar::CItemEx> &inputItems,
     const CObjectVector<CUpdateItem> &updateItems,
-    UINT codePage,
+    UINT codePage, unsigned utfFlags,
     IArchiveUpdateCallback *updateCallback)
 {
   COutArchive outArchive;
@@ -45,7 +42,7 @@ HRESULT UpdateArchive(IInStream *inStream, ISequentialOutStream *outStream,
     if (ui.NewData)
       complexity += ui.Size;
     else
-      complexity += inputItems[ui.IndexInArc].GetFullSize();
+      complexity += inputItems[(unsigned)ui.IndexInArc].GetFullSize();
   }
 
   RINOK(updateCallback->SetTotal(complexity));
@@ -73,6 +70,7 @@ HRESULT UpdateArchive(IInStream *inStream, ISequentialOutStream *outStream,
   
     if (ui.NewProps)
     {
+      item.SetDefaultWriteFields();
       item.Mode = ui.Mode;
       item.Name = ui.Name;
       item.User = ui.User;
@@ -90,19 +88,14 @@ HRESULT UpdateArchive(IInStream *inStream, ISequentialOutStream *outStream,
       }
       
       item.MTime = ui.MTime;
-      item.DeviceMajorDefined = false;
-      item.DeviceMinorDefined = false;
-      item.UID = 0;
-      item.GID = 0;
-      memcpy(item.Magic, NFileHeader::NMagic::kUsTar_00, 8);
     }
     else
-      item = inputItems[ui.IndexInArc];
+      item = inputItems[(unsigned)ui.IndexInArc];
 
     AString symLink;
     if (ui.NewData || ui.NewProps)
     {
-      RINOK(GetPropString(updateCallback, ui.IndexInClient, kpidSymLink, symLink, codePage, true));
+      RINOK(GetPropString(updateCallback, ui.IndexInClient, kpidSymLink, symLink, codePage, utfFlags, true));
       if (!symLink.IsEmpty())
       {
         item.LinkFlag = NFileHeader::NLinkFlag::kSymLink;
@@ -161,7 +154,7 @@ HRESULT UpdateArchive(IInStream *inStream, ISequentialOutStream *outStream,
 
           {
             AString hardLink;
-            RINOK(GetPropString(updateCallback, ui.IndexInClient, kpidHardLink, hardLink, codePage, true));
+            RINOK(GetPropString(updateCallback, ui.IndexInClient, kpidHardLink, hardLink, codePage, utfFlags, true));
             if (!hardLink.IsEmpty())
             {
               item.LinkFlag = NFileHeader::NLinkFlag::kHardLink;
@@ -191,7 +184,7 @@ HRESULT UpdateArchive(IInStream *inStream, ISequentialOutStream *outStream,
             outArchive.Pos = fileHeaderStartPos;
             item.PackSize = copyCoderSpec->TotalSize;
             RINOK(outArchive.WriteHeader(item));
-            RINOK(outSeekStream->Seek(item.PackSize, STREAM_SEEK_CUR, NULL));
+            RINOK(outSeekStream->Seek((Int64)item.PackSize, STREAM_SEEK_CUR, NULL));
             outArchive.Pos += item.PackSize;
           }
           RINOK(outArchive.FillDataResidual(item.PackSize));
@@ -203,7 +196,7 @@ HRESULT UpdateArchive(IInStream *inStream, ISequentialOutStream *outStream,
     }
     else
     {
-      const CItemEx &existItem = inputItems[ui.IndexInArc];
+      const CItemEx &existItem = inputItems[(unsigned)ui.IndexInArc];
       UInt64 size;
       
       if (ui.NewProps)
@@ -233,12 +226,12 @@ HRESULT UpdateArchive(IInStream *inStream, ISequentialOutStream *outStream,
         item.GID = existItem.GID;
         
         RINOK(outArchive.WriteHeader(item));
-        RINOK(inStream->Seek(existItem.GetDataPosition(), STREAM_SEEK_SET, NULL));
+        RINOK(inStream->Seek((Int64)existItem.GetDataPosition(), STREAM_SEEK_SET, NULL));
         size = existItem.PackSize;
       }
       else
       {
-        RINOK(inStream->Seek(existItem.HeaderPos, STREAM_SEEK_SET, NULL));
+        RINOK(inStream->Seek((Int64)existItem.HeaderPos, STREAM_SEEK_SET, NULL));
         size = existItem.GetFullSize();
       }
       

@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2021 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2022 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -124,7 +124,7 @@ namespace plzma {
         
         
         /// @brief Contructs empty \a RawHeapMemory instance without allocating memory.
-        RawHeapMemory() noexcept { }
+        RawHeapMemory() noexcept = default;
         
         
         /// @brief Destroys the \a RawHeapMemory instance and releases the allocating memory via \a plzma_free function.
@@ -160,7 +160,7 @@ namespace plzma {
         Pair(FIRST && f, SECOND && s) : first(static_cast<FIRST &&>(f)), second(static_cast<SECOND &&>(s)) { }
         Pair(Pair<FIRST, SECOND, FIRST_COPYABLE> && pair) noexcept : first(static_cast<FIRST &&>(pair.first)), second(static_cast<SECOND &&>(pair.second)) { }
         Pair(const Pair<FIRST, SECOND, FIRST_COPYABLE> &) = default;
-        Pair() noexcept { }
+        Pair() noexcept = default;
     };
     
     
@@ -186,7 +186,7 @@ namespace plzma {
 
         Trio(Trio<FIRST, SECOND, THIRD> && trio) noexcept : first(static_cast<FIRST &&>(trio.first)), second(static_cast<SECOND &&>(trio.second)), third(static_cast<THIRD &&>(trio.third)) { }
         Trio(const Trio<FIRST, SECOND, THIRD> &) = default;
-        Trio() noexcept { }
+        Trio() noexcept = default;
     };
     
     
@@ -317,7 +317,7 @@ namespace plzma {
         
         
         /// @brief Constructs the empty \a SharedPtr instance without any reference to the ARC class.
-        SharedPtr() noexcept { }
+        SharedPtr() noexcept = default;
         
         
         /// @brief Destroys the \a SharedPtr instance and releases the existed reference to the ARC class.
@@ -394,7 +394,7 @@ namespace plzma {
         
         
         /// @brief Contructs empty \a Exception instance.
-        Exception() noexcept { }
+        Exception() noexcept = default;
         
         ~Exception() noexcept;
         
@@ -511,8 +511,8 @@ namespace plzma {
         
         
         /// @brief Constructs the empty \a String instance.
-        String() noexcept { }
-        virtual ~String() noexcept { }
+        String() noexcept = default;
+        virtual ~String() noexcept = default;
         
         
         /// @return The number of bytes/characters after the control character.
@@ -669,7 +669,7 @@ namespace plzma {
         void clearPaths() noexcept;
         Iterator() = delete;
         Iterator(const Path & root, const plzma_open_dir_mode_t mode);
-        virtual ~Iterator() noexcept { }
+        virtual ~Iterator() noexcept = default;
         
     public:
         /// @brief Recevies the current file or directory component.
@@ -828,7 +828,7 @@ namespace plzma {
         
     protected:
         virtual void * LIBPLZMA_NONNULL base() noexcept = 0;
-        virtual ~InStream() noexcept { }
+        virtual ~InStream() noexcept = default;
         
     public:
         /// @brief Checks the input file stream is opened.
@@ -916,7 +916,7 @@ namespace plzma {
         virtual void release() = 0;
         
         virtual void * LIBPLZMA_NONNULL base() noexcept = 0;
-        virtual ~OutStream() noexcept { }
+        virtual ~OutStream() noexcept = default;
         
     public:
         /// @return Checks the output file stream is opened.
@@ -968,7 +968,7 @@ namespace plzma {
         friend struct SharedPtr<OutMultiStream>;
     
     protected:
-        virtual ~OutMultiStream() noexcept { }
+        virtual ~OutMultiStream() noexcept = default;
     
     public:
         /// @return The list of created sub-streams. The stream must be closed.
@@ -1233,7 +1233,7 @@ namespace plzma {
         virtual void release() = 0;
         
     protected:
-        virtual ~Decoder() { }
+        virtual ~Decoder() = default;
         
     public:
         /// @brief Provides the archive password for opening, extracting or testing items.
@@ -1370,7 +1370,7 @@ namespace plzma {
         virtual void release() = 0;
         
     protected:
-        virtual ~Encoder() { }
+        virtual ~Encoder() = default;
         
     public:
         /// @brief Provides the password for archive.

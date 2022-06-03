@@ -57,7 +57,7 @@ All optional features are enabled by default, but they might be disabled during 
 -----------
 #### Swift Package Manager
 ```swift
-.package(url: "https://github.com/OlehKulykov/PLzmaSDK.git", .exact("1.1.3"))
+.package(url: "https://github.com/OlehKulykov/PLzmaSDK.git", .exact("1.2.0"))
 ```
 
 #### CocoaPods Podfile
@@ -66,7 +66,7 @@ use_frameworks!
 platform :ios, '9.0'
 
 target '<REPLACE_WITH_YOUR_TARGET>' do
-    pod 'PLzmaSDK', '1.1.3'
+    pod 'PLzmaSDK', '1.2.0'
 end
 ```
 
@@ -78,7 +78,7 @@ end
     "npm": ">=6.0.0"
   },
   "dependencies": {
-    "plzmasdk": "1.1.3"
+    "plzmasdk": "1.2.0"
   }
 }
 ```
@@ -550,7 +550,7 @@ By using this all you are accepting original [LZMA SDK] and MIT license (*see be
 
 The MIT License (MIT)
 
-Copyright (c) 2015 - 2021 Oleh Kulykov <olehkulykov@gmail.com>
+Copyright (c) 2015 - 2022 Oleh Kulykov <olehkulykov@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

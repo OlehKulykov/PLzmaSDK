@@ -35,8 +35,9 @@ struct CCodecInfoEx final
   UInt32 NumStreams;
   bool EncoderIsAssigned;
   bool DecoderIsAssigned;
+  bool IsFilter; // it's unused
   
-  CCodecInfoEx(): EncoderIsAssigned(false), DecoderIsAssigned(false) {}
+  CCodecInfoEx(): EncoderIsAssigned(false), DecoderIsAssigned(false), IsFilter(false) {}
 };
 
 struct CHasherInfoEx final

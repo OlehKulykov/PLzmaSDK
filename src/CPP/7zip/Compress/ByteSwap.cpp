@@ -11,7 +11,7 @@
 namespace NCompress {
 namespace NByteSwap {
 
-class CByteSwap2 final :
+class CByteSwap2:
   public ICompressFilter,
   public CMyUnknownImp
 {
@@ -20,7 +20,7 @@ public:
   INTERFACE_ICompressFilter(;)
 };
 
-class CByteSwap4 final :
+class CByteSwap4:
   public ICompressFilter,
   public CMyUnknownImp
 {

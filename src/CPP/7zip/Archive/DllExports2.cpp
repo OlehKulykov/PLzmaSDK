@@ -32,6 +32,7 @@ STDAPI CreateCoder(const GUID *clsid, const GUID *iid, void **outObject);
 STDAPI CreateHasher(const GUID *clsid, IHasher **hasher);
 STDAPI CreateArchiver(const GUID *clsid, const GUID *iid, void **outObject);
 
+STDAPI CreateObject(const GUID *clsid, const GUID *iid, void **outObject);
 STDAPI CreateObject(const GUID *clsid, const GUID *iid, void **outObject)
 {
   // COM_TRY_BEGIN
@@ -46,16 +47,20 @@ STDAPI CreateObject(const GUID *clsid, const GUID *iid, void **outObject)
   // COM_TRY_END
 }
 
+STDAPI SetLargePageMode();
 STDAPI SetLargePageMode()
 {
   #if defined(_7ZIP_LARGE_PAGES)
+  #ifdef _WIN32
   SetLargePageSize();
+  #endif
   #endif
   return S_OK;
 }
 
 extern bool g_CaseSensitive;
 
+STDAPI SetCaseSensitive(Int32 caseSensitive);
 STDAPI SetCaseSensitive(Int32 caseSensitive)
 {
   g_CaseSensitive = (caseSensitive != 0);
@@ -66,6 +71,7 @@ STDAPI SetCaseSensitive(Int32 caseSensitive)
 
 CExternalCodecs g_ExternalCodecs;
 
+STDAPI SetCodecs(ICompressCodecsInfo *compressCodecsInfo);
 STDAPI SetCodecs(ICompressCodecsInfo *compressCodecsInfo)
 {
   COM_TRY_BEGIN
@@ -84,6 +90,7 @@ STDAPI SetCodecs(ICompressCodecsInfo *compressCodecsInfo)
 
 #else
 
+STDAPI SetCodecs(ICompressCodecsInfo *);
 STDAPI SetCodecs(ICompressCodecsInfo *)
 {
   return S_OK;

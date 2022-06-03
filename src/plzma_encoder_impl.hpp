@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2021 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2022 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -59,7 +59,7 @@ namespace plzma {
         public CMyUnknownImp {
     private:
         friend struct SharedPtr<EncoderImpl>;
-        enum Option: uint16_t {
+        enum Option : uint16_t {
             OptionSolid                 = 1 << 0,
             OptionCompressHeader        = 1 << 1,
             OptionCompressHeaderFull    = 1 << 2,

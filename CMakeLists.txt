@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2015 - 2021 Oleh Kulykov <olehkulykov@gmail.com>
+# Copyright (c) 2015 - 2022 Oleh Kulykov <olehkulykov@gmail.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -32,12 +32,12 @@ set(CMAKE_CXX_STANDARD 11)
 set(PACKAGE "libplzma")
 set(CPACK_PACKAGE_NAME "${PACKAGE}")
 set(CPACK_PACKAGE_VERSION_MAJOR "1")
-set(CPACK_PACKAGE_VERSION_MINOR "1")
-set(CPACK_PACKAGE_VERSION_PATCH "3")
+set(CPACK_PACKAGE_VERSION_MINOR "2")
+set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}")
 set(CPACK_PACKAGE_VENDOR "olehkulykov@gmail.com")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PACKAGE} ${PACKAGE_VERSION}")
-set(SOVERSION "1.1.3")
+set(SOVERSION "1.2.0")
 set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
 set(VERSION "${CPACK_PACKAGE_VERSION}")
 
@@ -337,7 +337,6 @@ set(LIBPLZMA_INTERNAL_HEADERS
   src/CPP/7zip/MyVersion.h
   src/CPP/7zip/PropID.h
   src/CPP/Common/AutoPtr.h
-  src/CPP/Common/C_FileIO.h
   src/CPP/Common/CommandLineParser.h
   src/CPP/Common/Common.h
   src/CPP/Common/ComTry.h
@@ -346,6 +345,7 @@ set(LIBPLZMA_INTERNAL_HEADERS
   src/CPP/Common/IntToString.h
   src/CPP/Common/ListFileUtils.h
   src/CPP/Common/MyBuffer.h
+  src/CPP/Common/MyBuffer2.h
   src/CPP/Common/MyCom.h
   src/CPP/Common/MyException.h
   src/CPP/Common/MyGuidDef.h
@@ -356,7 +356,6 @@ set(LIBPLZMA_INTERNAL_HEADERS
   src/CPP/Common/MyUnknown.h
   src/CPP/Common/MyVector.h
   src/CPP/Common/MyWindows.h
-  src/CPP/Common/NewHandler.h
   src/CPP/Common/StdAfx.h
   src/CPP/Common/StdInStream.h
   src/CPP/Common/StdOutStream.h
@@ -366,10 +365,13 @@ set(LIBPLZMA_INTERNAL_HEADERS
   src/CPP/Common/UTFConvert.h
   src/CPP/Common/Wildcard.h
   src/CPP/Windows/Defs.h
+  src/CPP/Windows/FileDir.h
+  src/CPP/Windows/FileFind.h
   src/CPP/Windows/PropVariant.h
   src/CPP/Windows/PropVariantConv.h
   src/CPP/Windows/StdAfx.h
   src/CPP/Windows/Synchronization.h
+  src/CPP/Windows/System.h
   src/CPP/Windows/Handle.h
   src/CPP/Windows/NtCheck.h
   src/CPP/Windows/Thread.h
@@ -394,6 +396,7 @@ set(LIBPLZMA_SOURCES
   src/C/Delta.c
   src/C/LzFind.c
   src/C/LzFindMt.c
+  src/C/LzFindOpt.c
   src/C/Lzma2Dec.c
   src/C/Lzma2DecMt.c
   src/C/Lzma2Enc.c
@@ -404,6 +407,7 @@ set(LIBPLZMA_SOURCES
   src/C/Ppmd7Dec.c
   src/C/Ppmd7Enc.c
   src/C/Sha256.c
+  src/C/Sha256Opt.c
   src/C/Threads.c
   src/C/Xz.c
   src/C/XzCrc64.c
@@ -429,7 +433,6 @@ set(LIBPLZMA_SOURCES
   src/plzma_raw_heap_memory.cpp
   src/plzma_string.cpp
   src/plzma_update_callback.cpp
-  src/CPP/7zip/Archive/7z/7zCompressionMode.cpp
   src/CPP/7zip/Archive/7z/7zDecode.cpp
   src/CPP/7zip/Archive/7z/7zEncode.cpp
   src/CPP/7zip/Archive/7z/7zExtract.cpp
@@ -462,7 +465,6 @@ set(LIBPLZMA_SOURCES
   src/CPP/7zip/Common/InBuffer.cpp
   src/CPP/7zip/Common/InOutTempBuffer.cpp
   src/CPP/7zip/Common/LimitedStreams.cpp
-  src/CPP/7zip/Common/MethodId.cpp
   src/CPP/7zip/Common/MethodProps.cpp
   src/CPP/7zip/Common/OffsetStream.cpp
   src/CPP/7zip/Common/OutBuffer.cpp
@@ -499,14 +501,12 @@ set(LIBPLZMA_SOURCES
   src/CPP/7zip/Crypto/MyAes.cpp
   src/CPP/7zip/Crypto/MyAesReg.cpp
   src/CPP/7zip/Crypto/RandGen.cpp
-  src/CPP/Common/C_FileIO.cpp
   src/CPP/Common/CommandLineParser.cpp
   src/CPP/Common/CRC.cpp
   src/CPP/Common/CrcReg.cpp
   src/CPP/Common/IntToString.cpp
   src/CPP/Common/MyString.cpp
   src/CPP/Common/MyWindows.cpp
-  src/CPP/Common/NewHandler.cpp
   src/CPP/Common/Sha256Reg.cpp
   src/CPP/Common/StringConvert.cpp
   src/CPP/Common/StringToInt.cpp
@@ -514,8 +514,11 @@ set(LIBPLZMA_SOURCES
   src/CPP/Common/UTFConvert.cpp
   src/CPP/Common/Wildcard.cpp
   src/CPP/Common/XzCrc64Reg.cpp
+  src/CPP/Windows/FileFind.cpp
+  src/CPP/Windows/FileDir.cpp
   src/CPP/Windows/PropVariant.cpp
   src/CPP/Windows/PropVariantConv.cpp
+  src/CPP/Windows/System.cpp
   src/CPP/Windows/FileIO.cpp
   src/CPP/Windows/FileName.cpp
 )
@@ -626,6 +629,7 @@ source_group("C"
   src/C/LzFind.h
   src/C/LzFindMt.c
   src/C/LzFindMt.h
+  src/C/LzFindOpt.c
   src/C/LzHash.h
   src/C/Lzma2Dec.c
   src/C/Lzma2Dec.h
@@ -651,6 +655,7 @@ source_group("C"
   src/C/RotateDefs.h
   src/C/Sha256.c
   src/C/Sha256.h
+  src/C/Sha256Opt.c
   src/C/Sort.h
   src/C/Threads.c
   src/C/Threads.h
@@ -669,12 +674,18 @@ source_group("C"
 source_group("CPP/Windows"
   FILES
   src/CPP/Windows/Defs.h
+  src/CPP/Windows/FileDir.cpp
+  src/CPP/Windows/FileDir.h
+  src/CPP/Windows/FileFind.cpp
+  src/CPP/Windows/FileFind.h
   src/CPP/Windows/PropVariant.cpp
   src/CPP/Windows/PropVariant.h
   src/CPP/Windows/PropVariantConv.cpp
   src/CPP/Windows/PropVariantConv.h
   src/CPP/Windows/StdAfx.h
   src/CPP/Windows/Synchronization.h
+  src/CPP/Windows/System.cpp
+  src/CPP/Windows/System.h
   src/CPP/Windows/Handle.h
   src/CPP/Windows/NtCheck.h
   src/CPP/Windows/Thread.h
@@ -690,8 +701,6 @@ source_group("CPP/Windows"
 source_group("CPP/Common"
   FILES
   src/CPP/Common/AutoPtr.h
-  src/CPP/Common/C_FileIO.cpp
-  src/CPP/Common/C_FileIO.h
   src/CPP/Common/CommandLineParser.cpp
   src/CPP/Common/CommandLineParser.h
   src/CPP/Common/Common.h
@@ -704,6 +713,7 @@ source_group("CPP/Common"
   src/CPP/Common/IntToString.h
   src/CPP/Common/ListFileUtils.h
   src/CPP/Common/MyBuffer.h
+  src/CPP/Common/MyBuffer2.h
   src/CPP/Common/MyCom.h
   src/CPP/Common/MyException.h
   src/CPP/Common/MyGuidDef.h
@@ -716,8 +726,6 @@ source_group("CPP/Common"
   src/CPP/Common/MyVector.h
   src/CPP/Common/MyWindows.cpp
   src/CPP/Common/MyWindows.h
-  src/CPP/Common/NewHandler.cpp
-  src/CPP/Common/NewHandler.h
   src/CPP/Common/Sha256Reg.cpp
   src/CPP/Common/StdAfx.h
   src/CPP/Common/StdInStream.h
@@ -750,7 +758,6 @@ source_group("CPP/7zip"
 # ---- grop: Lzma CPP/7zip/Archive/7z headers and sources ----
 source_group("CPP/7zip/Archive/7z"
   FILES
-  src/CPP/7zip/Archive/7z/7zCompressionMode.cpp
   src/CPP/7zip/Archive/7z/7zCompressionMode.h
   src/CPP/7zip/Archive/7z/7zDecode.cpp
   src/CPP/7zip/Archive/7z/7zDecode.h
@@ -850,7 +857,6 @@ source_group("CPP/7zip/Common"
   src/CPP/7zip/Common/InOutTempBuffer.h
   src/CPP/7zip/Common/LimitedStreams.cpp
   src/CPP/7zip/Common/LimitedStreams.h
-  src/CPP/7zip/Common/MethodId.cpp
   src/CPP/7zip/Common/MethodId.h
   src/CPP/7zip/Common/MethodProps.cpp
   src/CPP/7zip/Common/MethodProps.h
