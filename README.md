@@ -1,4 +1,4 @@
-![platform](https://img.shields.io/badge/platform-iOS%20%7C%20macOS%20%7C%20tvOS%20%7C%20watchOS%20%7C%20Android%20%7C%20Windows%20%7C%20Linux%20%7C%20Unix-lightgrey.svg)
+﻿![platform](https://img.shields.io/badge/platform-iOS%20%7C%20macOS%20%7C%20tvOS%20%7C%20watchOS%20%7C%20Android%20%7C%20Windows%20%7C%20Linux%20%7C%20Unix-lightgrey.svg)
 ![language](https://img.shields.io/badge/language-Swift%20%7C%20C%20%7C%20C++%20%7C%20JavaScript-brightgreen.svg)
 [![Cocoapods](https://img.shields.io/cocoapods/l/PLzmaSDK)](https://cocoapods.org/pods/PLzmaSDK)
 [![Cocoapods](https://img.shields.io/cocoapods/v/PLzmaSDK)](https://cocoapods.org/pods/PLzmaSDK)
@@ -14,7 +14,7 @@
 
 
 **P**LzmaSDK is (**P**ortable, **P**atched, **P**ackage, cross-**P**-latform) Lzma SDK.
-Based on original [LZMA SDK] version 19.00 (1900 - latest for now) and patched for unix platforms.
+Based on original [LZMA SDK] version 21.07 (2107 - latest for now) and patched for unix platforms.
 Available for all Apple's platforms(iOS, macOS, tvOS, watchOS), Android, Windows, Linux and any unix'es.
 
 
