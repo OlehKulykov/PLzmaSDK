@@ -1389,8 +1389,9 @@ LIBPLZMA_C_API(plzma_encoder) plzma_encoder_create_with_multi_stream(plzma_out_m
                                                                      const plzma_method method,
                                                                      const plzma_context context);
 
+
 /// @brief Provides the compression progress delegate callback.
-/// @param callback The callback which accepts UTF-8 item path presentation.
+/// @param callback The callback which accepts UTF-8 item's path presentation.
 /// @note Thread-safe.
 LIBPLZMA_C_API(void) plzma_encoder_set_progress_delegate_utf8_callback(plzma_encoder * LIBPLZMA_NONNULL encoder, plzma_progress_delegate_utf8_callback LIBPLZMA_NULLABLE callback);
 
