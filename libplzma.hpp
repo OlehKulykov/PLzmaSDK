@@ -200,7 +200,7 @@ namespace plzma {
         
     public:
         /// @brief Simply casts the reference of \a T type to an another type. Uses \a static_cast function.
-        /// @return The new shared pointer of \a R type which refers to the same retained reference.
+        /// @return The new shared pointer of \a R type which refers to the same +retained reference.
         template<class R>
         SharedPtr<R> cast() const {
             return SharedPtr<R>(static_cast<R *>(_ptr));
