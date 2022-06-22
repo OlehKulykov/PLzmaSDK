@@ -219,7 +219,7 @@ namespace plzma {
         }
         
         
-        /// @brief Takes the reference without changing the ownership and nullifies the insternal storage.
+        /// @brief Takes the reference without changing the ownership and nullifies internal pointer.
         /// @return The reference to the ARC class.
         T * LIBPLZMA_NULLABLE take() noexcept {
             T * ptr = _ptr;
