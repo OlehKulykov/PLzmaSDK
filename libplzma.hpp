@@ -191,7 +191,7 @@ namespace plzma {
     
     
     /// @brief Shared pointer for \a Automatic \a Reference \a Counting \a (ARC) classes.
-    /// Similar to the \a std::shared_ptr template.
+    /// Similar to the \a std::shared_ptr template, but not compatible due to underlying code-base.
     /// @tparam T The Class type which supports ARC, i.e. class which contains \a retain and \a release methods.
     template<class T>
     struct SharedPtr final {
