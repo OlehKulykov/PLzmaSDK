@@ -221,6 +221,7 @@ namespace plzma {
         
         /// @brief Takes the reference without changing the ownership and nullifies internal pointer.
         /// @return The reference to the ARC class.
+        /// @note Retain counter keeps unchanged.
         T * LIBPLZMA_NULLABLE take() noexcept {
             T * ptr = _ptr;
             _ptr = nullptr;
@@ -230,6 +231,7 @@ namespace plzma {
         
         /// @brief Assigns the new reference without changing the ownership.
         /// The previous reference will be released.
+        /// @note Retain counter of the argument \a ptr unchanged.
         void assign(T * LIBPLZMA_NULLABLE ptr) {
             if (_ptr != ptr && _ptr) {
                 _ptr->release();
