@@ -26,12 +26,12 @@ Available for all Apple's platforms(iOS, macOS, tvOS, watchOS), Android, Windows
   * Pure C++ via [git] + [CMake] or copy 2 main lib headers([libplzma.h] and [libplzma.hpp] files) and [src] folder to your project.
   * Pure C, also via [git] + [CMake] or copy 2 main lib headers([libplzma.h] and [libplzma.hpp] files) and [src] folder to your project. But this internal C bindings code might be disabled via [CMake]'s boolean option `LIBPLZMA_OPT_NO_C_BINDINGS:BOOL=YES` or preprocessor definition `LIBPLZMA_NO_C_BINDINGS=1`, see below.
 - Supports next archives:
-  * [7z]. Both, encrypted/password-protected and unencrypted archive item-list and it's content. [Lzma] and [Lzma2] compression methods.
+  * [7z]. Both, encrypted/password-protected and unencrypted archive items-list and it's content. [Lzma] and [Lzma2] compression methods.
   * [xz]. [Lzma2] compression method.
   * [tar]/[tarball]. *.tar, *.tar.xz and *.tar.7z archives.
 - Supports list, test, extract and compress operations. All these operations can be executed in a separate thread and aborted during the process.
 - Supports [7z] multivolume archives.
-- Thread safe encoder, decoder and progress tracking.
+- Thread safe encoder, decoder and progress tracking. Depending of usage, you can disable all thread synchronizations via [CMake]'s boolean option `LIBPLZMA_OPT_THREAD_UNSAFE:BOOL=YES` or preprocessor definition `LIBPLZMA_THREAD_UNSAFE=1`.
 - Supports memory and file IO streams. The extracting and compressing might be from ⇔ to memory or file.
 - Support extracting and compressing archive files with size more than 4GB(x64 support).
 - Track smoothed progress.
