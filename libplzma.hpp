@@ -349,7 +349,7 @@ namespace plzma {
         mutable char * LIBPLZMA_NULLABLE _file = nullptr;
         mutable char * LIBPLZMA_NULLABLE _reason = nullptr;
         mutable plzma_error_code _code = plzma_error_code_unknown;
-        mutable int _line = 0; // `int` cause of compiller.
+        mutable int _line = 0; // `int` cause of compiller's preprocessor definition type.
         
         Exception & operator = (const Exception &) = delete;
         Exception & operator = (Exception &&) = delete;
