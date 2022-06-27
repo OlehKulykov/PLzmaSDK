@@ -247,6 +247,7 @@ typedef struct plzma_path_stat {
 /// @param context The non-null reference to any user defined context.
 typedef void (*plzma_context_deinitializer)(void * LIBPLZMA_NONNULL context);
 
+
 /// @brief User defined context.
 /// @note The deinitializer will be triggered at the end of the context's lifetime and
 /// only if both \a context reference and \a deinitializer callback are provided, i.e. non-null.
