@@ -1,4 +1,4 @@
-﻿![platform](https://img.shields.io/badge/platform-iOS%20%7C%20macOS%20%7C%20tvOS%20%7C%20watchOS%20%7C%20Android%20%7C%20Windows%20%7C%20Linux%20%7C%20Unix-lightgrey.svg)
+![platform](https://img.shields.io/badge/platform-iOS%20%7C%20macOS%20%7C%20tvOS%20%7C%20watchOS%20%7C%20Android%20%7C%20Windows%20%7C%20Linux%20%7C%20Unix-lightgrey.svg)
 ![language](https://img.shields.io/badge/language-Swift%20%7C%20C%20%7C%20C++%20%7C%20JavaScript-brightgreen.svg)
 [![Cocoapods](https://img.shields.io/cocoapods/l/PLzmaSDK)](https://cocoapods.org/pods/PLzmaSDK)
 [![Cocoapods](https://img.shields.io/cocoapods/v/PLzmaSDK)](https://cocoapods.org/pods/PLzmaSDK)
@@ -57,7 +57,7 @@ All optional features are enabled by default, but they might be disabled during 
 -----------
 #### Swift Package Manager
 ```swift
-.package(url: "https://github.com/OlehKulykov/PLzmaSDK.git", .exact("1.2.0"))
+.package(url: "https://github.com/OlehKulykov/PLzmaSDK.git", .exact("1.2.1"))
 ```
 
 #### CocoaPods Podfile
@@ -66,7 +66,7 @@ use_frameworks!
 platform :ios, '9.0'
 
 target '<REPLACE_WITH_YOUR_TARGET>' do
-    pod 'PLzmaSDK', '1.2.0'
+    pod 'PLzmaSDK', '1.2.1'
 end
 ```
 
@@ -78,7 +78,7 @@ end
     "npm": ">=6.0.0"
   },
   "dependencies": {
-    "plzmasdk": "1.2.0"
+    "plzmasdk": "1.2.1"
   }
 }
 ```

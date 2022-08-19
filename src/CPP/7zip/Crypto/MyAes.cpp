@@ -110,7 +110,7 @@ STDMETHODIMP CAesCoder::SetInitVector(const Byte *data, UInt32 size)
 #    undef USE_HW_AES
 #  endif
 #endif
-    
+
 bool CAesCoder::SetFunctions(UInt32
     #ifndef _SFX
     algo

@@ -66,6 +66,7 @@ UInt32 MY_FAST_CALL CrcUpdateT1(UInt32 v, const void *data, size_t size, const U
   return v;
 }
 
+
 /* ---------- hardware CRC ---------- */
 
 #ifdef MY_CPU_LE

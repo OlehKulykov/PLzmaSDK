@@ -33,11 +33,11 @@ set(PACKAGE "libplzma")
 set(CPACK_PACKAGE_NAME "${PACKAGE}")
 set(CPACK_PACKAGE_VERSION_MAJOR "1")
 set(CPACK_PACKAGE_VERSION_MINOR "2")
-set(CPACK_PACKAGE_VERSION_PATCH "0")
+set(CPACK_PACKAGE_VERSION_PATCH "1")
 set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}")
 set(CPACK_PACKAGE_VENDOR "olehkulykov@gmail.com")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PACKAGE} ${PACKAGE_VERSION}")
-set(SOVERSION "1.2.0")
+set(SOVERSION "1.2.1")
 set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
 set(VERSION "${CPACK_PACKAGE_VERSION}")
 
@@ -367,16 +367,17 @@ set(LIBPLZMA_INTERNAL_HEADERS
   src/CPP/Windows/Defs.h
   src/CPP/Windows/FileDir.h
   src/CPP/Windows/FileFind.h
+  src/CPP/Windows/FileIO.h
+  src/CPP/Windows/FileName.h
+  src/CPP/Windows/Handle.h
+  src/CPP/Windows/NtCheck.h
   src/CPP/Windows/PropVariant.h
   src/CPP/Windows/PropVariantConv.h
   src/CPP/Windows/StdAfx.h
   src/CPP/Windows/Synchronization.h
   src/CPP/Windows/System.h
-  src/CPP/Windows/Handle.h
-  src/CPP/Windows/NtCheck.h
   src/CPP/Windows/Thread.h
-  src/CPP/Windows/FileIO.h
-  src/CPP/Windows/FileName.h
+  src/CPP/Windows/TimeUtils.h
 )
 
 # ---- all sources(public + internal) ----
@@ -514,13 +515,14 @@ set(LIBPLZMA_SOURCES
   src/CPP/Common/UTFConvert.cpp
   src/CPP/Common/Wildcard.cpp
   src/CPP/Common/XzCrc64Reg.cpp
-  src/CPP/Windows/FileFind.cpp
   src/CPP/Windows/FileDir.cpp
+  src/CPP/Windows/FileFind.cpp
+  src/CPP/Windows/FileIO.cpp
+  src/CPP/Windows/FileName.cpp
   src/CPP/Windows/PropVariant.cpp
   src/CPP/Windows/PropVariantConv.cpp
   src/CPP/Windows/System.cpp
-  src/CPP/Windows/FileIO.cpp
-  src/CPP/Windows/FileName.cpp
+  src/CPP/Windows/TimeUtils.cpp
 )
 
 if(NOT LIBPLZMA_OPT_NO_TAR)
@@ -532,7 +534,6 @@ if(NOT LIBPLZMA_OPT_NO_TAR)
     src/CPP/7zip/Archive/Tar/TarItem.h
     src/CPP/7zip/Archive/Tar/TarOut.h
     src/CPP/7zip/Archive/Tar/TarUpdate.h
-    src/CPP/Windows/TimeUtils.h
   )
 
   list(APPEND LIBPLZMA_SOURCES
@@ -543,7 +544,6 @@ if(NOT LIBPLZMA_OPT_NO_TAR)
     src/CPP/7zip/Archive/Tar/TarOut.cpp
     src/CPP/7zip/Archive/Tar/TarRegister.cpp
     src/CPP/7zip/Archive/Tar/TarUpdate.cpp
-    src/CPP/Windows/TimeUtils.cpp
   )
 endif()
 
@@ -678,6 +678,12 @@ source_group("CPP/Windows"
   src/CPP/Windows/FileDir.h
   src/CPP/Windows/FileFind.cpp
   src/CPP/Windows/FileFind.h
+  src/CPP/Windows/FileIO.cpp
+  src/CPP/Windows/FileIO.h
+  src/CPP/Windows/FileName.cpp
+  src/CPP/Windows/FileName.h
+  src/CPP/Windows/Handle.h
+  src/CPP/Windows/NtCheck.h
   src/CPP/Windows/PropVariant.cpp
   src/CPP/Windows/PropVariant.h
   src/CPP/Windows/PropVariantConv.cpp
@@ -686,13 +692,7 @@ source_group("CPP/Windows"
   src/CPP/Windows/Synchronization.h
   src/CPP/Windows/System.cpp
   src/CPP/Windows/System.h
-  src/CPP/Windows/Handle.h
-  src/CPP/Windows/NtCheck.h
   src/CPP/Windows/Thread.h
-  src/CPP/Windows/FileIO.h
-  src/CPP/Windows/FileIO.cpp
-  src/CPP/Windows/FileName.cpp
-  src/CPP/Windows/FileName.h
   src/CPP/Windows/TimeUtils.cpp
   src/CPP/Windows/TimeUtils.h
 )

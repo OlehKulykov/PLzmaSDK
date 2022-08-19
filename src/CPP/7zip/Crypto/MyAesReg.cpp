@@ -26,6 +26,7 @@ REGISTER_AES(CBC, "CBC", false)
 // REGISTER_AES(CTR, "CTR", true)
 
 #endif
+
 }
 
 #if defined(LIBPLZMA_USING_REGISTRATORS)

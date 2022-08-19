@@ -357,7 +357,7 @@ int test_plzma_multivolume_test4(void) {
         
         auto content = multiStream->copyContent();
         
-        size_t totalPartsSize = 0;
+        uint64_t totalPartsSize = 0;
         switch (testCase) {
             case Test4CaseFileNoPassword:
             case Test4CaseFileWithPassword: {

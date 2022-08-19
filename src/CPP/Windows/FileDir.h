@@ -14,8 +14,12 @@ namespace NDir {
 bool GetWindowsDir(FString &path);
 bool GetSystemDir(FString &path);
 
+/*
+WIN32 API : SetFileTime() doesn't allow to set zero timestamps in file
+but linux : allows unix time = 0 in filesystem
+*/
 #if !defined(LIBPLZMA)
-bool SetDirTime(CFSTR path, const FILETIME *cTime, const FILETIME *aTime, const FILETIME *mTime);
+bool SetDirTime(CFSTR path, const CFiTime *cTime, const CFiTime *aTime, const CFiTime *mTime);
 #endif
 
 #ifdef _WIN32
@@ -28,6 +32,9 @@ bool SetFileAttrib(CFSTR path, DWORD attrib);
   SetFileAttrib_PosixHighDetect() tries to detect posix field, and it extracts only attribute
   bits that are related to current system only.
 */
+#else
+
+int my_chown(CFSTR path, uid_t owner, gid_t group);
 
 #endif
 
@@ -54,7 +61,7 @@ bool DeleteFileAlways(CFSTR name);
 #if !defined(LIBPLZMA)
 bool RemoveDirWithSubItems(const FString &path);
 #endif
-    
+
 bool MyGetFullPathName(CFSTR path, FString &resFullPath);
 bool GetFullPathAndSplit(CFSTR path, FString &resDirPrefix, FString &resFileName);
 bool GetOnlyDirPrefix(CFSTR path, FString &resDirPrefix);
