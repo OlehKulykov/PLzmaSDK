@@ -414,10 +414,10 @@ int test_plzma_open_cpp_doc(void) {
         
         auto allArchiveItems = decoder->items();
         
-        size_t numberOfArchiveItems = decoder->count();
+        plzma_size_t numberOfArchiveItems = decoder->count();
         auto selectedItemsDuringIteration = makeShared<ItemArray>(numberOfArchiveItems);
         auto selectedItemsToStreams = makeShared<ItemOutStreamArray>();
-        for (size_t itemIndex = 0; itemIndex < numberOfArchiveItems; itemIndex++) {
+        for (plzma_size_t itemIndex = 0; itemIndex < numberOfArchiveItems; itemIndex++) {
             auto item = decoder->itemAt(itemIndex);
             selectedItemsDuringIteration->push(item /* std::move(item) */);
             selectedItemsToStreams->push(Pair<SharedPtr<Item>, SharedPtr<OutStream> >(item, makeSharedOutStream()));
