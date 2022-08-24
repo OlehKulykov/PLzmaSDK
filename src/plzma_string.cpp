@@ -38,7 +38,9 @@
 namespace plzma {
 
 namespace StringConvertUTF {
+
 #include "plzma_convert_utf.hpp"
+
 } // namespace StringConvertUTF
     
     void String::moveFrom(String && str, const plzma_erase eraseType) noexcept {
