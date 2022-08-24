@@ -169,14 +169,8 @@ typedef uint8_t Byte;
 typedef int16_t Int16;
 typedef uint16_t UInt16;
 
-//#ifdef _LZMA_UINT32_IS_ULONG
 typedef int32_t Int32;
 typedef uint32_t UInt32;
-//#else
-//typedef int Int32;
-//typedef unsigned int UInt32;
-//#endif
-
 
 #ifndef _WIN32
 
@@ -194,10 +188,8 @@ typedef UINT32 DWORD;
 
 #define HRESULT LONG
 
-typedef void *LPVOID;
-// typedef void VOID;
-// typedef ULONG_PTR DWORD_PTR, *PDWORD_PTR;
-// gcc / clang on Unix  : sizeof(long==sizeof(void*) in 32 or 64 bits)
+typedef void* LPVOID;
+
 typedef intptr_t INT_PTR;
 typedef uintptr_t UINT_PTR;
 typedef intptr_t LONG_PTR;
