@@ -168,7 +168,7 @@ namespace plzma {
             default: break;
         }
         sptr.Attach(ptr);
-        if (res == S_OK && ptr) {
+        if ((res == S_OK) && ptr) {
             return sptr;
         }
         Exception exception(plzma_error_code_internal, "Can't create archive object.", __FILE__, __LINE__);
