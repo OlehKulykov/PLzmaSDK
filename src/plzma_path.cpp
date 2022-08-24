@@ -37,7 +37,7 @@ namespace plzma {
     
     /// Iterator
     
-    enum PathIteratorFlags: uint16_t {
+    enum PathIteratorFlags : uint16_t {
         PathIteratorFlagIsDir           = 1 << 0,
         PathIteratorFlagSkipPathConcat  = 1 << 1,
         PathIteratorFlagDone            = 1 << 2,
