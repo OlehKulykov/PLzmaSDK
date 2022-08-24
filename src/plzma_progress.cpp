@@ -36,6 +36,7 @@
 #include "CPP/Common/Defs.h"
 
 namespace plzma {
+
 #if defined(LIBPLZMA_THREAD_UNSAFE)
     void Progress::retain() noexcept {
         LIBPLZMA_RETAIN_IMPL(_referenceCounter)
