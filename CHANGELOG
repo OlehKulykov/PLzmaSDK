@@ -1,6 +1,9 @@
 (Portable, Patched, Package, cross-P-latform) Lzma SDK, libplzma
 
-1.2.1: (current):
+1.2.2: (current):
+- Minor code improvents.
+
+1.2.1:
 - Update of the underlying code.
 
 1.2.0:

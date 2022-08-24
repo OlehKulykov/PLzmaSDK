@@ -44,13 +44,13 @@
 /// and all optional C bindings to the internal C++ part(Core) of the library.
 /// Everything what you need to use this library in C | Objective-C | Swift env. is here.
 
-/// @brief Manualy defined version of the library, i.e. 1.2.1
+/// @brief Manualy defined version of the library, i.e. 1.2.2
 /// The optinal \a LIBPLZMA_VERSION_BUILD might be befined by the CI or CMake or manualy.
 /// Conforms 'Semantic Versioning 2.0.0'.
 /// @link https://semver.org
 #define LIBPLZMA_VERSION_MAJOR 1
 #define LIBPLZMA_VERSION_MINOR 2
-#define LIBPLZMA_VERSION_PATCH 1
+#define LIBPLZMA_VERSION_PATCH 2
 
 // check windows
 #if defined(WIN32) || defined(_WIN32) || defined(WIN32_LEAN_AND_MEAN) || defined(_WIN64) || defined(WIN64)
