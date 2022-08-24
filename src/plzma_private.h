@@ -106,10 +106,6 @@ typedef void* HANDLE;
 typedef uint32_t DWORD;
 #endif
 
-//#if !defined(BOOL)
-//#define BOOL int
-//#endif
-
 #if !defined(TRUE)
 #define TRUE 1
 #endif
