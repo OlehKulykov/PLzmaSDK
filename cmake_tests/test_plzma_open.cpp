@@ -458,10 +458,10 @@ int test_plzma_open_c_doc(void) {
     
     plzma_item_array allArchiveItems = plzma_decoder_items(&decoder);
     
-    size_t numberOfArchiveItems = plzma_decoder_count(&decoder);
+    plzma_size_t numberOfArchiveItems = plzma_decoder_count(&decoder);
     plzma_item_array selectedItemsDuringIteration = plzma_item_array_create(numberOfArchiveItems);
     plzma_item_out_stream_array selectedItemsToStreams = plzma_item_out_stream_array_create(0);
-    for (size_t itemIndex = 0; itemIndex < numberOfArchiveItems; itemIndex++) {
+    for (plzma_size_t itemIndex = 0; itemIndex < numberOfArchiveItems; itemIndex++) {
         plzma_item item = plzma_decoder_item_at(&decoder, itemIndex);
         plzma_item_array_add(&selectedItemsDuringIteration, &item);
         plzma_out_stream outItemStream = plzma_out_stream_create_memory_stream();
