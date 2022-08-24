@@ -33,8 +33,8 @@
 #include "plzma_private.h"
 
 #define LIBPLZMA_CAST_VALUE_TO_PTR(P,T,V) if(P){*P=static_cast<T>(V);}
-#define LIBPLZMA_SET_VALUE_TO_PTR(P,V) if(P){*P=V;}
 
+#define LIBPLZMA_SET_VALUE_TO_PTR(P,V) if(P){*P=V;}
 
 #define LIBPLZMA_RETAIN_IMPL(REF_COUNTER) REF_COUNTER++;
 
