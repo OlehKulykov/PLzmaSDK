@@ -35,12 +35,12 @@
 
 // Mark of the libplzma build.
 // This definition uses by the patched, original [LZMA SDK] via 'StdAfx.h' files in Win env.
-#ifndef LIBPLZMA
-#define LIBPLZMA 1
+#if !defined(LIBPLZMA)
+#  define LIBPLZMA 1
 #endif
 
 #if (defined(DEBUG) || defined(_DEBUG)) && !defined(DEBUG)
-#define DEBUG 1
+#  define DEBUG 1
 #endif
 
 // plzma_c_bindings_private.hpp
