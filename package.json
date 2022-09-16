@@ -1,6 +1,6 @@
 {
   "name": "plzmasdk",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "(Portable, Patched, Package, cross-P-latform) Lzma SDK, libplzma",
   "author": "Oleh Kulykov <olehkulykov@gmail.com>",
   "license": "SEE LICENSE IN LICENSE",
