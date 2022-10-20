@@ -75,7 +75,7 @@
 
 #else // !LIBPLZMA_OS_WINDOWS
 
-#if __has_include(<unistd.h>) || defined(HAVE_UNISTD_H) || defined(HAS_UNISTD_H) || defined(_UNISTD_H_)
+#if __has_include(<unistd.h>) || defined(HAVE_UNISTD_H) || defined(_UNISTD_H_)
 #define LIBPLZMA_POSIX 1
 #endif
 
@@ -83,7 +83,7 @@
 #if defined(_POSIX_VERSION) || defined(_POSIX2_VERSION) || defined(_POSIX_C_SOURCE) || defined(_DARWIN_C_SOURCE)
 #define LIBPLZMA_POSIX 1
 #endif
-#if !defined(LIBPLZMA_POSIX) && (defined(__APPLE__) || defined(__unix__) || defined(__unix) || defined(__linux__) || defined(__gnu_linux__))
+#if !defined(LIBPLZMA_POSIX) && (defined(__APPLE__) || defined(__unix__) || defined(__unix) || defined(__linux__) || defined(__linux) || defined(__gnu_linux__))
 #define LIBPLZMA_POSIX 1
 #endif
 #if !defined(LIBPLZMA_POSIX) && (defined(__ANDROID__) || defined(__ANDROID_API__))
@@ -94,6 +94,15 @@
 #if defined(LIBPLZMA_POSIX)
 #include <unistd.h>
 #include <pthread.h>
+#if __has_include(<sys/types.h>) || defined(HAVE_SYS_TYPES_H)
+#include <sys/types.h>
+#endif
+#if __has_include(<sys/sys_types.h>) || defined(HAVE_SYS_SYS_TYPES_H)
+#include <sys/sys_types.h>
+#endif
+#if __has_include(<sys/sysmacros.h>) || defined(HAVE_SYS_SYSMACROS_H)
+#include <sys/sysmacros.h>
+#endif
 #endif
 
 // Types

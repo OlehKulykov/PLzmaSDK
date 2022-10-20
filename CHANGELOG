@@ -1,10 +1,13 @@
 (Portable, Patched, Package, cross-P-latform) Lzma SDK, libplzma
 
-1.2.3: (current):
+1.2.4: (current):
+- Fix Android build by adding extra sys headers to a global private scope.
+
+1.2.3:
 - Swift 5.7 support.
 
 1.2.2:
-- Minor code improvents.
+- Minor code improvements.
 
 1.2.1:
 - Update of the underlying code.

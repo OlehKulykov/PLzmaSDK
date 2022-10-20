@@ -174,7 +174,7 @@ public enum MultiStreamPartNameFormat: UInt8, Enum {
     public typealias EType = plzma_plzma_multi_stream_part_name_format
     
     /// "File"."Extension"."002". The maximum number of parts is 999.
-    case nameExt00x
+    case nameExt00x = 1
 }
 
 extension plzma_plzma_multi_stream_part_name_format: Enum {
