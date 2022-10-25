@@ -440,7 +440,12 @@ public final class Encoder {
         }
         
         var streamObject = stream.object
-        var encoder = plzma_encoder_create(&streamObject, fileType.type, method.type, contextObject)
+        var encoder: plzma_encoder
+        if stream.isMulti {
+            encoder = plzma_encoder_create_with_multi_stream(&streamObject, fileType.type, method.type, contextObject)
+        } else {
+            encoder = plzma_encoder_create(&streamObject, fileType.type, method.type, contextObject)
+        }
         if let exception = encoder.exception {
             if let unmanagedContext = unmanagedContext {
                 unmanagedContext.release()

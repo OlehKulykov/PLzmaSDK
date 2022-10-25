@@ -814,7 +814,7 @@ bool COutFile::Create(const char *name, bool createAlways)
 
 bool COutFile::Open(const char *name, DWORD creationDisposition)
 {
-  UNUSED_VAR(creationDisposition) // FIXME
+  UNUSED_VAR(creationDisposition)
   return Create(name, false);
 }
 

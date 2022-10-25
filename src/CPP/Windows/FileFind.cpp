@@ -1139,7 +1139,6 @@ bool CFileInfo::Find(CFSTR path, bool followLink)
 
 bool DoesFileExist_Raw(CFSTR name)
 {
-  // FIXME for symbolic links.
   struct stat st;
   if (MY__lstat(name, &st, false) != 0)
     return false;
@@ -1148,7 +1147,6 @@ bool DoesFileExist_Raw(CFSTR name)
 
 bool DoesFileExist_FollowLink(CFSTR name)
 {
-  // FIXME for symbolic links.
   struct stat st;
   if (MY__lstat(name, &st, true) != 0)
     return false;

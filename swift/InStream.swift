@@ -33,7 +33,7 @@ import libplzma
 /// The input stream.
 ///
 /// The stream could be initialized with path or memory data.
-public class InStream {
+public final class InStream {
     private final class DataNoCopyContext {
         let data: Data
         var offset = Int64(0)
@@ -113,7 +113,7 @@ public class InStream {
         let stream: plzma_in_stream = try dataCopy.withUnsafeBytes({ ptr in
             guard let address = ptr.baseAddress else {
                 throw Exception(code: .invalidArguments,
-                                what: "Can't get data memory.",
+                                what: "Can't instantiate in-stream without memory.",
                                 reason: "The memory is null.",
                                 file: #file,
                                 line: #line)
@@ -216,7 +216,7 @@ public class InStream {
     /// - Throws: `Exception` with `.invalidArguments` code in case if streams array is empty or contains empty stream.
     public init(streams: [InStream]) throws {
         let count = streams.count
-        if count < 0 || count > plzma_max_size() {
+        if count < 0 || count > Int64(PLZMA_SIZE_T_MAX) {
             throw Exception(code: .invalidArguments,
                             what: "Invalid number of streams.",
                             reason: "The number should be positive and less than maximum supported size.",

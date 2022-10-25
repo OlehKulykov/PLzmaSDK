@@ -1,6 +1,9 @@
 (Portable, Patched, Package, cross-P-latform) Lzma SDK, libplzma
 
-1.2.4: (current):
+1.2.5: (current):
+- Introduce Objective-C Cocoapod 'PLzmaSDK-ObjC.podspec'.
+
+1.2.4:
 - Fix Android build by adding extra sys headers to a global private scope.
 
 1.2.3:

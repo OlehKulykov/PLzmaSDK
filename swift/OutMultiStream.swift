@@ -33,6 +33,10 @@ import libplzma
 /// The out file or memory or multi stream.
 public final class OutMultiStream: OutStream {
  
+    internal override var isMulti: Bool {
+        return true
+    }
+    
     /// - Returns: The array of created sub-streams. The stream must be closed.
     /// If stream is opened, then the array is empty.
     /// - Throws: `Exception`.

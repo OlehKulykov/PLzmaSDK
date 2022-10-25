@@ -481,6 +481,7 @@ STDMETHODIMP CHandler::UpdateItems(ISequentialOutStream *outStream, UInt32 numIt
         RINOK(updateCallback->GetProperty(i, kpidPath, &prop));
         if (prop.vt == VT_EMPTY)
         {
+            // comment
         }
         else if (prop.vt != VT_BSTR)
           return E_INVALIDARG;

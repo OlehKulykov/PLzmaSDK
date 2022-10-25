@@ -112,7 +112,7 @@ namespace fileUtils {
             }
             const size_t partSize = 1024 * 1024;
             size_t offset = 0;
-            for (size_t i = 0, n = size / partSize; i < n; i++) {
+            for (size_t i = 0, n = (size / partSize); i < n; i++) {
                 const size_t read = fread(static_cast<uint8_t *>(content.first) + offset, 1, partSize, f);
                 if (read != partSize) {
                     fclose(f);

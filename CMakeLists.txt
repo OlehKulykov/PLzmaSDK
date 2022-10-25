@@ -33,11 +33,11 @@ set(PACKAGE "libplzma")
 set(CPACK_PACKAGE_NAME "${PACKAGE}")
 set(CPACK_PACKAGE_VERSION_MAJOR "1")
 set(CPACK_PACKAGE_VERSION_MINOR "2")
-set(CPACK_PACKAGE_VERSION_PATCH "4")
+set(CPACK_PACKAGE_VERSION_PATCH "5")
 set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}")
 set(CPACK_PACKAGE_VENDOR "olehkulykov@gmail.com")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PACKAGE} ${PACKAGE_VERSION}")
-set(SOVERSION "1.2.4")
+set(SOVERSION "1.2.5")
 set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
 set(VERSION "${CPACK_PACKAGE_VERSION}")
 
@@ -48,6 +48,7 @@ include(CheckFunctionExists)
 include(CheckCCompilerFlag)
 include(CheckCXXCompilerFlag)
 include(FindThreads)
+include(CheckIncludeFile)
 
 # COMMAND LINE OPTIONS
 option(LIBPLZMA_OPT_SHARED "Build shared lib." ON)
@@ -200,6 +201,21 @@ find_package(Threads REQUIRED)
 if(LIBPLZMA_OPT_ANDROID)
   find_library(log-lib log)
 endif()
+
+# ---- check include ----
+CHECK_INCLUDE_FILE("sys/types.h" LIBPLZMA_HAVE_SYS_TYPES_H)
+if(LIBPLZMA_HAVE_SYS_TYPES_H)
+  add_definitions(-DHAVE_SYS_TYPES_H=1)
+endif()
+CHECK_INCLUDE_FILE("sys/sys_types.h" LIBPLZMA_HAVE_SYS_SYS_TYPES_H)
+if(LIBPLZMA_HAVE_SYS_SYS_TYPES_H)
+  add_definitions(-DHAVE_SYS_SYS_TYPES_H=1)
+endif()
+CHECK_INCLUDE_FILE("sys/sysmacros.h" LIBPLZMA_HAVE_SYS_SYSMACROS_H)
+if(LIBPLZMA_HAVE_SYS_SYSMACROS_H)
+  add_definitions(-DHAVE_SYS_SYSMACROS_H=1)
+endif()
+
 
 # ---- include ----
 include_directories(${PROJECT_BINARY_DIR})

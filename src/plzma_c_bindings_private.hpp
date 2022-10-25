@@ -36,7 +36,7 @@
 
 
 // plzma_private.h
-#if !defined(LIBPLZMA_HAVE_STD) && defined(SWIFT_PACKAGE)
+#if !defined(LIBPLZMA_HAVE_STD) && (defined(SWIFT_PACKAGE) || defined(COCOAPODS))
 #define LIBPLZMA_HAVE_STD 1
 #endif
 

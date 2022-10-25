@@ -1219,6 +1219,7 @@ static UInt32* Bt5_MatchFinder_GetMatches(CMatchFinder *p, UInt32 *distances)
       distances += 2;
       if (*(cur - d2 + 2) == cur[2])
       {
+          // comment
       }
       else if (d3 < mmm && *(cur - d3) == *cur)
       {
@@ -1359,6 +1360,7 @@ static UInt32 * Hc5_MatchFinder_GetMatches(CMatchFinder *p, UInt32 *distances)
       distances += 2;
       if (*(cur - d2 + 2) == cur[2])
       {
+          // comment
       }
       else if (d3 < mmm && *(cur - d3) == *cur)
       {

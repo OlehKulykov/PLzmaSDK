@@ -991,9 +991,11 @@ STDMETHODIMP CHandler::SetProperties(const wchar_t * const *names, const PROPVAR
     }
     else if (name.IsPrefixedBy_Ascii_NoCase("mt"))
     {
+        // comment
     }
     else if (name.IsPrefixedBy_Ascii_NoCase("memuse"))
     {
+        // comment
     }
     else if (name.IsEqualTo("m"))
     {

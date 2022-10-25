@@ -44,8 +44,18 @@
 #endif
 
 // plzma_c_bindings_private.hpp
-#if !defined(LIBPLZMA_HAVE_STD) && defined(SWIFT_PACKAGE)
+#if !defined(LIBPLZMA_HAVE_STD) && (defined(SWIFT_PACKAGE) || defined(COCOAPODS))
 #define LIBPLZMA_HAVE_STD 1
+#endif
+
+#if __has_include(<sys/types.h>) || defined(HAVE_SYS_TYPES_H)
+#include <sys/types.h>
+#endif
+#if __has_include(<sys/sys_types.h>) || defined(HAVE_SYS_SYS_TYPES_H)
+#include <sys/sys_types.h>
+#endif
+#if __has_include(<sys/sysmacros.h>) || defined(HAVE_SYS_SYSMACROS_H)
+#include <sys/sysmacros.h>
 #endif
 
 #if defined(__GNUC__) || defined(__clang__)
@@ -94,15 +104,6 @@
 #if defined(LIBPLZMA_POSIX)
 #include <unistd.h>
 #include <pthread.h>
-#if __has_include(<sys/types.h>) || defined(HAVE_SYS_TYPES_H)
-#include <sys/types.h>
-#endif
-#if __has_include(<sys/sys_types.h>) || defined(HAVE_SYS_SYS_TYPES_H)
-#include <sys/sys_types.h>
-#endif
-#if __has_include(<sys/sysmacros.h>) || defined(HAVE_SYS_SYSMACROS_H)
-#include <sys/sysmacros.h>
-#endif
 #endif
 
 // Types

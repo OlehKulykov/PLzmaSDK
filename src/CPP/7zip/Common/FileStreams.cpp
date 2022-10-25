@@ -11,8 +11,8 @@
 #include <grp.h>
 #include <pwd.h>
 
-#if !defined(LIBPLZMA)
 // for major()/minor():
+#if !defined(LIBPLZMA)
 #if defined(__FreeBSD__) || defined(BSD)
 #include <sys/types.h>
 #else

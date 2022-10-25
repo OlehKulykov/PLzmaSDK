@@ -34,6 +34,10 @@ import libplzma
 public class OutStream {
     internal let object: plzma_out_stream
     
+    internal var isMulti: Bool {
+        return false
+    }
+    
     /// Checks the out stream is opened.
     /// - Note: Thread-safe.
     /// - Throws: `Exception`.

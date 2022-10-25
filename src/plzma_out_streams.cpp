@@ -394,9 +394,9 @@ namespace plzma {
                     RINOK(stream->Seek(offset, STREAM_SEEK_SET, nullptr))
                     uint64_t maxWritableSize = partSize - offset;
                     uint64_t writeSize = (inSize > maxWritableSize) ? maxWritableSize : inSize;
-                    UInt32 processedSize = 0;
-                    RINOK(stream->Write(writableData, static_cast<UInt32>(writeSize), &processedSize))
-                    if (processedSize != writeSize) {
+                    UInt32 streamProcessedSize = 0;
+                    RINOK(stream->Write(writableData, static_cast<UInt32>(writeSize), &streamProcessedSize))
+                    if (streamProcessedSize != writeSize) {
                         return E_FAIL;
                     }
                     writableData += writeSize;

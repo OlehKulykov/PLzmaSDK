@@ -240,7 +240,7 @@ namespace plzma {
         }
         
         
-        /// @brief Releases the reference and nullifies the insternal storage.
+        /// @brief Releases the reference and nullifies the internal storage.
         void clear() {
             if (_ptr) {
                 _ptr->release();

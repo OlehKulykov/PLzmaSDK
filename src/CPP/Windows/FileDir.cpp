@@ -33,6 +33,7 @@ using namespace NName;
 
 #ifndef _WIN32
 
+#if 0 // PLzmaSDK
 static bool FiTime_To_timespec(const CFiTime *ft, timespec &ts)
 {
   if (ft)
@@ -53,6 +54,7 @@ static bool FiTime_To_timespec(const CFiTime *ft, timespec &ts)
     return false;
   }
 }
+#endif // PLzmaSDK
 #endif
 
 namespace NWindows {
@@ -675,7 +677,6 @@ bool MyGetTempPath(FString &path)
 
   #else
   
-  // FIXME: improve that code
   path = "/tmp/";
   if (!NFind::DoesDirExist_FollowLink(path))
     path = "./";

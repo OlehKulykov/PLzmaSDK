@@ -26,6 +26,7 @@
 
 
 #include <limits>
+#include <memory>
 #include <sstream>
 #include <iostream> // std::cout
 #include <type_traits>
