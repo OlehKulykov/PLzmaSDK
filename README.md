@@ -60,13 +60,23 @@ All optional features are enabled by default, but they might be disabled during 
 .package(url: "https://github.com/OlehKulykov/PLzmaSDK.git", .exact("1.2.5"))
 ```
 
-#### CocoaPods Podfile
+#### CocoaPods Podfile (Swift)
+```ruby
+use_frameworks!
+platform :ios, '11.0'
+
+target '<REPLACE_WITH_YOUR_TARGET>' do
+    pod 'PLzmaSDK', '1.2.5'
+end
+```
+
+#### CocoaPods Podfile (Objective-C)
 ```ruby
 use_frameworks!
 platform :ios, '9.0'
 
 target '<REPLACE_WITH_YOUR_TARGET>' do
-    pod 'PLzmaSDK', '1.2.5'
+    pod 'PLzmaSDK-ObjC', '1.2.5'
 end
 ```
 
