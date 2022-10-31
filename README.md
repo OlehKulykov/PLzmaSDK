@@ -1,5 +1,5 @@
 ![platform](https://img.shields.io/badge/platform-iOS%20%7C%20macOS%20%7C%20tvOS%20%7C%20watchOS%20%7C%20Android%20%7C%20Windows%20%7C%20Linux%20%7C%20Unix-lightgrey.svg)
-![language](https://img.shields.io/badge/language-Swift%20%7C%20C%20%7C%20C++%20%7C%20JavaScript-brightgreen.svg)
+![language](https://img.shields.io/badge/language-Swift%20%7C%20Objective%E2%80%93C%20%7C%20C%20%7C%20C++%20%7C%20JavaScript-brightgreen.svg)
 [![Cocoapods](https://img.shields.io/cocoapods/l/PLzmaSDK)](https://cocoapods.org/pods/PLzmaSDK)
 [![Cocoapods](https://img.shields.io/cocoapods/v/PLzmaSDK)](https://cocoapods.org/pods/PLzmaSDK)
 [![SwiftPM compatible](https://img.shields.io/badge/SwiftPM-compatible-brightgreen.svg)](https://swift.org/package-manager)
@@ -22,6 +22,7 @@ Available for all Apple's platforms(iOS, macOS, tvOS, watchOS), Android, Windows
 -----------
 - The SDK is available for the next programming languages:
   * [Swift] via [Swift Package Manager] or [CocoaPods].
+  * [Objective-C] via [CocoaPods].
   * [JavaScript] via [npm].
   * Pure C++ via [git] + [CMake] or copy 2 main lib headers([libplzma.h] and [libplzma.hpp] files) and [src] folder to your project.
   * Pure C, also via [git] + [CMake] or copy 2 main lib headers([libplzma.h] and [libplzma.hpp] files) and [src] folder to your project. But this internal C bindings code might be disabled via [CMake]'s boolean option `LIBPLZMA_OPT_NO_C_BINDINGS:BOOL=YES` or preprocessor definition `LIBPLZMA_NO_C_BINDINGS=1`, see below.
@@ -40,8 +41,9 @@ Available for all Apple's platforms(iOS, macOS, tvOS, watchOS), Android, Windows
 - No external dependencies. Also no [STL] (of couse not in a public interface and internally).
 - The SDK is organized as C **and** C++ library at the same time. And supports static and dynamic linking.
   * The [libplzma.h] - the library header for a pure C environment. Contains generic functions, types and optional bindings to the whole functionality of the library. Currently uses with [Swift Package Manager] and [CocoaPods].
-  * The [libplzma.hpp] - the library header for a pure C++ environment and must be used together with [libplzma.h] header. Currently uses with [npm] native module.
-  * The [swift](https://github.com/OlehKulykov/PLzmaSDK/tree/master/swift) directory contains [Swift] part of the SDK and available via the [Swift Package Manager] and [CocoaPods], see ```Installation``` section.
+  * The [libplzma.hpp] - the library header for a pure C++ environment and must be used together with [libplzma.h] header. Currently uses with [npm] native module and [Objective-C].
+  * The [swift](https://github.com/OlehKulykov/PLzmaSDK/tree/master/swift) directory contains [Swift] part of the SDK and available via [Swift Package Manager] and [CocoaPods], see ```Installation``` section.
+  * The [objc](https://github.com/OlehKulykov/PLzmaSDK/tree/master/objc) directory contains [Objective-C] part of the SDK and available via [CocoaPods], see ```Installation``` section.
   * The [node](https://github.com/OlehKulykov/PLzmaSDK/tree/master/node) directory contains Node.js native, inline module implementation. 
 
 ### Optional features
@@ -594,6 +596,7 @@ THE SOFTWARE.
 [libplzma.hpp]:https://github.com/OlehKulykov/PLzmaSDK/blob/master/libplzma.hpp
 [src]:https://github.com/OlehKulykov/PLzmaSDK/tree/master/src
 [Swift]:https://swift.org
+[Objective-C]:https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/Introduction/Introduction.html
 [Swift Package Manager]:https://swift.org/package-manager
 [CocoaPods]:https://cocoapods.org/pods/PLzmaSDK
 [npm]:https://www.npmjs.com/package/plzmasdk
