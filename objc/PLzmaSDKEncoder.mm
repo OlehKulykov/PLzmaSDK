@@ -224,7 +224,6 @@
             self.delegate = delegate;
         }
         PLZMASDKOBJC_CATCH_RETHROW
-        self.delegate = delegate;
     }
     return self;
 }
