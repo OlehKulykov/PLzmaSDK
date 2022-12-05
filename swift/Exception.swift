@@ -55,14 +55,16 @@ public struct Exception: Error {
     /// Returns the line number of the file where exception was thrown.
     public let line: Int
     
-    internal init(object: plzma_exception_ptr) {
+    internal init(object: plzma_exception_ptr, autoRelease: Bool = true) {
         code = plzma_exception_code(object).type
         what = String(utf8CString: plzma_exception_what_utf8_string(object))
         reason = String(utf8CString: plzma_exception_reason_utf8_string(object))
         file = String(utf8CString: plzma_exception_file_utf8_string(object))
         version = String(utf8CString: plzma_version())
         line = Int(plzma_exception_line(object))
-        plzma_exception_release(object)
+        if autoRelease {
+            plzma_exception_release(object)
+        }
     }
     
     init(code: ErrorCode, what: String, reason: String, file: String? = nil, line: Int = 0) {

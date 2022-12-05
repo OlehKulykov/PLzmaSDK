@@ -237,7 +237,7 @@ public final class InStream {
             var subStreamObject = subStream.object
             plzma_in_stream_array_add(&streamsArrayObject, &subStreamObject)
             if let exception = streamsArrayObject.exception {
-                throw Exception(object: exception)
+                throw Exception(object: exception, autoRelease: false)
             }
         }
         
