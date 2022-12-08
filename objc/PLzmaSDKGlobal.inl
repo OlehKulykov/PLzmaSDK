@@ -21,4 +21,3 @@ try { \
     [PLzmaSDKExceptionToNS() raise];\
 } \
 
-
