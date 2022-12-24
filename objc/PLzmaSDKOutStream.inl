@@ -1,4 +1,6 @@
 
+#include <memory>
+
 #include "../libplzma.hpp"
 
 @interface PLzmaSDKOutStream() {
