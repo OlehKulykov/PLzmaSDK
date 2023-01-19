@@ -51,13 +51,12 @@
 
 - (nonnull NSArray<PLzmaSDKItem *> *) items {
     PLZMASDKOBJC_TRY
-    const auto itemsArray = _decoder->items();
+    auto itemsArray = _decoder->items();
     if (itemsArray) {
         const plzma_size_t itemsCount = itemsArray->count();
         NSMutableArray * items = [[NSMutableArray alloc] initWithCapacity:itemsCount];
         for (plzma_size_t itemIndex = 0; itemIndex < itemsCount; itemIndex++) {
-            auto item = itemsArray->at(itemIndex);
-            [items addObject:[[PLzmaSDKItem alloc] initWithItemM:&item]];
+            [items addObject:[[PLzmaSDKItem alloc] initWithItemM:&itemsArray->at(itemIndex)]];
         }
         return items;
     }

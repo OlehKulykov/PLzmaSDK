@@ -218,7 +218,7 @@ const char * LIBPLZMA_NONNULL plzma_version(void) {
 #if defined(LIBPLZMA_HAVE_STD)
     " : std"
 #endif
-
+    
 #if defined(RTTI_ENABLED)
     " : rtti"
 #elif defined(LIBPLZMA_NO_CPP_RTTI)
@@ -235,7 +235,7 @@ const char * LIBPLZMA_NONNULL plzma_version(void) {
     " : " __TIME__
 #endif
 #endif
-
+    
 #if defined(_MSC_FULL_VER)
     " : " LIBPLZMA_TOSTRING(_MSC_FULL_VER)
 #elif defined(_MSC_VER)

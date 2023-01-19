@@ -73,3 +73,39 @@ NSException * PLzmaSDKExceptionCreate(const PLzmaSDKErrorCode errorCode, NSStrin
     
     return [[NSException alloc] initWithName:PLzmaSDKGenericExceptionName reason:reason userInfo:userInfo];
 }
+
+NSString * const PLzmaSDKVersion(void) {
+    return [NSString stringWithUTF8String:plzma_version()];
+}
+
+PLzmaSDKSize PLzmaSDKGetStreamReadSize(void) {
+    return plzma_stream_read_size();
+}
+
+void PLzmaSDKSetStreamReadSize(const PLzmaSDKSize size) {
+    plzma_set_stream_read_size(size);
+}
+
+PLzmaSDKSize PLzmaSDKGetStreamWriteSize(void) {
+    return plzma_stream_write_size();
+}
+
+void PLzmaSDKSetStreamWriteSize(const PLzmaSDKSize size) {
+    plzma_set_stream_write_size(size);
+}
+
+PLzmaSDKSize PLzmaSDKGetDecoderReadSize(void) {
+    return plzma_decoder_read_size();
+}
+
+void PLzmaSDKSetDecoderReadSize(const PLzmaSDKSize size) {
+    plzma_set_decoder_read_size(size);
+}
+
+PLzmaSDKSize PLzmaSDKGetDecoderWriteSize(void) {
+    return plzma_decoder_write_size();
+}
+
+void PLzmaSDKSetDecoderWriteSize(const PLzmaSDKSize size) {
+    plzma_set_decoder_write_size(size);
+}

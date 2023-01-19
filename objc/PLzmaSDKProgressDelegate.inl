@@ -49,3 +49,4 @@ public:
     
     static std::shared_ptr<PLzmaSDKProgressDelegate> create(void * LIBPLZMA_NULLABLE decoder);
 };
+

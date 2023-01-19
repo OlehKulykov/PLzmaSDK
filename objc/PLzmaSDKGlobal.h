@@ -137,3 +137,42 @@ typedef NS_ENUM(uint8_t, PLzmaSDKMultiStreamPartNameFormat) {
     /// "File"."Extension"."002". The maximum number of parts is 999.
     PLzmaSDKMultiStreamPartNameFormatNameExt00x = 1
 };
+
+
+/// The full version string of the library generated on build time.
+///
+/// Contains version<major, minor, patch> with optional automatic build number,
+/// library type, build date/time, os, compiler, environment, usage, features, etc. and original LZMA SDK version.
+FOUNDATION_EXPORT NSString * const PLzmaSDKVersion(void);
+
+
+/// Get the current size in bytes of the stream's read block per single read request.
+FOUNDATION_EXPORT PLzmaSDKSize PLzmaSDKGetStreamReadSize(void);
+
+
+/// Set the current size in bytes of the stream's read block per single read request.
+FOUNDATION_EXPORT void PLzmaSDKSetStreamReadSize(const PLzmaSDKSize size);
+
+
+/// Get the current size in bytes of the stream's write block per single write request.
+FOUNDATION_EXPORT PLzmaSDKSize PLzmaSDKGetStreamWriteSize(void);
+
+
+/// Set the current size in bytes of the stream's write block per single write request.
+FOUNDATION_EXPORT void PLzmaSDKSetStreamWriteSize(const PLzmaSDKSize size);
+
+
+/// Get the current size in bytes of the decoder's internal buffer for holding decoded data.
+FOUNDATION_EXPORT PLzmaSDKSize PLzmaSDKGetDecoderReadSize(void);
+
+
+/// Set the current size in bytes of the decoder's internal buffer for holding decoded data.
+FOUNDATION_EXPORT void PLzmaSDKSetDecoderReadSize(const PLzmaSDKSize size);
+
+
+/// Get the current size in bytes of the decoder's internal buffer for holding decoded data.
+FOUNDATION_EXPORT PLzmaSDKSize PLzmaSDKGetDecoderWriteSize(void);
+
+
+/// Set the current size in bytes of the decoder's internal buffer for holding decoded data.
+FOUNDATION_EXPORT void PLzmaSDKSetDecoderWriteSize(const PLzmaSDKSize size);
