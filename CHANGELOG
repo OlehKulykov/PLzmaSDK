@@ -1,6 +1,9 @@
 (Portable, Patched, Package, cross-P-latform) Lzma SDK, libplzma
 
-1.2.5: (current):
+1.2.6: (current):
+- PLzmaSDK.podspec: added Swift 5.7 & 5.8.
+
+1.2.5:
 - Introduce Objective-C Cocoapod 'PLzmaSDK-ObjC.podspec'.
 
 1.2.4:
