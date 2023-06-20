@@ -25,6 +25,8 @@
 //
 
 
+#include <memory>
+
 #import <Foundation/Foundation.h>
 
 #import "PLzmaSDKProgressDelegate.inl"

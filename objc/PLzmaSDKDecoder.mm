@@ -25,6 +25,8 @@
 //
 
 
+#include <memory>
+
 #import "PLzmaSDKDecoder.h"
 #import "PLzmaSDKDecoder.inl"
 #import "PLzmaSDKInStream.inl"

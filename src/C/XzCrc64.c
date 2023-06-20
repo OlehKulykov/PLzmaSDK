@@ -44,7 +44,7 @@ UInt64 MY_FAST_CALL Crc64Calc(const void *data, size_t size)
   return g_Crc64Update(CRC64_INIT_VAL, data, size, g_Crc64Table) ^ CRC64_INIT_VAL;
 }
 
-void MY_FAST_CALL Crc64GenerateTable()
+void MY_FAST_CALL Crc64GenerateTable(void)
 {
   UInt32 i;
   for (i = 0; i < 256; i++)

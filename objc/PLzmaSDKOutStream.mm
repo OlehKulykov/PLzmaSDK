@@ -25,6 +25,8 @@
 //
 
 
+#include <memory>
+
 #import "PLzmaSDKOutStream.h"
 #import "PLzmaSDKOutStream.inl"
 #import "PLzmaSDKGlobal.inl"

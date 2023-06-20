@@ -25,6 +25,8 @@
 //
 
 
+#include <memory>
+
 #import "PLzmaSDKItem.h"
 #import "PLzmaSDKItem.inl"
 #import "PLzmaSDKGlobal.inl"

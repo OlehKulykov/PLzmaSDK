@@ -1592,7 +1592,7 @@ void MatchFinder_CreateVTable(CMatchFinder *p, IMatchFinder2 *vTable)
 
 
 
-void LzFindPrepare()
+void LzFindPrepare(void)
 {
   #ifndef FORCE_SATUR_SUB_128
   #ifdef USE_SATUR_SUB_128

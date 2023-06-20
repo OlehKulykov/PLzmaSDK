@@ -187,7 +187,7 @@ int x86cpuid_GetFirm(const Cx86cpuid *p)
   return -1;
 }
 
-BoolInt CPU_Is_InOrder()
+BoolInt CPU_Is_InOrder(void)
 {
   Cx86cpuid p;
   int firm;
@@ -232,7 +232,7 @@ static BoolInt CPU_Sys_Is_SSE_Supported()
 #endif
 
 
-static UInt32 X86_CPUID_ECX_Get_Flags()
+static UInt32 X86_CPUID_ECX_Get_Flags(void)
 {
   Cx86cpuid p;
   CHECK_SYS_SSE_SUPPORT
@@ -241,22 +241,22 @@ static UInt32 X86_CPUID_ECX_Get_Flags()
   return p.c;
 }
 
-BoolInt CPU_IsSupported_AES()
+BoolInt CPU_IsSupported_AES(void)
 {
   return (X86_CPUID_ECX_Get_Flags() >> 25) & 1;
 }
 
-BoolInt CPU_IsSupported_SSSE3()
+BoolInt CPU_IsSupported_SSSE3(void)
 {
   return (X86_CPUID_ECX_Get_Flags() >> 9) & 1;
 }
 
-BoolInt CPU_IsSupported_SSE41()
+BoolInt CPU_IsSupported_SSE41(void)
 {
   return (X86_CPUID_ECX_Get_Flags() >> 19) & 1;
 }
 
-BoolInt CPU_IsSupported_SHA()
+BoolInt CPU_IsSupported_SHA(void)
 {
   Cx86cpuid p;
   CHECK_SYS_SSE_SUPPORT
@@ -278,7 +278,7 @@ BoolInt CPU_IsSupported_SHA()
 #include <Windows.h>
 #endif
 
-BoolInt CPU_IsSupported_AVX2()
+BoolInt CPU_IsSupported_AVX2(void)
 {
   Cx86cpuid p;
   CHECK_SYS_SSE_SUPPORT
@@ -302,7 +302,7 @@ BoolInt CPU_IsSupported_AVX2()
   }
 }
 
-BoolInt CPU_IsSupported_VAES_AVX2()
+BoolInt CPU_IsSupported_VAES_AVX2(void)
 {
   Cx86cpuid p;
   CHECK_SYS_SSE_SUPPORT
@@ -328,7 +328,7 @@ BoolInt CPU_IsSupported_VAES_AVX2()
   }
 }
 
-BoolInt CPU_IsSupported_PageGB()
+BoolInt CPU_IsSupported_PageGB(void)
 {
   Cx86cpuid cpuid;
   if (!x86cpuid_CheckAndRead(&cpuid))

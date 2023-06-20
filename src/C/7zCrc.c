@@ -230,7 +230,7 @@ UInt32 MY_FAST_CALL CrcUpdateT0_64(UInt32 v, const void *data, size_t size, cons
 
 
 
-void MY_FAST_CALL CrcGenerateTable()
+void MY_FAST_CALL CrcGenerateTable(void)
 {
   UInt32 i;
   for (i = 0; i < 256; i++)

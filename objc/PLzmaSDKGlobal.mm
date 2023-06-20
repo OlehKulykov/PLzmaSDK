@@ -25,6 +25,8 @@
 //
 
 
+#include <exception>
+
 #import "PLzmaSDKGlobal.h"
 #import "PLzmaSDKGlobal.inl"
 

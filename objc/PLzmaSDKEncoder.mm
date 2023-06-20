@@ -25,6 +25,8 @@
 //
 
 
+#include <memory>
+
 #import "PLzmaSDKEncoder.h"
 #import "PLzmaSDKEncoder.inl"
 #import "PLzmaSDKInStream.inl"

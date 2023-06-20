@@ -466,7 +466,7 @@ void Sha256_Final(CSha256 *p, Byte *digest)
 }
 
 
-void Sha256Prepare()
+void Sha256Prepare(void)
 {
   #ifdef _SHA_SUPPORTED
   SHA256_FUNC_UPDATE_BLOCKS f, f_hw;
