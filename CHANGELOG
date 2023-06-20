@@ -3,6 +3,7 @@
 1.2.7: (current):
 - C: remove function prototype mismatch compiler warnings in a native SDK code.
 - Obj-C: always include C++ header first before any other in a source files.
+- PLzmaSDK-ObjC.podspec: Increase iOS minimum supported version up to 11.0.
 
 1.2.6:
 - PLzmaSDK.podspec: added Swift 5.7 & 5.8.
