@@ -1,6 +1,10 @@
 (Portable, Patched, Package, cross-P-latform) Lzma SDK, libplzma
 
-1.2.6: (current):
+1.2.7: (current):
+- C: remove function prototype mismatch compiler warnings in a native SDK code.
+- Obj-C: always include C++ header first before any other in a source files.
+
+1.2.6:
 - PLzmaSDK.podspec: added Swift 5.7 & 5.8.
 
 1.2.5:
