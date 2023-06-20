@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
   s.authors = { 'Oleh Kulykov' => 'olehkulykov@gmail.com' }
   s.swift_versions = ['5.0', '5.1', '5.2', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8']
   s.ios.deployment_target = '11.0'
-  s.osx.deployment_target = '10.9'
+  s.osx.deployment_target = '10.13'
   s.tvos.deployment_target = '11.0'
   s.watchos.deployment_target = '2.0'
   
