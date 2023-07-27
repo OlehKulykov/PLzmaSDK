@@ -552,7 +552,9 @@ plzma_item plzma_item_array_at(plzma_item_array * LIBPLZMA_NONNULL array,
 }
 
 void plzma_item_array_sort(plzma_item_array * LIBPLZMA_NONNULL array) {
-    if (!array->exception) { static_cast<ItemArray *>(array->object)->sort(); }
+    if (!array->exception) {
+        static_cast<ItemArray *>(array->object)->sort();
+    }
 }
 
 void plzma_item_array_release(plzma_item_array * LIBPLZMA_NONNULL array) {
@@ -600,7 +602,9 @@ plzma_item_out_stream_array_pair plzma_item_out_stream_array_pair_at(plzma_item_
 }
 
 void plzma_item_out_stream_array_sort(plzma_item_out_stream_array * LIBPLZMA_NONNULL map) {
-    if (!map->exception) { static_cast<ItemOutStreamArray *>(map->object)->sort(); }
+    if (!map->exception) {
+        static_cast<ItemOutStreamArray *>(map->object)->sort();
+    }
 }
 
 void plzma_item_out_stream_array_pair_release(plzma_item_out_stream_array_pair * LIBPLZMA_NONNULL pair) {
