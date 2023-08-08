@@ -82,12 +82,19 @@ namespace plzma {
     public:
         Z7_COM_UNKNOWN_IMP_4(IArchiveExtractCallbackMessage2, ICryptoGetTextPassword, ICryptoGetTextPassword2, ICompressProgressInfo)
         
-        Z7_IFACEM_IProgress(STDMETHOD);
-            
-        Z7_IFACEM_IArchiveExtractCallback(STDMETHOD);
-        Z7_IFACEM_IArchiveExtractCallbackMessage2(STDMETHOD);
+        // IProgress
+        STDMETHOD(SetTotal)(UInt64 total) override final;
+        STDMETHOD(SetCompleted)(const UInt64 *completeValue) override final;
         
-        STDMETHOD(SetRatioInfo)(const UInt64 * inSize, const UInt64 * outSize);
+        // IArchiveExtractCallback
+        STDMETHOD(GetStream)(UInt32 index, ISequentialOutStream **outStream, Int32 askExtractMode) override final;
+        STDMETHOD(PrepareOperation)(Int32 askExtractMode) override final;
+        STDMETHOD(SetOperationResult)(Int32 opRes) override final;
+        
+        // IArchiveExtractCallbackMessage2
+        STDMETHOD(ReportExtractResult)(UInt32 indexType, UInt32 index, Int32 opRes) override final;
+        
+        STDMETHOD(SetRatioInfo)(const UInt64 * inSize, const UInt64 * outSize) override final;;
         
         // ICryptoGetTextPassword
         STDMETHOD(CryptoGetTextPassword)(BSTR * password) override final;

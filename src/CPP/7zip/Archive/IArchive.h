@@ -232,9 +232,9 @@ SetOperationResult()
 // INTERFACE_IProgress(x)
 
 #define Z7_IFACEM_IArchiveExtractCallback(x) \
-x(GetStream(UInt32 index, ISequentialOutStream **outStream, Int32 askExtractMode)); \
-x(PrepareOperation(Int32 askExtractMode)); \
-x(SetOperationResult(Int32 opRes)); \
+x(GetStream(UInt32 index, ISequentialOutStream **outStream, Int32 askExtractMode)) \
+x(PrepareOperation(Int32 askExtractMode)) \
+x(SetOperationResult(Int32 opRes)) \
 
 Z7_IFACE_CONSTR_ARCHIVE_SUB(IArchiveExtractCallback, IProgress, 0x20)
 
