@@ -30,6 +30,7 @@ ALL_SOURCES := \
     ../../src/C/Sha256.c \
     ../../src/C/Sha256Opt.c \
     ../../src/C/Threads.c \
+	../../src/C/SwapBytes.c \
     ../../src/C/Xz.c \
     ../../src/C/XzCrc64.c \
     ../../src/C/XzCrc64Opt.c \
@@ -124,6 +125,7 @@ ALL_SOURCES := \
     ../../src/CPP/Common/UTFConvert.cpp \
     ../../src/CPP/Common/Wildcard.cpp \
     ../../src/CPP/Common/XzCrc64Reg.cpp \
+	../../src/CPP/Common/NewHandler.cpp \
     ../../src/CPP/Windows/FileDir.cpp \
     ../../src/CPP/Windows/FileFind.cpp \
     ../../src/CPP/Windows/FileIO.cpp \
@@ -158,7 +160,7 @@ ALL_INCLUDES := $(LOCAL_PATH)/../../../
 ALL_CFLAGS := \
     -DLIBPLZMA_BUILD=1 \
     -DLIBPLZMA_SHARED=1 \
-    -DLIBPLZMA_VERSION_BUILD=542 \
+    -DLIBPLZMA_VERSION_BUILD=548 \
     -w
 
 
