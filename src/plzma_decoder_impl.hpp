@@ -117,7 +117,9 @@ namespace plzma {
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(DecoderImpl)
         
     public:
-        MY_ADDREF_RELEASE
+        // MY_ADDREF_RELEASE -> Z7_COM_ADDREF_RELEASE
+        ULONG AddRef() { return ++_m_RefCount; }
+        ULONG Release() { if (--_m_RefCount != 0) return _m_RefCount;  delete this;  return 0; }
         
         virtual void setPassword(const wchar_t * LIBPLZMA_NULLABLE password) override final;
         virtual void setPassword(const char * LIBPLZMA_NULLABLE password) override final;

@@ -1,7 +1,7 @@
 // PpmdEncoder.h
 
-#ifndef __COMPRESS_PPMD_ENCODER_H
-#define __COMPRESS_PPMD_ENCODER_H
+#ifndef ZIP7_INC_COMPRESS_PPMD_ENCODER_H
+#define ZIP7_INC_COMPRESS_PPMD_ENCODER_H
 
 #include "../../../C/Ppmd7.h"
 
@@ -14,7 +14,7 @@
 namespace NCompress {
 namespace NPpmd {
 
-struct CEncProps final
+struct CEncProps Z7_final
 {
   UInt32 MemSize;
   UInt32 ReduceSize;
@@ -29,25 +29,17 @@ struct CEncProps final
   void Normalize(int level);
 };
 
-class CEncoder final :
-  public ICompressCoder,
-  public ICompressSetCoderProperties,
-  public ICompressWriteCoderProperties,
-  public CMyUnknownImp
-{
+Z7_CLASS_IMP_COM_3(
+  CEncoder
+  , ICompressCoder
+  , ICompressSetCoderProperties
+  , ICompressWriteCoderProperties
+)
   Byte *_inBuf;
   CByteOutBufWrap _outStream;
   CPpmd7 _ppmd;
   CEncProps _props;
 public:
-  MY_UNKNOWN_IMP3(
-      ICompressCoder,
-      ICompressSetCoderProperties,
-      ICompressWriteCoderProperties)
-  STDMETHOD(Code)(ISequentialInStream *inStream, ISequentialOutStream *outStream,
-      const UInt64 *inSize, const UInt64 *outSize, ICompressProgressInfo *progress);
-  STDMETHOD(SetCoderProperties)(const PROPID *propIDs, const PROPVARIANT *props, UInt32 numProps);
-  STDMETHOD(WriteCoderProperties)(ISequentialOutStream *outStream);
   CEncoder();
   ~CEncoder();
 };

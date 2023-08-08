@@ -1,7 +1,7 @@
 // Windows/FileDir.h
 
-#ifndef __WINDOWS_FILE_DIR_H
-#define __WINDOWS_FILE_DIR_H
+#ifndef ZIP7_INC_WINDOWS_FILE_DIR_H
+#define ZIP7_INC_WINDOWS_FILE_DIR_H
 
 #include "../Common/MyString.h"
 
@@ -18,9 +18,9 @@ bool GetSystemDir(FString &path);
 WIN32 API : SetFileTime() doesn't allow to set zero timestamps in file
 but linux : allows unix time = 0 in filesystem
 */
-#if !defined(LIBPLZMA)
+
 bool SetDirTime(CFSTR path, const CFiTime *cTime, const CFiTime *aTime, const CFiTime *mTime);
-#endif
+
 
 #ifdef _WIN32
 
@@ -58,9 +58,7 @@ bool CreateDir(CFSTR path);
 bool CreateComplexDir(CFSTR path);
 
 bool DeleteFileAlways(CFSTR name);
-#if !defined(LIBPLZMA)
 bool RemoveDirWithSubItems(const FString &path);
-#endif
 
 bool MyGetFullPathName(CFSTR path, FString &resFullPath);
 bool GetFullPathAndSplit(CFSTR path, FString &resDirPrefix, FString &resFileName);
@@ -74,6 +72,8 @@ bool GetCurrentDir(FString &resultPath);
 #endif
 
 bool MyGetTempPath(FString &resultPath);
+
+bool CreateTempFile2(CFSTR prefix, bool addRandom, AString &postfix, NIO::COutFile *outFile);
 
 class CTempFile  MY_UNCOPYABLE
 {
@@ -92,7 +92,6 @@ public:
 
 
 #ifdef _WIN32
-#if !defined(LIBPLZMA)
 class CTempDir  MY_UNCOPYABLE
 {
   bool _mustBeDeleted;
@@ -105,7 +104,6 @@ public:
   bool Create(CFSTR namePrefix) ;
   bool Remove();
 };
-#endif
 #endif
 
 

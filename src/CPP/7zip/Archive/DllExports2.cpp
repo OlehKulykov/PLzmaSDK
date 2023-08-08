@@ -3,10 +3,9 @@
 #include "StdAfx.h"
 
 #include "../../Common/MyWindows.h"
-
 #include "../../Common/MyInitGuid.h"
 
-#if defined(_7ZIP_LARGE_PAGES)
+#if defined(Z7_LARGE_PAGES)
 #include "../../../C/Alloc.h"
 #endif
 
@@ -22,7 +21,7 @@
 
 #include "IArchive.h"
 
-DEFINE_GUID(CLSID_CArchiveHandler,
+Z7_DEFINE_GUID(CLSID_CArchiveHandler,
     k_7zip_GUID_Data1,
     k_7zip_GUID_Data2,
     k_7zip_GUID_Data3_Common,
@@ -36,7 +35,7 @@ STDAPI CreateObject(const GUID *clsid, const GUID *iid, void **outObject);
 STDAPI CreateObject(const GUID *clsid, const GUID *iid, void **outObject)
 {
   // COM_TRY_BEGIN
-  *outObject = 0;
+  *outObject = NULL;
   if (*iid == IID_ICompressCoder ||
       *iid == IID_ICompressCoder2 ||
       *iid == IID_ICompressFilter)
@@ -50,7 +49,7 @@ STDAPI CreateObject(const GUID *clsid, const GUID *iid, void **outObject)
 STDAPI SetLargePageMode();
 STDAPI SetLargePageMode()
 {
-  #if defined(_7ZIP_LARGE_PAGES)
+  #if defined(Z7_LARGE_PAGES)
   #ifdef _WIN32
   SetLargePageSize();
   #endif
@@ -67,7 +66,25 @@ STDAPI SetCaseSensitive(Int32 caseSensitive)
   return S_OK;
 }
 
-#ifdef EXTERNAL_CODECS
+/*
+UInt32 g_ClientVersion;
+STDAPI SetClientVersion(UInt32 version);
+STDAPI SetClientVersion(UInt32 version)
+{
+  g_ClientVersion = version;
+  return S_OK;
+}
+*/
+
+/*
+STDAPI SetProperty(Int32 id, const PROPVARIANT *value);
+STDAPI SetProperty(Int32 id, const PROPVARIANT *value)
+{
+  return S_OK;
+}
+*/
+
+#ifdef Z7_EXTERNAL_CODECS
 
 CExternalCodecs g_ExternalCodecs;
 

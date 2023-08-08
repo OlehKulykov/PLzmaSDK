@@ -1,12 +1,12 @@
 // UniqBlocks.h
 
-#ifndef __UNIQ_BLOCKS_H
-#define __UNIQ_BLOCKS_H
+#ifndef ZIP7_INC_UNIQ_BLOCKS_H
+#define ZIP7_INC_UNIQ_BLOCKS_H
 
 #include "../../Common/MyBuffer.h"
 #include "../../Common/MyString.h"
 
-struct C_UInt32_UString_Map final
+struct C_UInt32_UString_Map Z7_final
 {
   CRecordVector<UInt32> Numbers;
   UStringVector Strings;
@@ -22,7 +22,7 @@ struct C_UInt32_UString_Map final
 };
 
 
-struct CUniqBlocks final
+struct CUniqBlocks Z7_final
 {
   CObjectVector<CByteBuffer> Bufs;
   CUIntVector Sorted;

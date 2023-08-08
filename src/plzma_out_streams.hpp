@@ -79,11 +79,11 @@ namespace plzma {
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(OutFileStream)
         
     public:
-        MY_UNKNOWN_IMP1(IOutStream)
+        Z7_COM_UNKNOWN_IMP_1(IOutStream)
         
-        STDMETHOD(Write)(const void * data, UInt32 size, UInt32 * processedSize);
-        STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition);
-        STDMETHOD(SetSize)(UInt64 newSize);
+        STDMETHOD(Write)(const void * data, UInt32 size, UInt32 * processedSize) override final;
+        STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) override final;
+        STDMETHOD(SetSize)(UInt64 newSize) override final;
         
         virtual void open() final;
         virtual void close() final;
@@ -108,19 +108,19 @@ namespace plzma {
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(OutMemStream)
         
     public:
-        MY_UNKNOWN_IMP1(IOutStream)
+        Z7_COM_UNKNOWN_IMP_1(IOutStream)
         
-        STDMETHOD(Write)(const void * data, UInt32 size, UInt32 * processedSize);
-        STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition);
-        STDMETHOD(SetSize)(UInt64 newSize);
+        STDMETHOD(Write)(const void * data, UInt32 size, UInt32 * processedSize) override final;
+        STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) override final;
+        STDMETHOD(SetSize)(UInt64 newSize) override final;
         
         virtual void open() final;
         virtual void close() final;
         virtual Exception * takeException() noexcept final;
         
-        virtual bool opened() const;
-        virtual bool erase(const plzma_erase eraseType = plzma_erase_none);
-        RawHeapMemorySize copyContent() const;
+        virtual bool opened() const override final;
+        virtual bool erase(const plzma_erase eraseType = plzma_erase_none) override final;
+        RawHeapMemorySize copyContent() const override final;
         
         OutMemStream() = default;
         virtual ~OutMemStream() noexcept;
@@ -133,11 +133,11 @@ namespace plzma {
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(OutTestStream)
     
     public:
-        MY_UNKNOWN_IMP1(IOutStream)
+        Z7_COM_UNKNOWN_IMP_1(IOutStream)
         
-        STDMETHOD(Write)(const void * data, UInt32 size, UInt32 * processedSize);
-        STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition);
-        STDMETHOD(SetSize)(UInt64 newSize);
+        STDMETHOD(Write)(const void * data, UInt32 size, UInt32 * processedSize) override final;
+        STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) override final;
+        STDMETHOD(SetSize)(UInt64 newSize) override final;
         
         virtual void open() final;
         virtual void close() final;
@@ -174,18 +174,18 @@ namespace plzma {
         void checkPartSize(const plzma_size_t partSize);
         
     public:
-        MY_UNKNOWN_IMP1(IOutStream)
+        Z7_COM_UNKNOWN_IMP_1(IOutStream)
         
-        STDMETHOD(Write)(const void * data, UInt32 size, UInt32 * processedSize);
-        STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition);
-        STDMETHOD(SetSize)(UInt64 newSize);
+        STDMETHOD(Write)(const void * data, UInt32 size, UInt32 * processedSize) override final;
+        STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) override final;
+        STDMETHOD(SetSize)(UInt64 newSize) override final;
         
         virtual void open() final;
         virtual void close() final;
         virtual Exception * takeException() noexcept final;
         
         virtual bool opened() const final;
-        virtual bool erase(const plzma_erase eraseType = plzma_erase_none);
+        virtual bool erase(const plzma_erase eraseType = plzma_erase_none) override;
         virtual RawHeapMemorySize copyContent() const final;
         
         virtual OutStreamArray streams() const final;

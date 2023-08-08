@@ -1,7 +1,7 @@
 // Windows/FileFind.h
 
-#ifndef __WINDOWS_FILE_FIND_H
-#define __WINDOWS_FILE_FIND_H
+#ifndef ZIP7_INC_WINDOWS_FILE_FIND_H
+#define ZIP7_INC_WINDOWS_FILE_FIND_H
 
 #ifndef _WIN32
 #include <sys/stat.h>
@@ -157,7 +157,7 @@ public:
   }
 };
 
-struct CFileInfo final : public CFileInfoBase
+struct CFileInfo: public CFileInfoBase
 {
   FString Name;
   #if defined(_WIN32) && !defined(UNDER_CE)
@@ -191,7 +191,7 @@ public:
   bool Close() throw();
 };
 
-class CFindFile final : public CFindFileBase
+class CFindFile: public CFindFileBase
 {
 public:
   bool FindFirst(CFSTR wildcard, CFileInfo &fileInfo);
@@ -200,7 +200,7 @@ public:
 
 #if defined(_WIN32) && !defined(UNDER_CE)
 
-struct CStreamInfo final
+struct CStreamInfo
 {
   UString Name;
   UInt64 Size;
@@ -210,14 +210,14 @@ struct CStreamInfo final
   bool IsMainStream() const throw();
 };
 
-class CFindStream final : public CFindFileBase
+class CFindStream: public CFindFileBase
 {
 public:
   bool FindFirst(CFSTR filePath, CStreamInfo &streamInfo);
   bool FindNext(CStreamInfo &streamInfo);
 };
 
-class CStreamEnumerator final  MY_UNCOPYABLE
+class CStreamEnumerator  MY_UNCOPYABLE
 {
   CFindStream _find;
   FString _filePath;
@@ -231,7 +231,6 @@ public:
 #endif // defined(_WIN32) && !defined(UNDER_CE)
 
 
-#if !defined(LIBPLZMA)
 class CEnumerator  MY_UNCOPYABLE
 {
   CFindFile _findFile;
@@ -243,15 +242,22 @@ public:
   bool Next(CFileInfo &fileInfo);
   bool Next(CFileInfo &fileInfo, bool &found);
 };
-#endif
 
 
-class CFindChangeNotification final  MY_UNCOPYABLE
+class CFindChangeNotification  MY_UNCOPYABLE
 {
   HANDLE _handle;
 public:
   operator HANDLE () { return _handle; }
-  bool IsHandleAllocated() const { return _handle != INVALID_HANDLE_VALUE && _handle != 0; }
+  bool IsHandleAllocated() const
+  {
+    /* at least on win2000/XP (undocumented):
+       if pathName is "" or NULL,
+       FindFirstChangeNotification() could return NULL.
+       So we check for INVALID_HANDLE_VALUE and NULL.
+    */
+    return _handle != INVALID_HANDLE_VALUE && _handle != NULL;
+  }
   CFindChangeNotification(): _handle(INVALID_HANDLE_VALUE) {}
   ~CFindChangeNotification() { Close(); }
   bool Close() throw();
@@ -269,7 +275,6 @@ typedef CFileInfo CDirEntry;
 #else // WIN32
 
 
-#if !defined(LIBPLZMA)
 struct CDirEntry
 {
   ino_t iNode;
@@ -320,7 +325,6 @@ public:
     return false; // change it
   }
 };
-#endif
 
 /*
 inline UInt32 Get_WinAttrib_From_PosixMode(UInt32 mode)

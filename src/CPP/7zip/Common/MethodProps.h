@@ -1,7 +1,7 @@
 // MethodProps.h
 
-#ifndef __7Z_METHOD_PROPS_H
-#define __7Z_METHOD_PROPS_H
+#ifndef ZIP7_INC_7Z_METHOD_PROPS_H
+#define ZIP7_INC_7Z_METHOD_PROPS_H
 
 #include "../../Common/MyString.h"
 #include "../../Common/Defs.h"
@@ -45,7 +45,7 @@ inline HRESULT ParseMtProp(const UString &name, const PROPVARIANT &prop, UInt32 
 }
 
 
-struct CProp final
+struct CProp Z7_final
 {
   PROPID Id;
   bool IsOptional;

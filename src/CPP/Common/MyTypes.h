@@ -1,13 +1,14 @@
 // Common/MyTypes.h
 
-#ifndef __COMMON_MY_TYPES_H
-#define __COMMON_MY_TYPES_H
+#ifndef ZIP7_INC_COMMON_MY_TYPES_H
+#define ZIP7_INC_COMMON_MY_TYPES_H
 
 #include "../../C/7zTypes.h"
+#include "Common.h"
 
 typedef int HRes;
 
-struct CBoolPair final
+struct CBoolPair Z7_final
 {
   bool Val;
   bool Def;
@@ -32,21 +33,5 @@ struct CBoolPair final
     Def = true;
   }
 };
-
-#define CLASS_NO_COPY(cls) \
-  private: \
-  cls(const cls &); \
-  cls &operator=(const cls &);
-
-class CUncopyable
-{
-protected:
-  CUncopyable() {} // allow constructor
-  // ~CUncopyable() {}
-CLASS_NO_COPY(CUncopyable)
-};
-
-#define MY_UNCOPYABLE  :private CUncopyable
-// #define MY_UNCOPYABLE
 
 #endif

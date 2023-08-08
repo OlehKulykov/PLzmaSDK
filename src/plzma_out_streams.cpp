@@ -41,17 +41,17 @@ namespace plzma {
     
     void OutStreamBase::retain() {
 #if defined(LIBPLZMA_THREAD_UNSAFE)
-        LIBPLZMA_RETAIN_IMPL(__m_RefCount)
+        LIBPLZMA_RETAIN_IMPL(_m_RefCount)
 #else
-        LIBPLZMA_RETAIN_LOCKED_IMPL(__m_RefCount, _mutex)
+        LIBPLZMA_RETAIN_LOCKED_IMPL(_m_RefCount, _mutex)
 #endif
     }
     
     void OutStreamBase::release() {
 #if defined(LIBPLZMA_THREAD_UNSAFE)
-        LIBPLZMA_RELEASE_IMPL(__m_RefCount)
+        LIBPLZMA_RELEASE_IMPL(_m_RefCount)
 #else
-        LIBPLZMA_RELEASE_LOCKED_IMPL(__m_RefCount, _mutex)
+        LIBPLZMA_RELEASE_LOCKED_IMPL(_m_RefCount, _mutex)
 #endif
     }
     

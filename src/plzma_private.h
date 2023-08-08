@@ -133,6 +133,9 @@ typedef uint32_t DWORD;
 #ifndef _7ZIP_ST
 #define _7ZIP_ST 1
 #endif
+#ifndef Z7_ST
+#define Z7_ST 1
+#endif
 
 #if defined(LIBPLZMA_NO_TAR)
 #define LIBPLZMA_NO_TAR_EXCEPTION_WHAT "The tar(tarball) support was explicitly disabled. Use cmake option 'LIBPLZMA_OPT_NO_TAR:BOOL=OFF' or undefine 'LIBPLZMA_NO_TAR' preprocessor definition globally to enable tar(tarball) support."
@@ -140,6 +143,7 @@ typedef uint32_t DWORD;
 
 #if defined(LIBPLZMA_NO_CRYPTO)
 #define _NO_CRYPTO 1
+#define Z7_NO_CRYPTO 1
 #define LIBPLZMA_NO_CRYPTO_EXCEPTION_WHAT "The crypto functionality was explicitly disabled. Use cmake option 'LIBPLZMA_OPT_NO_CRYPTO:BOOL=OFF' or undefine 'LIBPLZMA_NO_CRYPTO' preprocessor definition globally to enable crypto functionality."
 #endif
 

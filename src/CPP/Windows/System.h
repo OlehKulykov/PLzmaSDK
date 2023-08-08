@@ -1,7 +1,7 @@
 // Windows/System.h
 
-#ifndef __WINDOWS_SYSTEM_H
-#define __WINDOWS_SYSTEM_H
+#ifndef ZIP7_INC_WINDOWS_SYSTEM_H
+#define ZIP7_INC_WINDOWS_SYSTEM_H
 
 #ifndef _WIN32
 // #include <sched.h>
@@ -9,16 +9,16 @@
 #endif
 
 #include "../Common/MyTypes.h"
+#include "../Common/MyWindows.h"
 
 namespace NWindows {
 namespace NSystem {
-
 
 #ifdef _WIN32
 
 UInt32 CountAffinity(DWORD_PTR mask);
 
-struct CProcessAffinity final
+struct CProcessAffinity
 {
   // UInt32 numProcessThreads;
   // UInt32 numSysThreads;
@@ -57,14 +57,14 @@ struct CProcessAffinity final
 
 #else // WIN32
 
-struct CProcessAffinity final
+struct CProcessAffinity
 {
   UInt32 numSysThreads;
 
   UInt32 GetNumSystemThreads() const { return (UInt32)numSysThreads; }
   BOOL Get();
 
-  #ifdef _7ZIP_AFFINITY_SUPPORTED
+  #ifdef Z7_AFFINITY_SUPPORTED
 
   CCpuSet cpu_set;
 
@@ -86,7 +86,7 @@ struct CProcessAffinity final
     return sched_setaffinity(0, sizeof(cpu_set), &cpu_set) == 0;
   }
 
-  #else
+  #else // Z7_AFFINITY_SUPPORTED
 
   void InitST()
   {
@@ -114,15 +114,18 @@ struct CProcessAffinity final
     return FALSE;
   }
   
-  #endif
+  #endif // Z7_AFFINITY_SUPPORTED
 };
 
-#endif
+#endif // _WIN32
 
 
 UInt32 GetNumberOfProcessors();
 
 bool GetRamSize(UInt64 &size); // returns false, if unknown ram size
+
+unsigned long Get_File_OPEN_MAX();
+unsigned Get_File_OPEN_MAX_Reduced_for_3_tasks();
 
 }}
 

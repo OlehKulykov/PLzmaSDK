@@ -1,7 +1,7 @@
 // Common/CommandLineParser.h
 
-#ifndef __COMMON_COMMAND_LINE_PARSER_H
-#define __COMMON_COMMAND_LINE_PARSER_H
+#ifndef ZIP7_INC_COMMON_COMMAND_LINE_PARSER_H
+#define ZIP7_INC_COMMON_COMMAND_LINE_PARSER_H
 
 #include "MyString.h"
 
@@ -21,7 +21,7 @@ namespace NSwitchType
   };
 }
 
-struct CSwitchForm final
+struct CSwitchForm Z7_final
 {
   const char *Key;
   Byte Type;
@@ -31,7 +31,7 @@ struct CSwitchForm final
   const char *PostCharSet;
 };
 
-struct CSwitchResult final
+struct CSwitchResult Z7_final
 {
   bool ThereIs;
   bool WithMinus;
@@ -41,7 +41,7 @@ struct CSwitchResult final
   CSwitchResult(): ThereIs(false) {}
 };
   
-class CParser final
+class CParser Z7_final
 {
   CSwitchResult *_switches;
 

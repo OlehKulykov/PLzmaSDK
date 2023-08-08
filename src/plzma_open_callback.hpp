@@ -62,17 +62,17 @@ namespace plzma {
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(OpenCallback)
         
     public:
-        MY_UNKNOWN_IMP3(IArchiveOpenCallback, ICryptoGetTextPassword, ICryptoGetTextPassword2)
+        Z7_COM_UNKNOWN_IMP_3(IArchiveOpenCallback, ICryptoGetTextPassword, ICryptoGetTextPassword2)
         
         // IArchiveOpenCallback
-        STDMETHOD(SetTotal)(const UInt64 * files, const UInt64 * bytes);
-        STDMETHOD(SetCompleted)(const UInt64 * files, const UInt64 * bytes);
+        STDMETHOD(SetTotal)(const UInt64 * files, const UInt64 * bytes) override final;
+        STDMETHOD(SetCompleted)(const UInt64 * files, const UInt64 * bytes) override final;
         
         // ICryptoGetTextPassword
-        STDMETHOD(CryptoGetTextPassword)(BSTR * password);
+        STDMETHOD(CryptoGetTextPassword)(BSTR * password) override final;
         
         // ICryptoGetTextPassword2
-        STDMETHOD(CryptoGetTextPassword2)(Int32 * passwordIsDefined, BSTR * password);
+        STDMETHOD(CryptoGetTextPassword2)(Int32 * passwordIsDefined, BSTR * password) override final;
         
         CMyComPtr<IInArchive> archive() const noexcept;
         bool open();

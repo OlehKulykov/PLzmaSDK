@@ -1,7 +1,7 @@
 // Common/Wildcard.h
 
-#ifndef __COMMON_WILDCARD_H
-#define __COMMON_WILDCARD_H
+#ifndef ZIP7_INC_COMMON_WILDCARD_H
+#define ZIP7_INC_COMMON_WILDCARD_H
 
 #include "MyString.h"
 
@@ -30,7 +30,7 @@ bool IsDriveColonName(const wchar_t *s);
 unsigned GetNumPrefixParts_if_DrivePath(UStringVector &pathParts);
 #endif
 
-struct CItem final
+struct CItem Z7_final
 {
   UStringVector PathParts;
   bool Recursive;
@@ -57,7 +57,7 @@ const Byte kMark_FileOrDir = 0;
 const Byte kMark_StrictFile = 1;
 const Byte kMark_StrictFile_IfWildcard = 2;
 
-struct CCensorPathProps final
+struct CCensorPathProps Z7_final
 {
   bool Recursive;
   bool WildcardMatching;
@@ -71,7 +71,7 @@ struct CCensorPathProps final
 };
 
 
-class CCensorNode final  MY_UNCOPYABLE
+class CCensorNode  MY_UNCOPYABLE
 {
   CCensorNode *Parent;
   
@@ -83,7 +83,7 @@ public:
   CCensorNode():
       Parent(NULL)
       // , ExcludeDirItems(false)
-      {};
+      {}
 
   CCensorNode(const UString &name, CCensorNode *parent):
       Parent(parent)
@@ -153,7 +153,7 @@ public:
 };
 
 
-struct CPair final  MY_UNCOPYABLE
+struct CPair  MY_UNCOPYABLE
 {
   UString Prefix;
   CCensorNode Head;
@@ -170,7 +170,7 @@ enum ECensorPathMode
 };
 
 
-struct CCensorPath final
+struct CCensorPath Z7_final
 {
   UString Path;
   bool Include;
@@ -182,7 +182,7 @@ struct CCensorPath final
 };
 
 
-class CCensor final  MY_UNCOPYABLE
+class CCensor  MY_UNCOPYABLE
 {
   int FindPairForPrefix(const UString &prefix) const;
 public:

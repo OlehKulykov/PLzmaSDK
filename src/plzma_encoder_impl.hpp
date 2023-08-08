@@ -134,7 +134,7 @@ namespace plzma {
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(EncoderImpl)
         
     public:
-        MY_UNKNOWN_IMP3(IArchiveUpdateCallback2, ICryptoGetTextPassword, ICryptoGetTextPassword2)
+        Z7_COM_UNKNOWN_IMP_3(IArchiveUpdateCallback2, ICryptoGetTextPassword, ICryptoGetTextPassword2)
         
         // IProgress
         STDMETHOD(SetTotal)(UInt64 size);
