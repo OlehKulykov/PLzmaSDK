@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2023 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2024 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -364,11 +364,11 @@ int test_plzma_multivolume_test4(void) {
                 auto pathIterator = path.openDir();
                 while (pathIterator->next()) {
                     const auto fullPath = pathIterator->fullPath();
-                    std::cout << fullPath.utf8() << std::endl;
+                    std::flush(std::cout) << fullPath.utf8() << std::endl;
                     auto partStat = fullPath.stat();
                     totalPartsSize += partStat.size;
                 }
-                std::cout << std::endl;
+                std::flush(std::cout) << std::endl;
                 PLZMA_TESTS_ASSERT(content.second == totalPartsSize)
             } break;
                 
@@ -548,12 +548,12 @@ int test_plzma_multivolume_test5(void) {
                 plzma_path_iterator pathIterator = plzma_path_open_dir(&path, plzma_open_dir_mode_follow_symlinks);
                 while (plzma_path_iterator_next(&pathIterator)) {
                     plzma_path fullPath = plzma_path_iterator_full_path(&pathIterator);
-                    std::cout << plzma_path_utf8_string(&fullPath) << std::endl;
+                    std::flush(std::cout) << plzma_path_utf8_string(&fullPath) << std::endl;
                     plzma_path_stat partStat = plzma_path_get_stat(&fullPath);
                     totalPartsSize += partStat.size;
                     plzma_path_release(&fullPath);
                 }
-                std::cout << std::endl;
+                std::flush(std::cout) << std::endl;
                 plzma_path_iterator_release(&pathIterator);
                 PLZMA_TESTS_ASSERT(content.size == totalPartsSize)
             } break;
@@ -684,7 +684,7 @@ int test_plzma_multivolume_test5(void) {
 }
 
 int main(int argc, char* argv[]) {
-    std::cout << plzma_version() << std::endl;
+    std::flush(std::cout) << plzma_version() << std::endl;
     int ret = 0;
     
     if ( (ret = test_plzma_multivolume_test4()) ) {

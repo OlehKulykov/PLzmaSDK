@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2023 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2024 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -55,32 +55,64 @@
     return _item->size();
 }
 
+- (void) setSize:(uint64_t) size {
+    _item->setSize(size);
+}
+
 - (uint64_t) packSize {
     return _item->packSize();
+}
+
+- (void) setPackSize:(uint64_t) packSize {
+    _item->setPackSize(packSize);
 }
 
 - (uint32_t) crc32 {
     return _item->crc32();
 }
 
+- (void) setCrc32:(uint32_t) crc32 {
+    _item->setCrc32(crc32);
+}
+
 - (nonnull NSDate *) creationDate {
     return [NSDate dateWithTimeIntervalSince1970:_item->creationTime()];
+}
+
+- (void) setCreationDate:(nonnull NSDate *) creationDate {
+    _item->setCreationTime((time_t)creationDate.timeIntervalSince1970);
 }
 
 - (nonnull NSDate *) accessDate {
     return [NSDate dateWithTimeIntervalSince1970:_item->accessTime()];
 }
 
+- (void) setAccessDate:(nonnull NSDate *) accessDate {
+    _item->setAccessTime((time_t)accessDate.timeIntervalSince1970);
+}
+
 - (nonnull NSDate *) modificationDate {
     return [NSDate dateWithTimeIntervalSince1970:_item->accessTime()];
+}
+
+- (void) setModificationDate:(nonnull NSDate *) modificationDate {
+    _item->setModificationTime((time_t)modificationDate.timeIntervalSince1970);
 }
 
 - (BOOL) encrypted {
     return _item->encrypted();
 }
 
+- (void) setEncrypted:(BOOL) encrypted {
+    _item->setEncrypted(encrypted);
+}
+
 - (BOOL) isDir {
     return _item->isDir();
+}
+
+- (void) setIsDir:(BOOL) isDir {
+    _item->setIsDir(isDir);
 }
 
 - (NSUInteger) hash {

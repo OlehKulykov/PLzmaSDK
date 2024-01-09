@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2023 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2024 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -46,7 +46,7 @@ public:
 #if defined(LIBPLZMA_OS_WINDOWS)
         std::wcout << L"Path: " << path.wide() << L", progress: " << progress << std::endl;
 #else
-        std::cout << "Path: " << path.utf8() << ", progress: " << progress << std::endl;
+        std::flush(std::cout) << "Path: " << path.utf8() << ", progress: " << progress << std::endl;
 #endif
     }
     virtual ~TestProgressDelegate() { }
@@ -243,12 +243,9 @@ int test_plzma_encode_test3(void) {
     fclose(filePtr);
     const auto stat = emptyFile.stat();
     PLZMA_TESTS_ASSERT(stat.size == 0)
-    PLZMA_TESTS_ASSERT(stat.creation != 0)
-    PLZMA_TESTS_ASSERT(stat.last_access != 0)
-    PLZMA_TESTS_ASSERT(stat.last_modification != 0)
-    
-    
-    
+    PLZMA_TESTS_ASSERT(stat.timestamp.creation != 0)
+    PLZMA_TESTS_ASSERT(stat.timestamp.last_access != 0)
+    PLZMA_TESTS_ASSERT(stat.timestamp.last_modification != 0)
     
     res = emptyDir.remove();
     PLZMA_TESTS_ASSERT(res == true)
@@ -257,7 +254,7 @@ int test_plzma_encode_test3(void) {
 }
 
 int main(int argc, char* argv[]) {
-    std::cout << plzma_version();
+    std::flush(std::cout) << plzma_version();
     int ret = 0;
     
     try {    
@@ -277,26 +274,26 @@ int main(int argc, char* argv[]) {
             return ret;
         }
     } catch (const Exception & e) {
-        std::cout << "PLZMA Exception [" << e.code() << "]:" << std::endl;
+        std::flush(std::cout) << "PLZMA Exception [" << e.code() << "]:" << std::endl;
         if (e.what()) {
-            std::cout << "what: " << e.what() << std::endl;
+            std::flush(std::cout) << "what: " << e.what() << std::endl;
         }
         if (e.reason()) {
-            std::cout << "reason: " << e.reason() << std::endl;
+            std::flush(std::cout) << "reason: " << e.reason() << std::endl;
         }
         if (e.file()) {
-            std::cout << "file: " << e.file() << std::endl;
+            std::flush(std::cout) << "file: " << e.file() << std::endl;
         }
-        std::cout << "line: " << e.line() << std::endl;
+        std::flush(std::cout) << "line: " << e.line() << std::endl;
         throw;
     } catch (const std::exception & e) {
-        std::cout << "std exception:" << std::endl;
+        std::flush(std::cout) << "std exception:" << std::endl;
         if (e.what()) {
-            std::cout << "what: " << e.what() << std::endl;
+            std::flush(std::cout) << "what: " << e.what() << std::endl;
         }
         throw;
     } catch (...) {
-        std::cout << "unknown exception:" << std::endl;
+        std::flush(std::cout) << "unknown exception:" << std::endl;
         throw;
     }
     

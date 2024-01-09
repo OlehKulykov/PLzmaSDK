@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2023 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2024 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -47,7 +47,7 @@ static void dummy_extract_wide_callback(void * LIBPLZMA_NULLABLE context,
 static void dummy_extract_utf8_callback(void * LIBPLZMA_NULLABLE context,
                                         const char * LIBPLZMA_NONNULL utf8_path,
                                         const double progress) {
-    std::cout << "Extracting: " << utf8_path << ", progress: " << progress << std::endl;
+    std::flush(std::cout) << "Extracting: " << utf8_path << ", progress: " << progress << std::endl;
 }
 #endif
 
@@ -57,7 +57,7 @@ public:
 #if defined(LIBPLZMA_OS_WINDOWS)
         std::wcout << L"Extracting: " << path.wide() << L", progress: " << progress << std::endl;
 #else
-        std::cout << "Extracting: " << path.utf8() << ", progress: " << progress << std::endl;
+        std::flush(std::cout) << "Extracting: " << path.utf8() << ", progress: " << progress << std::endl;
 #endif
     }
     virtual ~TestProgressDelegate() { }
@@ -80,21 +80,21 @@ int test_plzma_extract_test1(void) {
 }
 
 int test_plzma_extract_test2(void) {
-//#if !defined(LIBPLZMA_NO_C_BINDINGS)
-//    plzma_in_stream stream = plzma_in_stream_create_with_memory(FILE__1_7z_PTR, FILE__1_7z_SIZE, &dummy_free_callback);
-//    plzma_decoder decoder = plzma_decoder_create(&stream, plzma_file_type_7z, plzma_context{nullptr, nullptr});
-//    plzma_in_stream_release(&stream);
-//    plzma_decoder_set_password_utf8_string(&decoder, "1234");
-//#if defined(LIBPLZMA_OS_WINDOWS)
-//    plzma_decoder_set_progress_delegate_wide_callback(&decoder, &dummy_extract_wide_callback);
-//#else
-//    plzma_decoder_set_progress_delegate_utf8_callback(&decoder, &dummy_extract_utf8_callback);
-//#endif
-//    plzma_decoder_open(&decoder);
-//    PLZMA_TESTS_ASSERT(plzma_decoder_count(&decoder) == 5)
-//    PLZMA_TESTS_ASSERT(plzma_decoder_test(&decoder) == true)
-//    plzma_decoder_release(&decoder);
-//#endif // !LIBPLZMA_NO_C_BINDINGS
+#if !defined(LIBPLZMA_NO_C_BINDINGS)
+    plzma_in_stream stream = plzma_in_stream_create_with_memory(FILE__1_7z_PTR, FILE__1_7z_SIZE, &dummy_free_callback);
+    plzma_decoder decoder = plzma_decoder_create(&stream, plzma_file_type_7z, plzma_context{nullptr, nullptr});
+    plzma_in_stream_release(&stream);
+    plzma_decoder_set_password_utf8_string(&decoder, "1234");
+#if defined(LIBPLZMA_OS_WINDOWS)
+    plzma_decoder_set_progress_delegate_wide_callback(&decoder, &dummy_extract_wide_callback);
+#else
+    plzma_decoder_set_progress_delegate_utf8_callback(&decoder, &dummy_extract_utf8_callback);
+#endif
+    plzma_decoder_open(&decoder);
+    PLZMA_TESTS_ASSERT(plzma_decoder_count(&decoder) == 5)
+    PLZMA_TESTS_ASSERT(plzma_decoder_test(&decoder) == true)
+    plzma_decoder_release(&decoder);
+#endif // !LIBPLZMA_NO_C_BINDINGS
     
     return 0;
 }
@@ -133,7 +133,7 @@ int test_plzma_extract_test3(void) {
 //    decoder->setProgressCallback(dummy_extract_utf8_callback);
 //#endif
 //    time_t t = time(nullptr);
-//    std::cout << t << " Start extracting ... \n";
+//    std::flush(std::cout) << t << " Start extracting ... \n";
 //    bool extracted = false;
 //    std::thread thread([&](){
 //        decoder->retain();
@@ -142,7 +142,7 @@ int test_plzma_extract_test3(void) {
 //    });
 //    thread.join();
 //    PLZMA_TESTS_ASSERT(extracted == true)
-//    std::cout << time(nullptr) - t << " Extracting done.\n";
+//    std::flush(std::cout) << time(nullptr) - t << " Extracting done.\n";
 //    for (plzma_size_t i = 0, n = map->size(); i < n; i++) {
 //        const auto pair = map->at(i);
 //        PLZMA_TESTS_ASSERT(pair.first->size() == pair.second->size())
@@ -154,6 +154,26 @@ int test_plzma_extract_test3(void) {
 //    PLZMA_TESTS_ASSERT(error == nullptr)
 //    CLZMA_RELEASE_CLEAN(error)
 //    CLZMA_RELEASE_CLEAN(decoder)
+    
+    return 0;
+}
+
+int test_plzma_extract_test4(void) {
+#if !defined(LIBPLZMA_NO_CRYPTO)
+    auto stream = makeSharedInStream(FILE__1_7z_PTR, FILE__1_7z_SIZE, &dummy_free_callback);
+    auto decoder = makeSharedDecoder(stream, plzma_file_type_7z, plzma_context{nullptr, nullptr});
+    decoder->setPassword("1234");
+    PLZMA_TESTS_ASSERT(decoder->open() == true);
+    PLZMA_TESTS_ASSERT(decoder->count() == 5)
+    decoder->setProgressDelegate(_progressDelegate);
+    Path extractPath = Path::tmpPath();
+    PLZMA_TESTS_ASSERT(extractPath.exists() == true);
+    extractPath.appendRandomComponent();
+    PLZMA_TESTS_ASSERT(extractPath.createDir(true) == true);
+    std::flush(std::cout) << "Tmp extract path: " << extractPath.utf8() << std::endl;
+    PLZMA_TESTS_ASSERT(decoder->extract(extractPath) == true);
+    PLZMA_TESTS_ASSERT(extractPath.remove() == true);
+#endif
     
     return 0;
 }
@@ -220,7 +240,7 @@ int test_plzma_extract_test_settings(void) {
 int main(int argc, char* argv[]) {
     int ret = 0;
     try {
-        std::cout << plzma_version() << std::endl;
+        std::flush(std::cout) << plzma_version() << std::endl;
         
         if ( (ret = test_plzma_extract_test_settings()) ) {
             return ret;
@@ -231,6 +251,10 @@ int main(int argc, char* argv[]) {
         }
         
         if ( (ret = test_plzma_extract_broken_input_stream2()) ) {
+            return ret;
+        }
+        
+        if ( (ret = test_plzma_extract_test4()) ) {
             return ret;
         }
         
@@ -246,26 +270,26 @@ int main(int argc, char* argv[]) {
             return ret;
         }
     } catch (const Exception & e) {
-        std::cout << "PLZMA Exception [" << e.code() << "]:" << std::endl;
+        std::flush(std::cout) << "PLZMA Exception [" << e.code() << "]:" << std::endl;
         if (e.what()) {
-            std::cout << "what: " << e.what() << std::endl;
+            std::flush(std::cout) << "what: " << e.what() << std::endl;
         }
         if (e.reason()) {
-            std::cout << "reason: " << e.reason() << std::endl;
+            std::flush(std::cout) << "reason: " << e.reason() << std::endl;
         }
         if (e.file()) {
-            std::cout << "file: " << e.file() << std::endl;
+            std::flush(std::cout) << "file: " << e.file() << std::endl;
         }
-        std::cout << "line: " << e.line() << std::endl;
+        std::flush(std::cout) << "line: " << e.line() << std::endl;
         throw;
     } catch (const std::exception & e) {
-        std::cout << "std exception:" << std::endl;
+        std::flush(std::cout) << "std exception:" << std::endl;
         if (e.what()) {
-            std::cout << "what: " << e.what() << std::endl;
+            std::flush(std::cout) << "what: " << e.what() << std::endl;
         }
         throw;
     } catch (...) {
-        std::cout << "unknown exception:" << std::endl;
+        std::flush(std::cout) << "unknown exception:" << std::endl;
         throw;
     }
     

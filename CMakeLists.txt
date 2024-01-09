@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2015 - 2023 Oleh Kulykov <olehkulykov@gmail.com>
+# Copyright (c) 2015 - 2024 Oleh Kulykov <olehkulykov@gmail.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -32,12 +32,12 @@ set(CMAKE_CXX_STANDARD 11)
 set(PACKAGE "libplzma")
 set(CPACK_PACKAGE_NAME "${PACKAGE}")
 set(CPACK_PACKAGE_VERSION_MAJOR "1")
-set(CPACK_PACKAGE_VERSION_MINOR "3")
+set(CPACK_PACKAGE_VERSION_MINOR "4")
 set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}")
 set(CPACK_PACKAGE_VENDOR "olehkulykov@gmail.com")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PACKAGE} ${PACKAGE_VERSION}")
-set(SOVERSION "1.3.0")
+set(SOVERSION "1.4.0")
 set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
 set(VERSION "${CPACK_PACKAGE_VERSION}")
 
@@ -45,6 +45,7 @@ message("Install path: ${CMAKE_INSTALL_PREFIX}")
 
 include(CheckLibraryExists)
 include(CheckFunctionExists)
+include(CheckSymbolExists)
 include(CheckCCompilerFlag)
 include(CheckCXXCompilerFlag)
 include(FindThreads)
@@ -215,6 +216,39 @@ CHECK_INCLUDE_FILE("sys/sysmacros.h" LIBPLZMA_HAVE_SYS_SYSMACROS_H)
 if(LIBPLZMA_HAVE_SYS_SYSMACROS_H)
   add_definitions(-DHAVE_SYS_SYSMACROS_H=1)
 endif()
+CHECK_INCLUDE_FILE("sys/utime.h" LIBPLZMA_HAVE_SYS_UTIME_H)
+if(LIBPLZMA_HAVE_SYS_UTIME_H)
+  add_definitions(-DHAVE_SYS_UTIME_H=1)
+endif()
+CHECK_INCLUDE_FILE("utime.h" LIBPLZMA_HAVE_UTIME_H)
+if(LIBPLZMA_HAVE_UTIME_H)
+  add_definitions(-DHAVE_UTIME_H=1)
+endif()
+
+
+# ---- check functions ----
+if(MSVC)
+  check_symbol_exists(_wfopen_s "stdio.h" HAVE__WFOPEN_S)
+  if(NOT HAVE__WFOPEN_S)
+    check_symbol_exists(_wfopen_s "wchar.h" HAVE__WFOPEN_S)
+  endif()
+  if(HAVE__WFOPEN_S)
+    add_definitions(-DHAVE__WFOPEN_S=1)
+  endif()
+  
+  check_symbol_exists(_wdupenv_s "stdlib.h" HAVE__WDUPENV_S)
+  if(NOT HAVE__WDUPENV_S)
+    check_symbol_exists(_wdupenv_s "wchar.h" HAVE__WDUPENV_S)
+  endif()
+  if(HAVE__WDUPENV_S)
+    add_definitions(-DHAVE__WDUPENV_S=1)
+  endif()
+  
+  check_symbol_exists(_dupenv_s "stdlib.h" HAVE__DUPENV_S)
+  if(HAVE__DUPENV_S)
+    add_definitions(-DHAVE__DUPENV_S=1)
+  endif()
+endif(MSVC)
 
 
 # ---- include ----

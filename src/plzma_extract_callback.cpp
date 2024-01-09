@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2023 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2024 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -109,16 +109,20 @@ namespace plzma {
     void ExtractCallback::getExtractStream(const UInt32 index, ISequentialOutStream ** outStream) {
         if (_itemsMap) {
             const auto * pair = _itemsMap->bsearch<plzma_size_t>(index);
-            if (pair && pair->first && pair->first->index() == index) {
-                auto base = pair->second.cast<OutStreamBase>();
-                OutStreamBase * stream = base.get();
-                _currentOutStream = stream;
+            if (pair) {
+                const auto & item = pair->first;
+                if (item && item->index() == index) {
+                    auto base = pair->second.cast<OutStreamBase>();
+                    OutStreamBase * stream = base.get();
+                    stream->setTimestamp(item->timestamp());
+                    _currentOutStream = stream;
 #if !defined(LIBPLZMA_NO_PROGRESS)
-                _progress->setPath(pair->first->path());
+                    _progress->setPath(pair->first->path());
 #endif
-                stream->AddRef(); // for '*outStream'
-                *outStream = stream;
-                return;
+                    stream->AddRef(); // for '*outStream'
+                    *outStream = stream;
+                    return;
+                }
             }
             throw Exception(plzma_error_code_internal, "Can't find maped item/stream.", __FILE__, __LINE__);
         }
@@ -181,7 +185,27 @@ namespace plzma {
             fullPath.append(itemPath);
         }
         
+        plzma_path_timestamp timestamp = { 0 };
+        
+        {
+            prop.Clear();
+            if (_archive->GetProperty(index, kpidCTime, &prop) == S_OK && prop.vt == VT_FILETIME) {
+                timestamp.creation = FILETIMEToUnixTime(prop.filetime);
+            }
+            
+            prop.Clear();
+            if (_archive->GetProperty(index, kpidATime, &prop) == S_OK && prop.vt == VT_FILETIME) {
+                timestamp.last_access = FILETIMEToUnixTime(prop.filetime);
+            }
+            
+            prop.Clear();
+            if (_archive->GetProperty(index, kpidMTime, &prop) == S_OK && prop.vt == VT_FILETIME) {
+                timestamp.last_modification = FILETIMEToUnixTime(prop.filetime);
+            }
+        }
+        
         OutFileStream * stream = new OutFileStream(static_cast<Path &&>(fullPath));
+        stream->setTimestamp(timestamp);
         _currentOutStream = stream;
 #if !defined(LIBPLZMA_NO_PROGRESS)
         _progress->setPath(static_cast<Path &&>(itemPath));

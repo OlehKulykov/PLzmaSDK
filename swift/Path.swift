@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2023 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2024 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -36,6 +36,7 @@ import libplzma
 /// - The path separator will be automatically replaced with the platform specific one.
 /// - The previous content will be erased with `.zero`, i.e. zero-filled.
 public final class Path {
+    
     internal let object: plzma_path
     
     /// Type of the path stat struct.
@@ -166,6 +167,21 @@ public final class Path {
     public func createDir(withIntermediates: Bool) throws -> Bool {
         var path = object
         let result = plzma_path_create_dir(&path, withIntermediates)
+        if let exception = path.exception {
+            throw Exception(object: exception)
+        }
+        return result
+    }
+    
+    
+    /// Set creation, last access and modification unix timestamp of the file path.
+    /// - Parameter timestamp: The unix timestamps.
+    /// - Returns: \a true if timestamp is set, otherwise \a false.
+    /// - Note: No checks for a file path existence, path type or any.
+    /// - Throws: `Exception`
+    public func applyFileTimestamp(timestamp: plzma_path_timestamp) throws -> Bool {
+        var path = object
+        let result = plzma_path_apply_file_timestamp(&path, timestamp)
         if let exception = path.exception {
             throw Exception(object: exception)
         }
@@ -446,9 +462,7 @@ extension Path {
     }
 }
 
-
-/// Contains stat info of the path.
-extension plzma_path_stat {
+extension plzma_path_timestamp {
     
     /// Path creation date based on unix timestamp.
     public var creationDate: Date {
@@ -466,10 +480,42 @@ extension plzma_path_stat {
     }
 }
 
-extension plzma_path_stat: CustomStringConvertible {
+extension plzma_path_timestamp: CustomStringConvertible {
     
     public var description: String {
         return "Creation: \(creationDate)\nLast access: \(lastAccessDate)\nLast modification: \(lastModificationDate)"
+    }
+}
+
+extension plzma_path_timestamp: CustomDebugStringConvertible {
+    
+    public var debugDescription: String {
+        return self.description
+    }
+}
+
+extension plzma_path_stat {
+    
+    /// Path creation date based on unix timestamp.
+    public var creationDate: Date {
+        return timestamp.creationDate;
+    }
+    
+    /// Last path access date based on unix timestamp.
+    public var lastAccessDate: Date {
+        return timestamp.lastAccessDate;
+    }
+    
+    /// Last path modification date based on unix timestamp.
+    public var lastModificationDate: Date {
+        return timestamp.lastModificationDate
+    }
+}
+
+extension plzma_path_stat: CustomStringConvertible {
+    
+    public var description: String {
+        return "Size: \(size)\n\(timestamp.description)"
     }
 }
 

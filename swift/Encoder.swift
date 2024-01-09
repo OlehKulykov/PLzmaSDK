@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2023 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2024 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -41,6 +41,7 @@ public protocol EncoderDelegate: AnyObject {
 
 /// The encoder for compressing the archive items.
 public final class Encoder {
+    
     private final class Context {
         weak var encoder: Encoder?
         weak var delegate: EncoderDelegate?
@@ -67,6 +68,7 @@ public final class Encoder {
         }
         return result
     }
+    
     
     /// Aborts the opening or compressing process.
     /// - Note: The aborted encoder is no longer valid.
@@ -478,6 +480,7 @@ public final class Encoder {
             context.encoder = self
         }
     }
+    
     
     deinit {
         var encoder = object

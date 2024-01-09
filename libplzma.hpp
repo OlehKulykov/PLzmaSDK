@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2023 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2024 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -617,8 +617,15 @@ namespace plzma {
         
         /// @brief Creates the directory at specific path.
         /// @param withIntermediates Create intermediate directories for each component or not.
-        /// @return The creation result of the directory.
+        /// @return The creation result of the directory or if directory already exists.
         bool createDir(const bool withIntermediates) const;
+        
+        
+        /// @brief Set creation, last access and modification unix timestamp of the file path.
+        /// @param timestamp The unix timestamps.
+        /// @return \a true if timestamp is set, otherwise \a false.
+        /// @note No checks for a file path existence, path type or any.
+        bool applyFileTimestamp(const plzma_path_timestamp timestamp);
         
         
         /// @brief Opens a file associated with path.
@@ -709,9 +716,7 @@ namespace plzma {
         Path _path;
         uint64_t _size = 0;
         uint64_t _packSize = 0;
-        time_t _creationTime = 0;
-        time_t _accessTime = 0;
-        time_t _modificationTime = 0;
+        plzma_path_timestamp _timestamp = { 0 };
         uint32_t _crc32 = 0;
         plzma_size_t _index = 0;
         plzma_size_t _referenceCounter = 0;
@@ -760,6 +765,10 @@ namespace plzma {
         time_t modificationTime() const noexcept;
         
         
+        /// @return The creation, last access and last modification unix timestamps of the item.
+        plzma_path_timestamp timestamp() const noexcept;
+        
+        
         /// @return Checks the item is encrypted.
         bool encrypted() const noexcept;
         
@@ -797,6 +806,10 @@ namespace plzma {
         /// @param time The unix timestamp.
         void setModificationTime(const time_t time) noexcept;
         
+        
+        /// @brief Set creation, last access and last modification unix timestamps of the item.
+        void setTimestamp(const plzma_path_timestamp timestamp) noexcept;
+
         
         /// @brief Marks the item is encrypted.
         void setEncrypted(const bool encrypted) noexcept;

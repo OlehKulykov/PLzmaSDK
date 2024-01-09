@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2023 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2024 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -41,35 +41,35 @@
 
 
 /// The size in bytes of the item.
-@property (nonatomic, assign, readonly) uint64_t size;
+@property (nonatomic, assign) uint64_t size;
 
 
 /// The packed size in bytes of the item.
-@property (nonatomic, assign, readonly) uint64_t packSize;
+@property (nonatomic, assign) uint64_t packSize;
 
 
 /// The CRC-32 checksum of the item's content.
-@property (nonatomic, assign, readonly) uint32_t crc32;
+@property (nonatomic, assign) uint32_t crc32;
 
 
 /// The creation date of the item. Based on unix timestamp.
-@property (nonatomic, strong, readonly, nonnull) NSDate * creationDate;
+@property (nonatomic, strong, nonnull) NSDate * creationDate;
 
 
 /// The last access date of the item. Based on unix timestamp.
-@property (nonatomic, strong, readonly, nonnull) NSDate * accessDate;
+@property (nonatomic, strong, nonnull) NSDate * accessDate;
 
 
 /// The last modification date of the item. Based on unix timestamp.
-@property (nonatomic, strong, readonly, nonnull) NSDate * modificationDate;
+@property (nonatomic, strong, nonnull) NSDate * modificationDate;
 
 
 /// The item is encrypted or not.
-@property (nonatomic, assign, readonly) BOOL encrypted;
+@property (nonatomic, assign) BOOL encrypted;
 
 
 /// The item is directory or file.
-@property (nonatomic, assign, readonly) BOOL isDir;
+@property (nonatomic, assign) BOOL isDir;
 
 
 /// Initializes the item with path string and optional index inside the archive.

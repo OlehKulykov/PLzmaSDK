@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2023 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2024 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -34,6 +34,7 @@ import libplzma
 ///
 /// The stream could be initialized with path or memory data.
 public final class InStream {
+    
     private final class DataNoCopyContext {
         let data: Data
         var offset = Int64(0)
@@ -71,6 +72,7 @@ public final class InStream {
         }
         return result
     }
+    
     
     internal init(object: plzma_in_stream) {
         self.object = object
@@ -208,6 +210,7 @@ public final class InStream {
         object = stream
     }
     
+    
     /// Initializes multi input stream with an array of input streams.
     /// The array should not be empty. The order: file.001, file.002, ..., file.XXX
     /// - Parameter streams: The non-empty array of input streams. Each stream inside array should also exist.
@@ -248,6 +251,7 @@ public final class InStream {
         
         object = stream
     }
+    
     
     deinit {
         var stream = object

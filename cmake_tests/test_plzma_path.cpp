@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2023 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2024 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -41,11 +41,11 @@ int test_plzma_path_remove_last1(void) {
     Path path, pathCopy;
     
     path.set("/tmp/scratch.png");
-    std::cout << path.utf8() << " " << __LINE__ << std::endl;
+    std::flush(std::cout) << path.utf8() << " " << __LINE__ << std::endl;
     std::wcout << path.wide() << L" " << __LINE__ << L"\n";
     pathCopy = path.removingLastComponent();
     path.removeLastComponent();
-    std::cout << path.utf8() << " " << __LINE__ << std::endl;
+    std::flush(std::cout) << path.utf8() << " " << __LINE__ << std::endl;
     PLZMA_TESTS_ASSERT(strcmp(path.utf8(), CSEP "tmp") == 0)
     PLZMA_TESTS_ASSERT(wcscmp(path.wide(), WSEP L"tmp") == 0)
     PLZMA_TESTS_ASSERT(strcmp(pathCopy.utf8(), CSEP "tmp") == 0)
@@ -355,7 +355,7 @@ int test_plzma_path_test_tmp1(void) {
     PLZMA_TESTS_ASSERT(tmp.wide() != nullptr)
     PLZMA_TESTS_ASSERT(tmp.utf8() != nullptr)
     
-    std::cout << "Temp dir: " << tmp.utf8() << std::endl;
+    std::flush(std::cout) << "Temp dir: " << tmp.utf8() << std::endl;
     
     tmp.append("test.file");
     
@@ -363,10 +363,17 @@ int test_plzma_path_test_tmp1(void) {
     PLZMA_TESTS_ASSERT(file1 != nullptr);
     fclose(file1);
     
+    plzma_path_timestamp timestamp = { 0 };
+    timestamp.last_access = timestamp.last_modification = 1000;
+    PLZMA_TESTS_ASSERT(tmp.applyFileTimestamp(timestamp) == true);
+    plzma_path_stat stat = tmp.stat();
+    PLZMA_TESTS_ASSERT(timestamp.last_access == stat.timestamp.last_access);
+    PLZMA_TESTS_ASSERT(timestamp.last_modification == stat.timestamp.last_modification);
+    
     tmp.remove();
     PLZMA_TESTS_ASSERT(tmp.exists() == false)
     
-    std::cout << "Temp file opened: " << tmp.utf8() << std::endl;
+    std::flush(std::cout) << "Temp file opened: " << tmp.utf8() << std::endl;
     return 0;
 }
 
@@ -383,12 +390,12 @@ int test_plzma_path_test_tmp2(void) {
     PLZMA_TESTS_ASSERT(plzma_path_wide_string(&tmp) != nullptr)
     PLZMA_TESTS_ASSERT(plzma_path_utf8_string(&tmp) != nullptr)
     
-    std::cout << "Temp dir: " << plzma_path_utf8_string(&tmp) << std::endl;
+    std::flush(std::cout) << "Temp dir: " << plzma_path_utf8_string(&tmp) << std::endl;
     
     plzma_path_append_utf8_component(&tmp, "test.file");
     FILE * f = plzma_path_open_file(&tmp, "w+b");
     PLZMA_TESTS_ASSERT(f != nullptr)
-    std::cout << "Temp file opened: " << plzma_path_utf8_string(&tmp) << std::endl;
+    std::flush(std::cout) << "Temp file opened: " << plzma_path_utf8_string(&tmp) << std::endl;
     fclose(f);
     PLZMA_TESTS_ASSERT(plzma_path_remove(&tmp, false) == true);
     plzma_path_release(&tmp);
@@ -404,9 +411,9 @@ int test_plzma_path_test_open_dir1(void) {
     try {
         it = rootPath.openDir();
     } catch (const Exception & e) {
-        std::cout << "Exception:" << e.what() << std::endl;
+        std::flush(std::cout) << "Exception:" << e.what() << std::endl;
     } catch (...) {
-        std::cout << "Exception unknown" << std::endl;
+        std::flush(std::cout) << "Exception unknown" << std::endl;
     }
     
     rootPath = Path::tmpPath();
@@ -414,20 +421,20 @@ int test_plzma_path_test_open_dir1(void) {
     rootPath.removeLastComponent();
     PLZMA_TESTS_ASSERT(rootPath.count() > 0)
     
-    std::cout << "Open path: " << rootPath.utf8() << std::endl;
+    std::flush(std::cout) << "Open path: " << rootPath.utf8() << std::endl;
     try {
         it = rootPath.openDir();
     } catch (const Exception & e) {
-        std::cout << "Exception:" << e.what() << std::endl;
+        std::flush(std::cout) << "Exception:" << e.what() << std::endl;
     } catch (...) {
-        std::cout << "Exception unknown" << std::endl;
+        std::flush(std::cout) << "Exception unknown" << std::endl;
     }
-    std::cout << std::endl;
+    std::flush(std::cout) << std::endl;
     while (it->next()) {
         auto component = it->component();
         auto path = it->path();
         auto fullPath = it->fullPath();
-        const auto times = fullPath.stat();
+        const auto times = fullPath.stat().timestamp;
 #if defined(LIBPLZMA_OS_WINDOWS)
         if (component.wide()) {
             std::wcout << "Comp: " << component.wide() << std::endl;
@@ -443,15 +450,15 @@ int test_plzma_path_test_open_dir1(void) {
         L"Last modification: " << _wctime(&times.last_modification);
 #else
         if (component.utf8()) {
-            std::cout << "Comp: " << component.utf8() << std::endl;
+            std::flush(std::cout) << "Comp: " << component.utf8() << std::endl;
         }
         if (path.utf8()) {
-            std::cout << "Path: " << path.utf8() << std::endl;
+            std::flush(std::cout) << "Path: " << path.utf8() << std::endl;
         }
         if (fullPath.utf8()) {
-            std::cout << "Full: " << fullPath.utf8() << std::endl;
+            std::flush(std::cout) << "Full: " << fullPath.utf8() << std::endl;
         }
-        std::cout << "Creation: " << ctime(&times.creation) <<
+        std::flush(std::cout) << "Creation: " << ctime(&times.creation) <<
         "Last access: " << ctime(&times.last_access) <<
         "Last modification: " << ctime(&times.last_modification);
 #endif
@@ -463,9 +470,9 @@ int test_plzma_path_test_open_dir1(void) {
         PLZMA_TESTS_ASSERT(fullPath.exists(&isDir) == true)
         PLZMA_TESTS_ASSERT(isDir == it->isDir())
         
-        std::cout << std::endl;
+        std::flush(std::cout) << std::endl;
     }
-    std::cout << "Done." << std::endl;
+    std::flush(std::cout) << "Done." << std::endl;
     return 0;
 }
 
@@ -477,11 +484,11 @@ int test_plzma_path_test_open_dir2(void) {
     plzma_path_remove_last_component(&rootPath);
     PLZMA_TESTS_ASSERT(plzma_path_count(&rootPath) > 0)
     
-    std::cout << "Open path: " << plzma_path_utf8_string(&rootPath) << std::endl;
+    std::flush(std::cout) << "Open path: " << plzma_path_utf8_string(&rootPath) << std::endl;
     plzma_path_iterator it = plzma_path_open_dir(&rootPath, 0);
     PLZMA_TESTS_ASSERT(it.object != nullptr)
     //TODO: error
-    std::cout << std::endl;
+    std::flush(std::cout) << std::endl;
     while (plzma_path_iterator_next(&it)) {
         plzma_path component = plzma_path_iterator_component(&it);
         PLZMA_TESTS_ASSERT(component.object != nullptr)
@@ -501,13 +508,13 @@ int test_plzma_path_test_open_dir2(void) {
         }
 #else
         if (plzma_path_utf8_string(&component)) {
-            std::cout << "Comp: " << plzma_path_utf8_string(&component) << std::endl;
+            std::flush(std::cout) << "Comp: " << plzma_path_utf8_string(&component) << std::endl;
         }
         if (plzma_path_utf8_string(&path)) {
-            std::cout << "Path: " << plzma_path_utf8_string(&path) << std::endl;
+            std::flush(std::cout) << "Path: " << plzma_path_utf8_string(&path) << std::endl;
         }
         if (plzma_path_utf8_string(&fullPath)) {
-            std::cout << "Full: " << plzma_path_utf8_string(&fullPath) << std::endl;
+            std::flush(std::cout) << "Full: " << plzma_path_utf8_string(&fullPath) << std::endl;
         }
 #endif
         bool isDir = false;
@@ -527,12 +534,12 @@ int test_plzma_path_test_open_dir2(void) {
         plzma_path_release(&path);
         plzma_path_release(&fullPath);
         
-        std::cout << std::endl;
+        std::flush(std::cout) << std::endl;
     }
     plzma_path_iterator_release(&it);
     plzma_path_release(&rootPath);
     
-    std::cout << "Done." << std::endl;
+    std::flush(std::cout) << "Done." << std::endl;
 #endif // !LIBPLZMA_NO_C_BINDINGS
     return 0;
 }
@@ -564,26 +571,26 @@ int test_plzma_path_test_append_random_component(void) {
     std::wcout << L"Line: " << __LINE__ << ",wpath: '" << path.wide() << "', size: " << path.count() << std::endl;
 #endif
     len = String::lengthMaxCount(path.utf8(), 9999);
-    std::cout << "Line: " << __LINE__ << ", path: '" << path.utf8() << "', len,size: " << len.first << "," << len.second << ", size(): " << path.count() << ", strlen: " << strlen(path.utf8()) << std::endl;
+    std::flush(std::cout) << "Line: " << __LINE__ << ", path: '" << path.utf8() << "', len,size: " << len.first << "," << len.second << ", size(): " << path.count() << ", strlen: " << strlen(path.utf8()) << std::endl;
     path.append("/");
 #if defined(LIBPLZMA_OS_WINDOWS)
     std::wcout << L"Line: " << __LINE__ << ",wpath: '" << path.wide() << "', size: " << path.count() << std::endl;
 #endif
     len = String::lengthMaxCount(path.utf8(), 9999);
-    std::cout << "Line: " << __LINE__ << ", path: '" << path.utf8() << "', len,size: " << len.first << "," << len.second << ", size(): " << path.count() << ", strlen: " << strlen(path.utf8()) << std::endl;
+    std::flush(std::cout) << "Line: " << __LINE__ << ", path: '" << path.utf8() << "', len,size: " << len.first << "," << len.second << ", size(): " << path.count() << ", strlen: " << strlen(path.utf8()) << std::endl;
     path.appendRandomComponent();
 #if defined(LIBPLZMA_OS_WINDOWS)
     std::wcout << L"Line: " << __LINE__ << ",wpath: '" << path.wide() << "', size: " << path.count() << std::endl;
 #endif
     len = String::lengthMaxCount(path.utf8(), 9999);
-    std::cout << "Line: " << __LINE__ << ", path: '" << path.utf8() << "', len,size: " << len.first << "," << len.second << ", size(): " << path.count() << ", strlen: " << strlen(path.utf8()) << std::endl;
+    std::flush(std::cout) << "Line: " << __LINE__ << ", path: '" << path.utf8() << "', len,size: " << len.first << "," << len.second << ", size(): " << path.count() << ", strlen: " << strlen(path.utf8()) << std::endl;
     PLZMA_TESTS_ASSERT(path.exists() == false)
     PLZMA_TESTS_ASSERT(path.count() > 0)
 #if defined(LIBPLZMA_OS_WINDOWS)
     std::wcout << L"Line: " << __LINE__ << ",wpath: '" << path.wide() << "', size: " << path.count() << std::endl;
 #endif
     len = String::lengthMaxCount(path.utf8(), 9999);
-    std::cout << "Line: " << __LINE__ << ", path: '" << path.utf8() << "', len,size: " << len.first << "," << len.second << ", size(): " << path.count() << ", strlen: " << strlen(path.utf8()) << std::endl;
+    std::flush(std::cout) << "Line: " << __LINE__ << ", path: '" << path.utf8() << "', len,size: " << len.first << "," << len.second << ", size(): " << path.count() << ", strlen: " << strlen(path.utf8()) << std::endl;
     PLZMA_TESTS_ASSERT(len.second == path.count())
     
     file = path.openFile("w+b");
@@ -707,7 +714,7 @@ int test_plzma_path_test_remove_non_empty_dir2(void) {
 }
 
 int main(int argc, char* argv[]) {
-    std::cout << plzma_version() << std::endl;
+    std::flush(std::cout) << plzma_version() << std::endl;
     int ret = 0;
     
     if ( (ret = test_plzma_path_remove_last1()) ) {

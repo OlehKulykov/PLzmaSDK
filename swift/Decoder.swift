@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2023 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2024 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -41,6 +41,7 @@ public protocol DecoderDelegate: AnyObject {
 
 /// The Decoder for extracting or testing the archive items.
 public final class Decoder {
+    
     private final class Context {
         weak var decoder: Decoder?
         weak var delegate: DecoderDelegate?
@@ -293,6 +294,7 @@ public final class Decoder {
             context.decoder = self
         }
     }
+    
     
     deinit {
         var decoder = object

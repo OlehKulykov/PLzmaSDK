@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2023 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2024 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -432,7 +432,7 @@ int test_plzma_open_cpp_doc(void) {
         bool extracted = decoder->extract(selectedItemsToStreams);
         PLZMA_TESTS_ASSERT(extracted == true)
     } catch (const Exception & exception) {
-        std::cout << "Exception: " << exception.what() << std::endl;
+        std::flush(std::cout) << "Exception: " << exception.what() << std::endl;
     }
 #endif
     return 0;
@@ -495,7 +495,7 @@ int test_plzma_open_c_doc(void) {
 }
 
 int main(int argc, char* argv[]) {
-    std::cout << plzma_version() << std::endl;
+    std::flush(std::cout) << plzma_version() << std::endl;
     int ret = 0;
 
     if ( (ret = test_plzma_open_1()) ) {

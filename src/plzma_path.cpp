@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2023 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2024 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -565,10 +565,10 @@ namespace plzma {
         if (withIntermediates) {
             if (_size > 0) {
 #if defined(LIBPLZMA_MSC)
-                const wchar_t * w = wide(); // syncWide
+                const wchar_t * w = wide(); // syncWide, changed '_size'
                 return createIntermediateDirs<wchar_t>(w, _size);
 #elif defined(LIBPLZMA_POSIX)
-                const char * c = utf8(); // syncUtf8
+                const char * c = utf8(); // syncUtf8, changed '_cslen'
                 return createIntermediateDirs<char>(c, _cslen);
 #endif
             }
@@ -581,6 +581,14 @@ namespace plzma {
 #endif
     }
     
+    bool Path::applyFileTimestamp(const plzma_path_timestamp timestamp) {
+#if defined(LIBPLZMA_MSC)
+        return setFileTimestamp<wchar_t>(wide(), timestamp);
+#elif defined(LIBPLZMA_POSIX)
+        return setFileTimestamp<char>(utf8(), timestamp);
+#endif
+    }
+    
     FILE * LIBPLZMA_NULLABLE Path::openFile(const char * LIBPLZMA_NONNULL mode) const {
 #if defined(LIBPLZMA_MSC)
         if (_size > 0) {
@@ -588,7 +596,13 @@ namespace plzma {
             for (size_t i = 0, n = strlen(mode); ((i < n) && (i < 31)); i++) {
                 wmode[i] = static_cast<wchar_t>(mode[i]);
             }
+#if defined(HAVE__WFOPEN_S)
+            FILE * f = nullptr;
+            const errno_t err = _wfopen_s(&f, wide(), wmode);
+            return (err == 0) ? f : nullptr;
+#else
             return _wfopen(wide(), wmode);
+#endif // !HAVE__WFOPEN_S
         }
         return nullptr;
 #elif defined(LIBPLZMA_POSIX)
@@ -670,18 +684,51 @@ namespace plzma {
 #if defined(LIBPLZMA_MSC)
         static const wchar_t * const wevs[4] = { L"TMPDIR", L"TEMPDIR", L"TEMP", L"TMP" };
         for (size_t i = 0; i < 4; i++) {
+#if defined(HAVE__WDUPENV_S)
+            wchar_t * p = nullptr;
+            size_t len = 0;
+            const errno_t err = _wdupenv_s(&p, &len, wevs[i]);
+            if ((err == 0) && p && initializeTmpPath<wchar_t>(p, L"libplzma", path)) {
+                free(p);
+                return path;
+            }
+            if (p) {
+                free(p);
+            }
+#else
             const wchar_t * p = _wgetenv(wevs[i]);
             if (p && initializeTmpPath<wchar_t>(p, L"libplzma", path)) {
                 return path;
             }
+#endif // !HAVE__WDUPENV_S
         }
 #endif
         static const char * const cevs[4] = { "TMPDIR", "TEMPDIR", "TEMP", "TMP" };
         for (size_t i = 0; i < 4; i++) {
+#if defined(LIBPLZMA_MSC)
+#if defined(HAVE__DUPENV_S)
+            char * p = nullptr;
+            size_t len = 0;
+            const errno_t err = _dupenv_s(&p, &len, cevs[i]);
+            if ((err == 0) && p && initializeTmpPath<char>(p, "libplzma", path)) {
+                free(p);
+                return path;
+            }
+            if (p) {
+                free(p);
+            }
+#else
             char * p = getenv(cevs[i]);
             if (p && initializeTmpPath<char>(p, "libplzma", path)) {
                 return path;
             }
+#endif // !HAVE__DUPENV_S
+#else
+            char * p = getenv(cevs[i]);
+            if (p && initializeTmpPath<char>(p, "libplzma", path)) {
+                return path;
+            }
+#endif
         }
 #if !defined(LIBPLZMA_OS_WINDOWS)
         if (initializeTmpPath<char>("/tmp", "libplzma", path)) {
@@ -854,6 +901,12 @@ bool plzma_path_create_dir(plzma_path * LIBPLZMA_NONNULL path, const bool with_i
     LIBPLZMA_C_BINDINGS_OBJECT_EXEC_CATCH_RETURN(path, false)
 }
 
+bool plzma_path_apply_file_timestamp(plzma_path * LIBPLZMA_NONNULL path, const plzma_path_timestamp timestamp) {
+    LIBPLZMA_C_BINDINGS_OBJECT_EXEC_TRY_RETURN(path, false)
+    return static_cast<Path *>(path->object)->applyFileTimestamp(timestamp);
+    LIBPLZMA_C_BINDINGS_OBJECT_EXEC_CATCH_RETURN(path, false)
+}
+
 FILE * LIBPLZMA_NULLABLE plzma_path_open_file(plzma_path * LIBPLZMA_NONNULL path, const char * LIBPLZMA_NONNULL mode) {
     LIBPLZMA_C_BINDINGS_OBJECT_EXEC_TRY_RETURN(path, nullptr)
     return static_cast<Path *>(path->object)->openFile(mode);
@@ -917,4 +970,4 @@ void plzma_path_iterator_release(plzma_path_iterator * LIBPLZMA_NULLABLE iterato
     iterator->object = nullptr;
 }
 
-#endif // # !LIBPLZMA_NO_C_BINDINGS
+#endif // !LIBPLZMA_NO_C_BINDINGS

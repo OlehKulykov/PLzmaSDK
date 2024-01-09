@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2023 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2024 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,11 +32,13 @@ import libplzma
 
 /// The out file or memory or multi stream.
 public class OutStream {
+    
     internal let object: plzma_out_stream
     
     internal var isMulti: Bool {
         return false
     }
+    
     
     /// Checks the out stream is opened.
     /// - Note: Thread-safe.
@@ -126,6 +128,7 @@ public class OutStream {
         }
         object = stream
     }
+    
     
     deinit {
         var stream = object

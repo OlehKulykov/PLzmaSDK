@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2023 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2024 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -44,12 +44,12 @@
 /// and all optional C bindings to the internal C++ part(Core) of the library.
 /// Everything what you need to use this library in C | Objective-C | Swift env. is here.
 
-/// @brief Manualy defined version of the library, i.e. 1.3.0
+/// @brief Manualy defined version of the library, i.e. 1.4.0
 /// The optinal \a LIBPLZMA_VERSION_BUILD might be befined by the CI or CMake or manualy.
-/// Conforms 'Semantic Versioning 2.0.0'.
+/// Conforms 'Semantic Versioning 1.4.0'.
 /// @link https://semver.org
 #define LIBPLZMA_VERSION_MAJOR 1
-#define LIBPLZMA_VERSION_MINOR 3
+#define LIBPLZMA_VERSION_MINOR 4
 #define LIBPLZMA_VERSION_PATCH 0
 
 // check windows
@@ -227,11 +227,9 @@ typedef enum plzma_plzma_multi_stream_part_name_format {
     plzma_plzma_multi_stream_part_name_format_name_ext_00x   = 1
 } plzma_plzma_multi_stream_part_name_format;
 
-/// @brief Contains stat info of the path.
-typedef struct plzma_path_stat {
-    /// @brief Size in bytes.
-    uint64_t size;
-    
+
+/// @brief Contains unix timestamps of the path.
+typedef struct plzma_path_timestamp {
     /// @brief Last path access unix timestamp.
     time_t last_access;
     
@@ -240,6 +238,20 @@ typedef struct plzma_path_stat {
     
     /// @brief Path creation unix timestamp.
     time_t creation;
+} plzma_path_timestamp;
+
+
+/// @return Returns initialized path timestamp with current unix times.
+LIBPLZMA_C_API(plzma_path_timestamp) plzma_path_timestamp_now(void);
+
+
+/// @brief Contains stat info of the path.
+typedef struct plzma_path_stat {
+    /// @brief Size in bytes.
+    uint64_t size;
+    
+    /// @brief Last access, modification and creation unix timestamp.
+    plzma_path_timestamp timestamp;
 } plzma_path_stat;
 
 
@@ -453,7 +465,7 @@ typedef void (*plzma_progress_delegate_wide_callback)(void * LIBPLZMA_NULLABLE c
 
 /// @brief The full version string of the library generated on build time.
 ///
-/// Contains version<major, minor, patch> conforms 'Semantic Versioning 2.0.0', optional automatic build number,
+/// Contains version<major, minor, patch> conforms 'Semantic Versioning 1.4.0', optional automatic build number,
 /// library type, build date/time, os, compiler, environment, usage, features, etc. and original LZMA SDK version.
 /// @return Non-null, full version C string.
 /// @link https://semver.org
@@ -744,6 +756,13 @@ LIBPLZMA_C_API(plzma_path) plzma_path_removing_last_component(const plzma_path *
 LIBPLZMA_C_API(bool) plzma_path_create_dir(plzma_path * LIBPLZMA_NONNULL path, const bool with_intermediates);
 
 
+/// @brief Set creation, last access and modification unix timestamp of the file path.
+/// @param timestamp The unix timestamps.
+/// @return \a true if timestamp is set, otherwise \a false.
+/// @note No checks for a file path existence, path type or any.
+LIBPLZMA_C_API(bool) plzma_path_apply_file_timestamp(plzma_path * LIBPLZMA_NONNULL path, const plzma_path_timestamp timestamp);
+
+
 /// @brief Opens a file associated with path.
 /// @param mode The open file mode string. For Windows, it's possible to provide encoded character set to use(one of UTF-8, UTF-16LE, or UNICODE).
 /// @return The file reference or null.
@@ -849,6 +868,10 @@ LIBPLZMA_C_API(time_t) plzma_item_access_time(const plzma_item * LIBPLZMA_NONNUL
 LIBPLZMA_C_API(time_t) plzma_item_modification_time(const plzma_item * LIBPLZMA_NONNULL item);
 
 
+/// @return The creation, last access and last modification unix timestamps of the item.
+LIBPLZMA_C_API(plzma_path_timestamp) plzma_item_timestamp(const plzma_item * LIBPLZMA_NONNULL item);
+
+
 /// @return Checks the item is encrypted or not.
 LIBPLZMA_C_API(bool) plzma_item_encrypted(const plzma_item * LIBPLZMA_NONNULL item);
 
@@ -885,6 +908,10 @@ LIBPLZMA_C_API(void) plzma_item_set_access_time(plzma_item * LIBPLZMA_NONNULL it
 /// @brief Updates modification time of the item.
 /// @param time The unix timestamp.
 LIBPLZMA_C_API(void) plzma_item_set_modification_time(plzma_item * LIBPLZMA_NONNULL item, const time_t time);
+
+
+/// @brief Set creation, last access and last modification unix timestamps of the item.
+LIBPLZMA_C_API(void) plzma_item_set_timestamp(plzma_item * LIBPLZMA_NONNULL item, const plzma_path_timestamp timestamp);
 
 
 /// @brief Marks the item is encrypted.

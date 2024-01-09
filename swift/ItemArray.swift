@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2023 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2024 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,7 @@ import libplzma
 
 /// The array of the archive items.
 public final class ItemArray {
+    
     internal let object: plzma_item_array
     
     /// The number of items inside the array.
@@ -67,15 +68,18 @@ public final class ItemArray {
         }
     }
     
+    
     /// Sorts the array's items by the item's index.
     public func sort() {
         var array = object
         plzma_item_array_sort(&array)
     }
-        
+    
+    
     internal init(object o: plzma_item_array) {
         object = o
     }
+    
     
     /// Initializes the array of items with optional capacity for a container.
     /// - Parameter capacity: The optinal initial capacity of the array. Not a number of items.
@@ -103,6 +107,7 @@ public final class ItemArray {
             }
         }
     }
+    
     
     deinit {
         var array = object

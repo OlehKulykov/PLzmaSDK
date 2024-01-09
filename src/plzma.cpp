@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2023 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2024 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -61,6 +61,12 @@
     #define RTTI_ENABLED 1
   #endif
 #endif
+
+plzma_path_timestamp plzma_path_timestamp_now(void) {
+    plzma_path_timestamp t;
+    t.last_access = t.last_modification = t.creation = time(NULL);
+    return t;
+}
 
 int32_t plzma_random_in_range(const int32_t low, const int32_t up) {
     static bool notInitalized = true;

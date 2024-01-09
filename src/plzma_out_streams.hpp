@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2023 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2024 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -57,6 +57,7 @@ namespace plzma {
         virtual void * base() noexcept { return this; }
         
     public:
+        virtual void setTimestamp(const plzma_path_timestamp & timestamp) = 0;
         virtual void open() = 0;
         virtual void close() = 0;
         virtual Exception * takeException() noexcept { return nullptr; }
@@ -75,6 +76,7 @@ namespace plzma {
     private:
         Path _path;
         FILE * _file = nullptr;
+        plzma_path_timestamp _timestamp = { 0 };
         
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(OutFileStream)
         
@@ -85,6 +87,7 @@ namespace plzma {
         STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) override final;
         STDMETHOD(SetSize)(UInt64 newSize) override final;
         
+        virtual void setTimestamp(const plzma_path_timestamp & timestamp) final;
         virtual void open() final;
         virtual void close() final;
         
@@ -114,6 +117,7 @@ namespace plzma {
         STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) override final;
         STDMETHOD(SetSize)(UInt64 newSize) override final;
         
+        virtual void setTimestamp(const plzma_path_timestamp & timestamp) final { }
         virtual void open() final;
         virtual void close() final;
         virtual Exception * takeException() noexcept final;
@@ -139,6 +143,7 @@ namespace plzma {
         STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) override final;
         STDMETHOD(SetSize)(UInt64 newSize) override final;
         
+        virtual void setTimestamp(const plzma_path_timestamp & timestamp) final { }
         virtual void open() final;
         virtual void close() final;
         
@@ -180,6 +185,7 @@ namespace plzma {
         STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) override final;
         STDMETHOD(SetSize)(UInt64 newSize) override final;
         
+        virtual void setTimestamp(const plzma_path_timestamp & timestamp) final { }
         virtual void open() final;
         virtual void close() final;
         virtual Exception * takeException() noexcept final;

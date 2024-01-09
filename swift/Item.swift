@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2023 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2024 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,7 @@ import libplzma
 
 /// The archive item.
 public final class Item {
+    
     private var _path: Path?
     internal let object: plzma_item
     
@@ -135,7 +136,20 @@ public final class Item {
             plzma_item_set_modification_time(&item, time_t(newValue.timeIntervalSince1970))
         }
     }
-
+    
+    
+    /// The creation, last access and last modification unix timestamps of the item.
+    public var timestamp: plzma_path_timestamp {
+        get {
+            var item = object
+            return plzma_item_timestamp(&item)
+        }
+        set {
+            var item = object
+            plzma_item_set_timestamp(&item, newValue)
+        }
+    }
+    
     
     /// The item is encrypted or not.
     public var encrypted: Bool {
@@ -161,6 +175,7 @@ public final class Item {
             plzma_item_set_is_dir(&item, newValue)
         }
     }
+    
     
     internal init(object o: plzma_item) {
         object = o
@@ -194,6 +209,7 @@ public final class Item {
         object = item
     }
     
+    
     /// Initializes the item with path string and optional index inside the archive.
     /// - Parameter path: The associated item's path.
     /// - Parameter index: Optional index of the item inside the archive.
@@ -201,6 +217,7 @@ public final class Item {
     public convenience init(_ string: String, index: Size = 0) throws {
         try self.init(movablePath: Path(string))
     }
+    
     
     deinit {
         var item = object

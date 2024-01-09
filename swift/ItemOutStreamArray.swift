@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2023 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2024 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,7 @@ import libplzma
 
 /// The array of item/out-stream pairs.
 public final class ItemOutStreamArray {
+    
     internal let object: plzma_item_out_stream_array
 
     /// The item/out-stream pair type.
@@ -81,7 +82,8 @@ public final class ItemOutStreamArray {
         var map = object
         plzma_item_out_stream_array_sort(&map)
     }
-        
+    
+    
     internal init(object o: plzma_item_out_stream_array) {
         object = o
     }
@@ -114,6 +116,7 @@ public final class ItemOutStreamArray {
             }
         }
     }
+    
     
     deinit {
         var map = object

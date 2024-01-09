@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2023 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2024 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -87,6 +87,11 @@ namespace plzma {
         return _file != nullptr;
     }
     
+    void OutFileStream::setTimestamp(const plzma_path_timestamp & timestamp) {
+        LIBPLZMA_LOCKGUARD(lock, _mutex)
+        _timestamp = timestamp;
+    }
+    
     void OutFileStream::open() {
         LIBPLZMA_LOCKGUARD(lock, _mutex)
         if (_file) {
@@ -108,6 +113,7 @@ namespace plzma {
         if (_file) {
             fclose(_file);
             _file = nullptr;
+            _path.applyFileTimestamp(_timestamp);
         }
     }
     
@@ -152,6 +158,7 @@ namespace plzma {
     OutFileStream::~OutFileStream() noexcept {
         if (_file) {
             fclose(_file);
+            _path.applyFileTimestamp(_timestamp);
         }
     }
     

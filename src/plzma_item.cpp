@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2023 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2024 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -54,15 +54,19 @@ namespace plzma {
     }
     
     time_t Item::creationTime() const noexcept {
-        return _creationTime;
+        return _timestamp.creation;
     }
     
     time_t Item::accessTime() const noexcept {
-        return _accessTime;
+        return _timestamp.last_access;
     }
     
     time_t Item::modificationTime() const noexcept {
-        return _modificationTime;
+        return _timestamp.last_modification;
+    }
+    
+    plzma_path_timestamp Item::timestamp() const noexcept {
+        return _timestamp;
     }
     
     bool Item::encrypted() const noexcept {
@@ -86,15 +90,19 @@ namespace plzma {
     }
     
     void Item::setCreationTime(const time_t time) noexcept {
-        _creationTime = time;
+        _timestamp.creation = time;
     }
     
     void Item::setAccessTime(const time_t time) noexcept {
-        _accessTime = time;
+        _timestamp.last_access = time;
     }
     
     void Item::setModificationTime(const time_t time) noexcept {
-        _modificationTime = time;
+        _timestamp.last_modification = time;
+    }
+    
+    void Item::setTimestamp(const plzma_path_timestamp timestamp) noexcept {
+        _timestamp = timestamp;
     }
     
     void Item::setEncrypted(const bool encrypted) noexcept {
@@ -182,6 +190,13 @@ time_t plzma_item_modification_time(const plzma_item * LIBPLZMA_NONNULL item) {
     return item->exception ? 0 : static_cast<const Item *>(item->object)->modificationTime();
 }
 
+plzma_path_timestamp plzma_item_timestamp(const plzma_item * LIBPLZMA_NONNULL item) {
+    if (item->exception) {
+        return { 0 };
+    }
+    return static_cast<const Item *>(item->object)->timestamp();
+}
+
 bool plzma_item_encrypted(const plzma_item * LIBPLZMA_NONNULL item) {
     return item->exception ? false : static_cast<const Item *>(item->object)->encrypted();
 }
@@ -212,6 +227,10 @@ void plzma_item_set_access_time(plzma_item * LIBPLZMA_NONNULL item, const time_t
 
 void plzma_item_set_modification_time(plzma_item * LIBPLZMA_NONNULL item, const time_t time) {
     if (!item->exception) { static_cast<Item *>(item->object)->setModificationTime(time); }
+}
+
+void plzma_item_set_timestamp(plzma_item * LIBPLZMA_NONNULL item, const plzma_path_timestamp timestamp) {
+    if (!item->exception) { static_cast<Item *>(item->object)->setTimestamp(timestamp); }
 }
 
 void plzma_item_set_encrypted(plzma_item * LIBPLZMA_NONNULL item, const bool is_encrypted) {

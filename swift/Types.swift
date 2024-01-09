@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2023 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2024 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -154,6 +154,7 @@ extension plzma_method: Enum {
 /// The enumeration with bitmask options for opening directory path.
 /// Currently uses for defining behavior of directory iteration.
 public struct OpenDirMode: OptionSet {
+    
     public typealias RawValue = plzma_open_dir_mode_t
     
     public let rawValue: plzma_open_dir_mode_t

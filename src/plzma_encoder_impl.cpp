@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2023 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2024 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -117,9 +117,9 @@ namespace plzma {
                 case kpidIsDir: prop = false; break;
                 case kpidSize: prop = _source.stat.size; break;
                 //case kpidAttrib: prop = dirItem.Attrib; break; // 9
-                case kpidCTime: prop = UnixTimeToFILETIME(_source.stat.creation); break;
-                case kpidATime: prop = UnixTimeToFILETIME(_source.stat.last_access); break;
-                case kpidMTime: prop = UnixTimeToFILETIME(_source.stat.last_modification); break;
+                case kpidCTime: prop = UnixTimeToFILETIME(_source.stat.timestamp.creation); break;
+                case kpidATime: prop = UnixTimeToFILETIME(_source.stat.timestamp.last_access); break;
+                case kpidMTime: prop = UnixTimeToFILETIME(_source.stat.timestamp.last_modification); break;
                 
                 // Tar
                 case kpidSymLink:
@@ -330,8 +330,8 @@ namespace plzma {
             addedStream.stream = stream.cast<InStreamBase>();
             addedStream.archivePath = archivePath;
             plzma_path_stat stat;
-            stat.creation = stat.last_access = stat.last_modification = time(nullptr);
             stat.size = 0;
+            stat.timestamp = plzma_path_timestamp_now();
             addedStream.stat = stat;
             _streams.push(static_cast<AddedStream &&>(addedStream));
         } else {

@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2023 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2024 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -56,6 +56,12 @@
 #endif
 #if __has_include(<sys/sysmacros.h>) || defined(HAVE_SYS_SYSMACROS_H)
 #include <sys/sysmacros.h>
+#endif
+#if __has_include(<sys/utime.h>) || defined(HAVE_SYS_UTIME_H)
+#include <sys/utime.h>
+#endif
+#if __has_include(<utime.h>) || defined(HAVE_UTIME_H)
+#include <utime.h>
 #endif
 
 #if defined(__GNUC__) || defined(__clang__)

@@ -3,7 +3,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 - 2023 Oleh Kulykov <olehkulykov@gmail.com>
+// Copyright (c) 2015 - 2024 Oleh Kulykov <olehkulykov@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -36,6 +36,7 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <limits.h>
+#include <time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 
@@ -50,6 +51,7 @@
 #endif
 
 #elif defined(LIBPLZMA_POSIX)
+#include <sys/time.h>
 #include <dirent.h>
 #include <unistd.h>
 #else
@@ -131,13 +133,13 @@ namespace pathUtils {
     
     template<>
     inline plzma_path_stat pathStat(const wchar_t * LIBPLZMA_NULLABLE path) noexcept {
-        plzma_path_stat t{0, 0, 0, 0};
+        plzma_path_stat t = { 0 };
 #if defined(LIBPLZMA_MSC)
         struct __stat64 statbuf;
         if (path && _wstat64(path, &statbuf) == 0) {
-            t.creation = statbuf.st_ctime;
-            t.last_access = statbuf.st_atime;
-            t.last_modification = statbuf.st_mtime;
+            t.timestamp.creation = statbuf.st_ctime;
+            t.timestamp.last_access = statbuf.st_atime;
+            t.timestamp.last_modification = statbuf.st_mtime;
             t.size = static_cast<uint64_t>(statbuf.st_size);
         }
 #else
@@ -148,20 +150,20 @@ namespace pathUtils {
     
     template<>
     inline plzma_path_stat pathStat(const char * LIBPLZMA_NULLABLE path) noexcept {
-        plzma_path_stat t{0, 0, 0, 0};
+        plzma_path_stat t = { 0 };
 #if defined(LIBPLZMA_MSC)
         struct _stat statbuf;
         if (path && _stat(path, &statbuf) == 0) {
-            t.creation = statbuf.st_ctime;
-            t.last_access = statbuf.st_atime;
-            t.last_modification = statbuf.st_mtime;
+            t.timestamp.creation = statbuf.st_ctime;
+            t.timestamp.last_access = statbuf.st_atime;
+            t.timestamp.last_modification = statbuf.st_mtime;
         }
 #elif defined(LIBPLZMA_POSIX)
         struct stat statbuf;
         if (path && stat(path, &statbuf) == 0) {
-            t.creation = statbuf.st_ctime;
-            t.last_access = statbuf.st_atime;
-            t.last_modification = statbuf.st_mtime;
+            t.timestamp.creation = statbuf.st_ctime;
+            t.timestamp.last_access = statbuf.st_atime;
+            t.timestamp.last_modification = statbuf.st_mtime;
             t.size = static_cast<uint64_t>(statbuf.st_size);
         }
 #endif
@@ -298,9 +300,11 @@ namespace pathUtils {
     
     template<typename T, const T PS = platformSeparator<T>(), const T AS = additionalSeparator<T>()>
     inline bool createIntermediateDirs(const T * LIBPLZMA_NONNULL path, const size_t len) {
-        bool isDir = false;
-        if (pathExists<T>(path, &isDir) && isDir) {
-            return true;
+        {
+            bool isDir = false;
+            if (pathExists<T>(path, &isDir)) {
+                return isDir;
+            }
         }
         RawHeapMemory pathCopy(sizeof(T) * (len + 1), plzma_erase_zero);
         const T * cs1 = path;
@@ -574,7 +578,39 @@ namespace pathUtils {
         return true;
     }
     
+    template<typename T>
+    bool setFileTimestamp(const T * LIBPLZMA_NONNULL path, const plzma_path_timestamp & timestamp) noexcept;
+    
+    template<>
+    inline bool setFileTimestamp(const wchar_t * LIBPLZMA_NONNULL path, const plzma_path_timestamp & timestamp) noexcept {
+#if defined(LIBPLZMA_MSC)
+        struct _utimbuf timeBuff = { 0 };
+        timeBuff.actime = timestamp.last_access;
+        timeBuff.modtime = timestamp.last_modification;
+        return (_wutime(path, &timeBuff) == 0);
+#else
+        assert(0);
+#endif
+    }
+    
+    template<>
+    inline bool setFileTimestamp(const char * LIBPLZMA_NONNULL path, const plzma_path_timestamp & timestamp) noexcept {
+#if defined(LIBPLZMA_MSC)
+        struct _utimbuf timeBuff = { 0 };
+        timeBuff.actime = timestamp.last_access;
+        timeBuff.modtime = timestamp.last_modification;
+        return (_utime(path, &timeBuff) == 0);
+#elif defined(LIBPLZMA_POSIX)
+        struct utimbuf timeBuff = { 0 };
+        timeBuff.actime = timestamp.last_access;
+        timeBuff.modtime = timestamp.last_modification;
+        return (utime(path, &timeBuff) == 0);
+#endif
+    }
+    
 } // namespace plzma
 } // namespace pathUtils
+
+//#include <CoreFoundation/CoreFoundation.h>
 
 #endif // !__PLZMA_PATH_UTILS_HPP__

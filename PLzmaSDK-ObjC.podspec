@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = 'PLzmaSDK-ObjC'
-  s.version = '1.3.0'
+  s.version = '1.4.0'
   s.summary = '(Portable, Patched, Package, cross-P-latform) Lzma SDK, libplzma'
   s.homepage = 'https://github.com/OlehKulykov/PLzmaSDK'
   s.source = { :git => s.homepage + '.git', :tag => s.version }
