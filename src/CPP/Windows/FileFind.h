@@ -274,7 +274,7 @@ typedef CFileInfo CDirEntry;
 
 #else // WIN32
 
-
+#if !defined(LIBPLZMA)
 struct CDirEntry
 {
   ino_t iNode;
@@ -325,6 +325,7 @@ public:
     return false; // change it
   }
 };
+#endif // LIBPLZMA
 
 /*
 inline UInt32 Get_WinAttrib_From_PosixMode(UInt32 mode)

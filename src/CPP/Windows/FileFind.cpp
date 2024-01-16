@@ -1175,7 +1175,7 @@ bool DoesFileOrDirExist(CFSTR name)
   return true;
 }
 
-
+#if !defined(LIBPLZMA)
 CEnumerator::~CEnumerator()
 {
   if (_dir)
@@ -1323,6 +1323,7 @@ bool CEnumerator::Fill_FileInfo(const CDirEntry &de, CFileInfo &fileInfo, bool f
   fileInfo.Name = de.Name;
   return true;
 }
+#endif // LIBPLZMA
 
 #endif // _WIN32
 

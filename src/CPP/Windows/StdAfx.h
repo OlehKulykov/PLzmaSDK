@@ -8,5 +8,6 @@
 #endif
 
 #include "../Common/Common.h"
+#include "../../plzma_private.hpp"
 
 #endif
