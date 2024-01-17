@@ -112,7 +112,6 @@ ALL_SOURCES := \
     ../../src/CPP/7zip/Crypto/MyAes.cpp \
     ../../src/CPP/7zip/Crypto/MyAesReg.cpp \
     ../../src/CPP/7zip/Crypto/RandGen.cpp \
-    ../../src/CPP/Common/CommandLineParser.cpp \
     ../../src/CPP/Common/CRC.cpp \
     ../../src/CPP/Common/CrcReg.cpp \
     ../../src/CPP/Common/IntToString.cpp \
@@ -121,7 +120,6 @@ ALL_SOURCES := \
     ../../src/CPP/Common/Sha256Reg.cpp \
     ../../src/CPP/Common/StringConvert.cpp \
     ../../src/CPP/Common/StringToInt.cpp \
-    ../../src/CPP/Common/TextConfig.cpp \
     ../../src/CPP/Common/UTFConvert.cpp \
     ../../src/CPP/Common/Wildcard.cpp \
     ../../src/CPP/Common/XzCrc64Reg.cpp \
@@ -160,7 +158,7 @@ ALL_INCLUDES := $(LOCAL_PATH)/../../../
 ALL_CFLAGS := \
     -DLIBPLZMA_BUILD=1 \
     -DLIBPLZMA_SHARED=1 \
-    -DLIBPLZMA_VERSION_BUILD=601 \
+    -DLIBPLZMA_VERSION_BUILD=617 \
     -w
 
 

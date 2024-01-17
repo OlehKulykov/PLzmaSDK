@@ -185,7 +185,7 @@ namespace plzma {
             fullPath.append(itemPath);
         }
         
-        plzma_path_timestamp timestamp = { 0 };
+        plzma_path_timestamp timestamp{0, 0, 0};
         
         {
             prop.Clear();

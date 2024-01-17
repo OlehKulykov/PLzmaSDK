@@ -64,7 +64,7 @@
 
 plzma_path_timestamp plzma_path_timestamp_now(void) {
     plzma_path_timestamp t;
-    t.last_access = t.last_modification = t.creation = time(NULL);
+    t.last_access = t.last_modification = t.creation = ::time(NULL);
     return t;
 }
 
@@ -72,9 +72,9 @@ int32_t plzma_random_in_range(const int32_t low, const int32_t up) {
     static bool notInitalized = true;
     if (notInitalized) {
         notInitalized = false;
-        srand(static_cast<unsigned int>(time(nullptr)));
+        ::srand(static_cast<unsigned int>(::time(nullptr)));
     }
-    return (rand() % (up - low + 1)) + low;
+    return (::rand() % (up - low + 1)) + low;
 }
 
 /// Memory
@@ -98,52 +98,52 @@ void * LIBPLZMA_NULLABLE plzma_malloc(size_t size) {
 void * LIBPLZMA_NULLABLE plzma_malloc_zero(size_t size) {
     void * mem = plzma_malloc(size);
     if (mem) {
-        memset(mem, 0, size);
+        ::memset(mem, 0, size);
     }
     return mem;
 }
 
 void * LIBPLZMA_NULLABLE plzma_realloc(void * LIBPLZMA_NULLABLE mem, size_t new_size) {
-    return realloc(mem, new_size);
+    return ::realloc(mem, new_size);
 }
 
 void plzma_free(void * LIBPLZMA_NULLABLE mem) {
     if (mem) {
-        free(mem);
+        ::free(mem);
     }
 }
 
 #if 0
 void * LIBPLZMA_NULLABLE plzma_aligned_malloc(size_t size, size_t alignment) {
 #if defined(LIBPLZMA_MSC)
-    return _aligned_malloc(size, alignment);
+    return ::_aligned_malloc(size, alignment);
 #elif defined(LIBPLZMA_POSIX)
 #if defined(__ANDROID__) || defined(__ANDROID_API__)
     // http://code.google.com/p/android/issues/detail?id=35391
-    return malloc(size);
+    return ::malloc(size);
 #else
     void * ptr = NULL;
-    return posix_memalign(&ptr, alignment, size) ? malloc(size) : ptr;
+    return ::posix_memalign(&ptr, alignment, size) ? malloc(size) : ptr;
 #endif
 #else
-    return malloc(size);
+    return ::malloc(size);
 #endif
 }
 
 void * LIBPLZMA_NULLABLE plzma_aligned_realloc(void * LIBPLZMA_NULLABLE mem, size_t new_size, size_t alignment) {
 #if defined(LIBPLZMA_MSC)
-    return _aligned_realloc(mem, new_size, alignment);
+    return ::_aligned_realloc(mem, new_size, alignment);
 #else
-    return realloc(mem, new_size);
+    return ::realloc(mem, new_size);
 #endif
 }
 
 void plzma_aligned_free(void * LIBPLZMA_NULLABLE mem) {
     if (mem) {
 #if defined(LIBPLZMA_MSC)
-        _aligned_free(mem);
+        ::_aligned_free(mem);
 #else
-        free(mem);
+        ::free(mem);
 #endif
     }
 }
@@ -155,11 +155,11 @@ const char * LIBPLZMA_NONNULL plzma_empty_cstring = "";
 const wchar_t * LIBPLZMA_NONNULL plzma_empty_wstring = L"";
 
 char * LIBPLZMA_NULLABLE plzma_cstring_copy(const char * LIBPLZMA_NULLABLE str) {
-    const size_t len = str ? strlen(str) : 0;
+    const size_t len = str ? ::strlen(str) : 0;
     if (len > 0) {
         char * dst = static_cast<char *>(plzma_malloc(sizeof(char) * (len + 1)));
         if (dst) {
-            memcpy(dst, str, sizeof(char) * len);
+            ::memcpy(dst, str, sizeof(char) * len);
             dst[len] = 0;
             return dst;
         }
@@ -169,13 +169,13 @@ char * LIBPLZMA_NULLABLE plzma_cstring_copy(const char * LIBPLZMA_NULLABLE str) 
 
 char * LIBPLZMA_NULLABLE plzma_cstring_append(char * LIBPLZMA_NULLABLE source, const char * LIBPLZMA_NULLABLE str) {
     if (source) {
-        const size_t appLen = str ? strlen(str) : 0;
+        const size_t appLen = str ? ::strlen(str) : 0;
         if (appLen > 0) {
-            const size_t srcLen = strlen(source);
+            const size_t srcLen = ::strlen(source);
             const size_t dstLen = srcLen + appLen;
             char * dst = static_cast<char *>(plzma_realloc(source, sizeof(char) * (dstLen + 1)));
             if (dst) {
-                memcpy(dst + srcLen, str, appLen);
+                ::memcpy(dst + srcLen, str, appLen);
                 dst[dstLen] = 0;
                 return dst;
             }

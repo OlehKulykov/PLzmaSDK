@@ -36,7 +36,7 @@ namespace fileUtils {
         if (eraseType == plzma_erase_zero) {
             const size_t buffSize = 256 * 1024;
             uint8_t buff[buffSize];
-            memset(buff, 0, buffSize);
+            ::memset(buff, 0, buffSize);
             // "r+" | read/update: Open a file for update (both for input and output). The file must exist.
             FILE * f = path.openFile("r+b");
             if (!f) {
@@ -55,22 +55,22 @@ namespace fileUtils {
             
             if (size > 0) {
                 for (uint64_t i = 0, n = static_cast<uint64_t>(size) / buffSize; i < n; i++) {
-                    const size_t w = fwrite(buff, 1, buffSize, f);
+                    const size_t w = ::fwrite(buff, 1, buffSize, f);
                     if (w != buffSize) {
-                        fclose(f);
+                        ::fclose(f);
                         return false;
                     }
                     size -= w;
                 }
                 if (size > 0) {
-                    const size_t w = fwrite(buff, 1, static_cast<size_t>(size), f);
+                    const size_t w = ::fwrite(buff, 1, static_cast<size_t>(size), f);
                     if (w != static_cast<size_t>(size)) {
-                        fclose(f);
+                        ::fclose(f);
                         return false;
                     }
                 }
             }
-            fclose(f);
+            ::fclose(f);
         }
         return true;
     }
@@ -95,11 +95,11 @@ namespace fileUtils {
                 fileSize = (maxSize <= INT64_MAX) ? static_cast<int64_t>(maxSize) : INT64_MAX;
             }
             if (static_cast<uint64_t>(fileSize) > plzma_max_size()) {
-                fclose(f);
+                ::fclose(f);
                 Exception exception(plzma_error_code_not_enough_memory, nullptr, __FILE__, __LINE__);
                 exception.setWhat("Can't copy file content at path: ", path.utf8(), nullptr);
                 char reason[128];
-                snprintf(reason, 128, "The content size is: %llu and greater than supported: %llu.", static_cast<unsigned long long>(fileSize), static_cast<unsigned long long>(plzma_max_size()));
+                ::snprintf(reason, 128, "The content size is: %llu and greater than supported: %llu.", static_cast<unsigned long long>(fileSize), static_cast<unsigned long long>(plzma_max_size()));
                 exception.setReason(reason, nullptr);
                 throw exception;
             }
@@ -107,15 +107,15 @@ namespace fileUtils {
             try {
                 content.first.resize(size);
             } catch (...) {
-                fclose(f);
+                ::fclose(f);
                 throw;
             }
             const size_t partSize = 1024 * 1024;
             size_t offset = 0;
             for (size_t i = 0, n = (size / partSize); i < n; i++) {
-                const size_t read = fread(static_cast<uint8_t *>(content.first) + offset, 1, partSize, f);
+                const size_t read = ::fread(static_cast<uint8_t *>(content.first) + offset, 1, partSize, f);
                 if (read != partSize) {
-                    fclose(f);
+                    ::fclose(f);
                     content.first.clear();
                     return content;
                 }
@@ -123,16 +123,16 @@ namespace fileUtils {
             }
             if (offset < size) {
                 const size_t left = size - offset;
-                const size_t read = fread(static_cast<uint8_t *>(content.first) + offset, 1, left, f);
+                const size_t read = ::fread(static_cast<uint8_t *>(content.first) + offset, 1, left, f);
                 if (read != left) {
-                    fclose(f);
+                    ::fclose(f);
                     content.first.clear();
                     return content;
                 }
             }
             content.second = size;
         }
-        fclose(f);
+        ::fclose(f);
         
         return content;
     }

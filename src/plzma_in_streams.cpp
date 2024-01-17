@@ -60,7 +60,7 @@ namespace plzma {
     /// InFileStream
     STDMETHODIMP InFileStream::Read(void * data, UInt32 size, UInt32 * processedSize) {
         if (_file) {
-            const size_t processed = (size > 0) ? fread(data, 1, size, _file) : 0;
+            const size_t processed = (size > 0) ? ::fread(data, 1, size, _file) : 0;
             LIBPLZMA_CAST_VALUE_TO_PTR(processedSize, UInt32, processed)
             return S_OK;
         }
@@ -101,7 +101,7 @@ namespace plzma {
     void InFileStream::close() {
         LIBPLZMA_LOCKGUARD(lock, _mutex)
         if (_file) {
-            fclose(_file);
+            ::fclose(_file);
             _file = nullptr;
         }
     }
@@ -145,7 +145,7 @@ namespace plzma {
     
     InFileStream::~InFileStream() noexcept {
         if (_file) {
-            fclose(_file);
+            ::fclose(_file);
         }
     }
     
@@ -157,7 +157,7 @@ namespace plzma {
             if (available > 0) {
                 sizeToRead = (size <= available) ? size : static_cast<size_t>(available);
                 uint8_t * m = static_cast<uint8_t *>(_memory) + _offset;
-                memcpy(data, m, sizeToRead);
+                ::memcpy(data, m, sizeToRead);
                 _offset += sizeToRead;
             }
             LIBPLZMA_CAST_VALUE_TO_PTR(processedSize, UInt32, sizeToRead)
@@ -222,7 +222,7 @@ namespace plzma {
         if (_memory && _size > 0) {
             switch (eraseType) {
                 case plzma_erase_zero:
-                    memset(_memory, 0, static_cast<size_t>(_size));
+                    ::memset(_memory, 0, static_cast<size_t>(_size));
                     break;
                 default:
                     break;
@@ -237,7 +237,7 @@ namespace plzma {
             if (m) {
                 _memory = m;
                 _size = static_cast<UInt64>(size);
-                memcpy(m, memory, size);
+                ::memcpy(m, memory, size);
             } else {
                 throw Exception(plzma_error_code_not_enough_memory, "Can't allocate memory for in-stream.", __FILE__, __LINE__);
             }
@@ -381,7 +381,7 @@ namespace plzma {
             if (res != S_OK) {
                 Exception exception(plzma_error_code_invalid_arguments, "Can't open in-stream.", __FILE__, __LINE__);
                 char reason[64] = { 0 };
-                snprintf(reason, 64, "Can't seek sub-stream at index %llu.", static_cast<unsigned long long>(i));
+                ::snprintf(reason, 64, "Can't seek sub-stream at index %llu.", static_cast<unsigned long long>(i));
                 exception.setReason(reason, nullptr);
                 throw exception;
             }
@@ -436,7 +436,7 @@ namespace plzma {
                 _streams.clear();
                 Exception exception(plzma_error_code_invalid_arguments, "Can't instantiate in-stream.", __FILE__, __LINE__);
                 char reason[64] = { 0 };
-                snprintf(reason, 64, "Sub-stream at index %llu is null.", static_cast<unsigned long long>(i));
+                ::snprintf(reason, 64, "Sub-stream at index %llu is null.", static_cast<unsigned long long>(i));
                 exception.setReason(reason, nullptr);
                 throw exception;
             }

@@ -37,10 +37,10 @@ namespace pathUtils {
         path.append(L"*");
         WIN32_FIND_DATAW findData;
         RAIIFindHANDLE handle;
-        handle.handle = FindFirstFileW(path.wide(), &findData);
+        handle.handle = ::FindFirstFileW(path.wide(), &findData);
         path.removeLastComponent();
         if (handle.handle == INVALID_HANDLE_VALUE) {
-            if (GetLastError() == ERROR_FILE_NOT_FOUND) { // function fails because no matching files can be found
+            if (::GetLastError() == ERROR_FILE_NOT_FOUND) { // function fails because no matching files can be found
                 const bool res = removeEmptyDir<wchar_t>(path.wide());
                 return (res || skipErrors);
             }
@@ -48,11 +48,11 @@ namespace pathUtils {
             BOOL findNextRes = TRUE;
             do {
                 if (!findNextRes) {
-                    findNextRes = FindNextFileW(handle.handle, &findData);
+                    findNextRes = ::FindNextFileW(handle.handle, &findData);
                 }
                 if (findNextRes) {
                     findNextRes = FALSE;
-                    if (wcscmp(findData.cFileName, L".") == 0 || wcscmp(findData.cFileName, L"..") == 0 || wcslen(findData.cFileName) == 0) { continue; }
+                    if ((::wcscmp(findData.cFileName, L".") == 0) || (::wcscmp(findData.cFileName, L"..") == 0) || (::wcslen(findData.cFileName) == 0)) { continue; }
                     path.append(findData.cFileName);
                     if (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
                         const bool res = removeDir(path, skipErrors);
@@ -66,7 +66,7 @@ namespace pathUtils {
                         return false;
                     }
                 } else {
-                    FindClose(handle.handle);
+                    ::FindClose(handle.handle);
                     handle.handle = INVALID_HANDLE_VALUE;
                     const bool res = removeEmptyDir<wchar_t>(path.wide());
                     return (res || skipErrors);
@@ -79,12 +79,12 @@ namespace pathUtils {
 #elif defined(LIBPLZMA_POSIX)
     bool removeDir(Path & path, const bool skipErrors) {
         RAIIDIR dir;
-        if ( (dir.dir = opendir(path.utf8())) ) {
+        if ( (dir.dir = ::opendir(path.utf8())) ) {
             struct dirent d, * dp;
             int readRes;
             do {
-                if ( (readRes = readdir_r(dir.dir, &d, &dp)) == 0 && dp) {
-                    if (strcmp(d.d_name, ".") == 0 || strcmp(d.d_name, "..") == 0 || strlen(d.d_name) == 0) { continue; }
+                if ( (readRes = ::readdir_r(dir.dir, &d, &dp)) == 0 && dp) {
+                    if ((::strcmp(d.d_name, ".") == 0) || (::strcmp(d.d_name, "..") == 0) || (::strlen(d.d_name) == 0)) { continue; }
                     path.append(d.d_name);
                     bool isDir = false, isFile = false, isLink = false;
                     if (d.d_type != DT_UNKNOWN) {
@@ -93,7 +93,7 @@ namespace pathUtils {
                         isLink = d.d_type == DT_LNK;
                     } else {
                         struct stat statbuf;
-                        if (access(path.utf8(), F_OK) == 0 && stat(path.utf8(), &statbuf) == 0) {
+                        if ((::access(path.utf8(), F_OK) == 0) && (::stat(path.utf8(), &statbuf) == 0)) {
                             isDir = S_ISDIR(statbuf.st_mode);
                             isFile = S_ISREG(statbuf.st_mode);
                             isLink = S_ISLNK(statbuf.st_mode);

@@ -18,10 +18,12 @@ inline void FILETIME_Clear(FILETIME &ft)
   ft.dwHighDateTime = 0;
 }
 
+#if !defined(LIBPLZMA)
 inline bool FILETIME_IsZero(const FILETIME &ft)
 {
   return (ft.dwHighDateTime == 0 && ft.dwLowDateTime == 0);
 }
+#endif // !LIBPLZMA
 
 
 #ifdef _WIN32

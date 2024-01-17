@@ -716,7 +716,7 @@ namespace plzma {
         Path _path;
         uint64_t _size = 0;
         uint64_t _packSize = 0;
-        plzma_path_timestamp _timestamp = { 0 };
+        plzma_path_timestamp _timestamp{0, 0, 0};
         uint32_t _crc32 = 0;
         plzma_size_t _index = 0;
         plzma_size_t _referenceCounter = 0;

@@ -3,15 +3,15 @@
 const path = require('path');
 const dirs = [
     'build/Release',
-    'build/Debug',
-    'build',
     'out/Release',
-    'out/Debug',
     'Release',
-    'Debug',
     'build/default',
     'bin/winx64',
-    'bin/winx86'
+    'bin/winx86',
+    'build/Debug',
+    'build',
+    'out/Debug',
+    'Debug'
 ];
 for (let dir of dirs) {
     try {
@@ -24,4 +24,3 @@ if (!module.exports) {
 }
 
 // See 'NODEJSMODULE.md' for module API reference.
-

@@ -66,9 +66,9 @@ namespace plzma {
     public:
         void lock() {
 #if defined(LIBPLZMA_MSC)
-            EnterCriticalSection(static_cast<LPCRITICAL_SECTION>(&_criticalSection));
+            ::EnterCriticalSection(static_cast<LPCRITICAL_SECTION>(&_criticalSection));
 #elif defined(LIBPLZMA_POSIX)
-            if (pthread_mutex_lock(&_mutex) != 0) {
+            if (::pthread_mutex_lock(&_mutex) != 0) {
                 throw Exception(plzma_error_code_internal, "Can't lock mutex.", __FILE__, __LINE__);
             }
 #endif
@@ -76,9 +76,9 @@ namespace plzma {
         
         void unlock() {
 #if defined(LIBPLZMA_MSC)
-            LeaveCriticalSection(static_cast<LPCRITICAL_SECTION>(&_criticalSection));
+            ::LeaveCriticalSection(static_cast<LPCRITICAL_SECTION>(&_criticalSection));
 #elif defined(LIBPLZMA_POSIX)
-            if (pthread_mutex_unlock(&_mutex) != 0) {
+            if (::pthread_mutex_unlock(&_mutex) != 0) {
                 throw Exception(plzma_error_code_internal, "Can't unlock mutex.", __FILE__, __LINE__);
             }
 #endif
@@ -86,16 +86,16 @@ namespace plzma {
         
         Mutex() {
 #if defined(LIBPLZMA_MSC)
-            InitializeCriticalSection(static_cast<LPCRITICAL_SECTION>(&_criticalSection));
+            ::InitializeCriticalSection(static_cast<LPCRITICAL_SECTION>(&_criticalSection));
 #elif defined(LIBPLZMA_POSIX)
             pthread_mutexattr_t attr;
             int maiRes, miRes = -1;
-            if ( (maiRes = pthread_mutexattr_init(&attr)) == 0 ) {
-                if (pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_DEFAULT) == 0) {
-                    miRes = pthread_mutex_init(&_mutex, &attr);
+            if ( (maiRes = ::pthread_mutexattr_init(&attr)) == 0 ) {
+                if (::pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_DEFAULT) == 0) {
+                    miRes = ::pthread_mutex_init(&_mutex, &attr);
                 }
                 if (maiRes == 0) {
-                    maiRes = pthread_mutexattr_destroy(&attr);
+                    maiRes = ::pthread_mutexattr_destroy(&attr);
                 }
             }
             if (miRes != 0 || maiRes != 0) {
@@ -106,9 +106,9 @@ namespace plzma {
         
         ~Mutex() noexcept {
 #if defined(LIBPLZMA_MSC)
-            DeleteCriticalSection(static_cast<LPCRITICAL_SECTION>(&_criticalSection));
+            ::DeleteCriticalSection(static_cast<LPCRITICAL_SECTION>(&_criticalSection));
 #elif defined(LIBPLZMA_POSIX)
-            pthread_mutex_destroy(&_mutex); // ignore return res.
+            ::pthread_mutex_destroy(&_mutex); // ignore return res.
 #endif
         }
     };

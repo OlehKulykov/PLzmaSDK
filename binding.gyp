@@ -3,7 +3,7 @@
     {
       'target_name': 'plzmasdk',
       'defines': [
-        'LIBPLZMA_VERSION_BUILD=601',
+        'LIBPLZMA_VERSION_BUILD=617',
         'LIBPLZMA_SHARED=1',
         'LIBPLZMA_NO_C_BINDINGS=1',
         'LIBPLZMA_HAVE_STD=1'
@@ -120,7 +120,6 @@
         'src/CPP/7zip/Crypto/MyAes.cpp',
         'src/CPP/7zip/Crypto/MyAesReg.cpp',
         'src/CPP/7zip/Crypto/RandGen.cpp',
-        'src/CPP/Common/CommandLineParser.cpp',
         'src/CPP/Common/CRC.cpp',
         'src/CPP/Common/CrcReg.cpp',
         'src/CPP/Common/IntToString.cpp',
@@ -129,7 +128,6 @@
         'src/CPP/Common/Sha256Reg.cpp',
         'src/CPP/Common/StringConvert.cpp',
         'src/CPP/Common/StringToInt.cpp',
-        'src/CPP/Common/TextConfig.cpp',
         'src/CPP/Common/UTFConvert.cpp',
         'src/CPP/Common/Wildcard.cpp',
         'src/CPP/Common/XzCrc64Reg.cpp',

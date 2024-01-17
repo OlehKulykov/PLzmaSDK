@@ -76,7 +76,7 @@ namespace plzma {
     private:
         Path _path;
         FILE * _file = nullptr;
-        plzma_path_timestamp _timestamp = { 0 };
+        plzma_path_timestamp _timestamp{0, 0, 0};
         
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(OutFileStream)
         

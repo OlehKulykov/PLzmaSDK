@@ -1107,6 +1107,7 @@ bool SetDirTime(CFSTR path, const CFiTime *cTime, const CFiTime *aTime, const CF
 
 
 
+#if !defined(LIBPLZMA)
 struct C_umask
 {
   mode_t mask;
@@ -1125,6 +1126,7 @@ struct C_umask
 };
 
 static C_umask g_umask;
+#endif // !LIBPLZMA
 
 // #define PRF(x) x;
 #define PRF(x)
@@ -1140,6 +1142,7 @@ int my_chown(CFSTR path, uid_t owner, gid_t group)
   return chown(path, owner, group);
 }
 
+#if !defined(LIBPLZMA)
 bool SetFileAttrib_PosixHighDetect(CFSTR path, DWORD attrib)
 {
   TRACE_SetFileAttrib("")
@@ -1214,13 +1217,16 @@ bool SetFileAttrib_PosixHighDetect(CFSTR path, DWORD attrib)
   // TRACE_SetFileAttrib("End")
   return (res == 0);
 }
+#endif // !LIBPLZMA
 
 
+#if !defined(LIBPLZMA)
 bool MyCreateHardLink(CFSTR newFileName, CFSTR existFileName)
 {
   PRF(printf("\nhard link() %s -> %s\n", newFileName, existFileName);)
   return (link(existFileName, newFileName) == 0);
 }
+#endif // !LIBPLZMA
 
 #endif // !_WIN32
 

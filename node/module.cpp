@@ -2510,9 +2510,9 @@ namespace nplzma {
         stat = path->_path.stat();
         NPLZMA_CATCH_RET(isolate)
         statObject->DefineOwnProperty(context, String::NewFromUtf8(isolate, "size").ToLocalChecked(), BigInt::NewFromUnsigned(isolate, stat.size), static_cast<PropertyAttribute>(ReadOnly | DontDelete)).Check();
-        statObject->DefineOwnProperty(context, String::NewFromUtf8(isolate, "creation").ToLocalChecked(), Date::New(context, stat.creation * 1000).ToLocalChecked(), static_cast<PropertyAttribute>(ReadOnly | DontDelete)).Check();
-        statObject->DefineOwnProperty(context, String::NewFromUtf8(isolate, "lastAccess").ToLocalChecked(), Date::New(context, stat.last_access * 1000).ToLocalChecked(), static_cast<PropertyAttribute>(ReadOnly | DontDelete)).Check();
-        statObject->DefineOwnProperty(context, String::NewFromUtf8(isolate, "lastModification").ToLocalChecked(), Date::New(context, stat.last_modification * 1000).ToLocalChecked(), static_cast<PropertyAttribute>(ReadOnly | DontDelete)).Check();
+        statObject->DefineOwnProperty(context, String::NewFromUtf8(isolate, "creation").ToLocalChecked(), Date::New(context, stat.timestamp.creation * 1000).ToLocalChecked(), static_cast<PropertyAttribute>(ReadOnly | DontDelete)).Check();
+        statObject->DefineOwnProperty(context, String::NewFromUtf8(isolate, "lastAccess").ToLocalChecked(), Date::New(context, stat.timestamp.last_access * 1000).ToLocalChecked(), static_cast<PropertyAttribute>(ReadOnly | DontDelete)).Check();
+        statObject->DefineOwnProperty(context, String::NewFromUtf8(isolate, "lastModification").ToLocalChecked(), Date::New(context, stat.timestamp.last_modification * 1000).ToLocalChecked(), static_cast<PropertyAttribute>(ReadOnly | DontDelete)).Check();
         info.GetReturnValue().Set(statObject);
     }
     

@@ -325,7 +325,7 @@ public:
     return false; // change it
   }
 };
-#endif // LIBPLZMA
+#endif // !LIBPLZMA
 
 /*
 inline UInt32 Get_WinAttrib_From_PosixMode(UInt32 mode)

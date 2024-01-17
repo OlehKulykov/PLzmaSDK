@@ -61,7 +61,7 @@ namespace plzma {
     
     void RawHeapMemory::erase(const plzma_erase eraseType, const size_t size) noexcept {
         if (_memory && size > 0 && eraseType == plzma_erase_zero) {
-            memset(_memory, 0, size);
+            ::memset(_memory, 0, size);
         }
     }
     

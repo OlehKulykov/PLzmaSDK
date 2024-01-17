@@ -44,13 +44,13 @@
 /// and all optional C bindings to the internal C++ part(Core) of the library.
 /// Everything what you need to use this library in C | Objective-C | Swift env. is here.
 
-/// @brief Manualy defined version of the library, i.e. 1.4.0
+/// @brief Manualy defined version of the library, i.e. 1.4.1
 /// The optinal \a LIBPLZMA_VERSION_BUILD might be befined by the CI or CMake or manualy.
-/// Conforms 'Semantic Versioning 1.4.0'.
+/// Conforms 'Semantic Versioning 2.0.0'.
 /// @link https://semver.org
 #define LIBPLZMA_VERSION_MAJOR 1
 #define LIBPLZMA_VERSION_MINOR 4
-#define LIBPLZMA_VERSION_PATCH 0
+#define LIBPLZMA_VERSION_PATCH 1
 
 // check windows
 #if defined(WIN32) || defined(_WIN32) || defined(WIN32_LEAN_AND_MEAN) || defined(_WIN64) || defined(WIN64)
@@ -465,7 +465,7 @@ typedef void (*plzma_progress_delegate_wide_callback)(void * LIBPLZMA_NULLABLE c
 
 /// @brief The full version string of the library generated on build time.
 ///
-/// Contains version<major, minor, patch> conforms 'Semantic Versioning 1.4.0', optional automatic build number,
+/// Contains version<major, minor, patch> conforms 'Semantic Versioning 2.0.0', optional automatic build number,
 /// library type, build date/time, os, compiler, environment, usage, features, etc. and original LZMA SDK version.
 /// @return Non-null, full version C string.
 /// @link https://semver.org

@@ -57,7 +57,7 @@ namespace StringConvertUTF {
         if (str._cs && str._cslen > 0) {
             _cs.erase(eraseType, sizeof(char) * _cslen);
             _cs.resize(sizeof(char) * (str._cslen + 1));
-            memcpy(_cs, str._cs, sizeof(char) * str._cslen);
+            ::memcpy(_cs, str._cs, sizeof(char) * str._cslen);
             static_cast<char *>(_cs)[str._cslen] = 0;
         } else {
             _cs.clear(eraseType, sizeof(char) * _cslen);
@@ -65,7 +65,7 @@ namespace StringConvertUTF {
         if (str._ws && str._size > 0) {
             _ws.erase(eraseType, sizeof(wchar_t) * _size);
             _ws.resize(sizeof(wchar_t) * (str._size + 1));
-            memcpy(_ws, str._ws, sizeof(wchar_t) * str._size);
+            ::memcpy(_ws, str._ws, sizeof(wchar_t) * str._size);
             static_cast<wchar_t *>(_ws)[str._size] = 0;
         } else {
             _ws.clear(eraseType, sizeof(wchar_t) * _size);
@@ -75,11 +75,11 @@ namespace StringConvertUTF {
     }
     
     void String::copyFrom(const wchar_t * LIBPLZMA_NULLABLE str, const plzma_erase eraseType) {
-        const size_t len = str ? wcslen(str) : 0;
+        const size_t len = str ? ::wcslen(str) : 0;
         if (len > 0) {
             _ws.erase(eraseType, sizeof(wchar_t) * _size);
             _ws.resize(sizeof(wchar_t) * (len + 1));
-            memcpy(_ws, str, sizeof(wchar_t) * len);
+            ::memcpy(_ws, str, sizeof(wchar_t) * len);
             static_cast<wchar_t *>(_ws)[len] = 0;
             _size = static_cast<plzma_size_t>(len);
             _cs.clear(eraseType, sizeof(char) * _cslen);
@@ -94,7 +94,7 @@ namespace StringConvertUTF {
         if (len.first > 0) {
             _cs.erase(eraseType, sizeof(char) * _cslen);
             _cs.resize(sizeof(char) * (len.first + 1));
-            memcpy(_cs, str, sizeof(char) * len.first);
+            ::memcpy(_cs, str, sizeof(char) * len.first);
             static_cast<char *>(_cs)[len.first] = 0;
             _ws.clear(eraseType, sizeof(wchar_t) * _size);
             _cslen = static_cast<plzma_size_t>(len.first);
@@ -149,7 +149,7 @@ namespace StringConvertUTF {
             if (convRes != conversionOK) {
                 throw Exception(plzma_error_code_internal, "Wide character to UTF8 string conversion.", __FILE__, __LINE__);
             }
-            const size_t csLen = strlen(static_cast<const char *>(_cs));
+            const size_t csLen = ::strlen(static_cast<const char *>(_cs));
             if (memSize > (csLen + 1)) {
                 _cs.resize(csLen + 1);
             }
@@ -224,7 +224,7 @@ namespace StringConvertUTF {
             _ws.resize(memSize);
             for (size_t i = 0, offset = _size; i < count; i++) {
                 if (sizesList[i].second > 0) {
-                    memcpy(static_cast<wchar_t *>(_ws) + offset, stringsList[i], sizeof(wchar_t) * sizesList[i].second);
+                    ::memcpy(static_cast<wchar_t *>(_ws) + offset, stringsList[i], sizeof(wchar_t) * sizesList[i].second);
                     offset += sizesList[i].second;
                 }
             }
@@ -252,7 +252,7 @@ namespace StringConvertUTF {
             _cs.resize(sizeof(char) * (dstLen + 1));
             for (size_t i = 0, offset = _cslen; i < count; i++) {
                 if (sizesList[i].first > 0) {
-                    memcpy(static_cast<char *>(_cs) + offset, stringsList[i], sizeof(char) * sizesList[i].first);
+                    ::memcpy(static_cast<char *>(_cs) + offset, stringsList[i], sizeof(char) * sizesList[i].first);
                     offset += sizesList[i].first;
                 }
             }
