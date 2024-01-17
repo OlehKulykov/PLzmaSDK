@@ -9,8 +9,8 @@ Pod::Spec.new do |s|
   s.swift_versions = ['5.0', '5.1', '5.2', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8', '5.9']
   s.ios.deployment_target = '12.0'
   s.osx.deployment_target = '10.13'
-  s.tvos.deployment_target = '12.0'
-  s.watchos.deployment_target = '2.0'
+#  s.tvos.deployment_target = '12.0'
+#  s.watchos.deployment_target = '2.0'
   
   s.subspec 'libplzma' do |libplzma|
     libplzma.source_files = 'libplzma.h', 'libplzma.hpp', 'src/**/*.{c,cpp,h,hpp}'

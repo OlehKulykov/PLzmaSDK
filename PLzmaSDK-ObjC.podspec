@@ -8,8 +8,8 @@ Pod::Spec.new do |s|
   s.authors = { 'Oleh Kulykov' => 'olehkulykov@gmail.com' }
   s.ios.deployment_target = '12.0'
   s.osx.deployment_target = '10.13'
-  s.tvos.deployment_target = '9.0'
-  s.watchos.deployment_target = '2.0'
+#  s.tvos.deployment_target = '9.0'
+#  s.watchos.deployment_target = '2.0'
   
   s.source_files = 'libplzma.h', 'libplzma.hpp', 'src/**/*.{c,cpp,h,hpp}', 'objc/*.{mm,h,inl}'
   s.public_header_files = 'objc/*.h'
