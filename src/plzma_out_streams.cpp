@@ -60,7 +60,7 @@ namespace plzma {
     }
     
     /// OutFileStream
-    STDMETHODIMP OutFileStream::Write(const void * data, UInt32 size, UInt32 * processedSize) {
+    STDMETHODIMP OutFileStream::Write(const void * data, UInt32 size, UInt32 * processedSize) throw() {
         if (_file) {
             const size_t processed = (size > 0) ? fwrite(data, 1, size, _file) : 0;
             LIBPLZMA_CAST_VALUE_TO_PTR(processedSize, UInt32, processed)
@@ -69,7 +69,7 @@ namespace plzma {
         return S_FALSE;
     }
     
-    STDMETHODIMP OutFileStream::Seek(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) {
+    STDMETHODIMP OutFileStream::Seek(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) throw() {
         if (_file && fileSeek(_file, offset, seekOrigin) == 0) {
             LIBPLZMA_CAST_VALUE_TO_PTR(newPosition, UInt64, fileTell(_file))
             return S_OK;
@@ -78,7 +78,7 @@ namespace plzma {
         return S_FALSE;
     }
     
-    STDMETHODIMP OutFileStream::SetSize(UInt64 newSize) {
+    STDMETHODIMP OutFileStream::SetSize(UInt64 newSize) throw() {
         return S_OK;
     }
     
@@ -87,7 +87,7 @@ namespace plzma {
         return _file != nullptr;
     }
     
-    void OutFileStream::setTimestamp(const plzma_path_timestamp & timestamp) {
+    void OutFileStream::setTimestamp(const plzma_path_timestamp & timestamp)  {
         LIBPLZMA_LOCKGUARD(lock, _mutex)
         _timestamp = timestamp;
     }
@@ -163,7 +163,7 @@ namespace plzma {
     }
     
     /// OutMemStream
-    STDMETHODIMP OutMemStream::Write(const void * data, UInt32 size, UInt32 * processedSize) {
+    STDMETHODIMP OutMemStream::Write(const void * data, UInt32 size, UInt32 * processedSize) throw() {
         if (_opened) {
             const uint64_t dstSize = _offset + static_cast<uint64_t>(size);
             if (_size < dstSize) {
@@ -209,7 +209,7 @@ namespace plzma {
         return S_FALSE;
     }
     
-    STDMETHODIMP OutMemStream::Seek(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) {
+    STDMETHODIMP OutMemStream::Seek(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) throw() {
         if (_opened) {
             Int64 finalOffset;
             switch (seekOrigin) {
@@ -238,7 +238,7 @@ namespace plzma {
         return S_FALSE;
     }
     
-    STDMETHODIMP OutMemStream::SetSize(UInt64 newSize) {
+    STDMETHODIMP OutMemStream::SetSize(UInt64 newSize) throw() {
         if (_opened) {
             if (newSize >= plzma_max_size()) {
                 _size = _offset = 0;
@@ -329,7 +329,7 @@ namespace plzma {
     }
     
     /// OutTestStream
-    STDMETHODIMP OutTestStream::Write(const void * data, UInt32 size, UInt32 * processedSize) {
+    STDMETHODIMP OutTestStream::Write(const void * data, UInt32 size, UInt32 * processedSize) throw() {
         if (_opened) {
             LIBPLZMA_CAST_VALUE_TO_PTR(processedSize, UInt32, size)
             return S_OK;
@@ -338,11 +338,11 @@ namespace plzma {
         return S_FALSE;
     }
     
-    STDMETHODIMP OutTestStream::Seek(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) {
+    STDMETHODIMP OutTestStream::Seek(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) throw() {
         return S_OK;
     }
     
-    STDMETHODIMP OutTestStream::SetSize(UInt64 newSize) {
+    STDMETHODIMP OutTestStream::SetSize(UInt64 newSize) throw() {
         return S_OK;
     }
     
@@ -374,7 +374,7 @@ namespace plzma {
     }
 
     /// OutMultiStreamBase
-    STDMETHODIMP OutMultiStreamBase::Write(const void * data, UInt32 size, UInt32 * processedSize) {
+    STDMETHODIMP OutMultiStreamBase::Write(const void * data, UInt32 size, UInt32 * processedSize) throw() {
         if (_opened) {
             try {
                 if (size == 0) {
@@ -439,7 +439,7 @@ namespace plzma {
         return S_FALSE;
     }
 
-    STDMETHODIMP OutMultiStreamBase::Seek(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) {
+    STDMETHODIMP OutMultiStreamBase::Seek(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) throw() {
         if (_opened) {
             Int64 finalOffset;
             switch (seekOrigin) {
@@ -468,7 +468,7 @@ namespace plzma {
         return S_FALSE;
     }
 
-    STDMETHODIMP OutMultiStreamBase::SetSize(UInt64 newSize) {
+    STDMETHODIMP OutMultiStreamBase::SetSize(UInt64 newSize) throw() {
         if (_opened) {
             try {
                 uint64_t partsCount = newSize / _partSize;

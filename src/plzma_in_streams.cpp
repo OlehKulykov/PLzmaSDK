@@ -58,7 +58,7 @@ namespace plzma {
     }
     
     /// InFileStream
-    STDMETHODIMP InFileStream::Read(void * data, UInt32 size, UInt32 * processedSize) {
+    STDMETHODIMP InFileStream::Read(void * data, UInt32 size, UInt32 * processedSize) throw() {
         if (_file) {
             const size_t processed = (size > 0) ? ::fread(data, 1, size, _file) : 0;
             LIBPLZMA_CAST_VALUE_TO_PTR(processedSize, UInt32, processed)
@@ -68,7 +68,7 @@ namespace plzma {
         return S_FALSE;
     }
     
-    STDMETHODIMP InFileStream::Seek(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) {
+    STDMETHODIMP InFileStream::Seek(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) throw() {
         if (_file && fileSeek(_file, offset, seekOrigin) == 0) {
             LIBPLZMA_CAST_VALUE_TO_PTR(newPosition, UInt64, fileTell(_file))
             return S_OK;
@@ -150,7 +150,7 @@ namespace plzma {
     }
     
     /// InMemStream
-    STDMETHODIMP InMemStream::Read(void * data, UInt32 size, UInt32 * processedSize) {
+    STDMETHODIMP InMemStream::Read(void * data, UInt32 size, UInt32 * processedSize) throw() {
         if (_opened) {
             const UInt64 available = _size - _offset;
             size_t sizeToRead = 0;
@@ -167,7 +167,7 @@ namespace plzma {
         return S_FALSE;
     }
     
-    STDMETHODIMP InMemStream::Seek(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) {
+    STDMETHODIMP InMemStream::Seek(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) throw() {
         if (_opened) {
             Int64 finalOffset;
             switch (seekOrigin) {
@@ -276,7 +276,7 @@ namespace plzma {
     
     /// InMemStream
     
-    STDMETHODIMP InCallbackStream::Seek(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) {
+    STDMETHODIMP InCallbackStream::Seek(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) throw() {
         if (_opened) {
             UInt64 newPos = 0;
             if (_seekCallback(_context.context, offset, seekOrigin, &newPos)) {
@@ -288,7 +288,7 @@ namespace plzma {
         return S_FALSE;
     }
 
-    STDMETHODIMP InCallbackStream::Read(void * data, UInt32 size, UInt32 * processedSize) {
+    STDMETHODIMP InCallbackStream::Read(void * data, UInt32 size, UInt32 * processedSize) throw() {
         if (_opened) {
             UInt32 procSize = 0;
             if (_readCallback(_context.context, data, size, &procSize)) {
@@ -357,11 +357,11 @@ namespace plzma {
 
     /// InMultiStream
 
-    STDMETHODIMP InMultiStream::Seek(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) {
+    STDMETHODIMP InMultiStream::Seek(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) throw() {
         return _opened ? _stream.Seek(offset, seekOrigin, newPosition) : S_FALSE;
     }
 
-    STDMETHODIMP InMultiStream::Read(void * data, UInt32 size, UInt32 * processedSize) {
+    STDMETHODIMP InMultiStream::Read(void * data, UInt32 size, UInt32 * processedSize) throw() {
         return _opened ? _stream.Read(data, size, processedSize) : S_FALSE;
     }
 

@@ -83,24 +83,24 @@ namespace plzma {
         Z7_COM_UNKNOWN_IMP_4(IArchiveExtractCallbackMessage2, ICryptoGetTextPassword, ICryptoGetTextPassword2, ICompressProgressInfo)
         
         // IProgress
-        STDMETHOD(SetTotal)(UInt64 total) override final;
-        STDMETHOD(SetCompleted)(const UInt64 *completeValue) override final;
+        STDMETHOD(SetTotal)(UInt64 total) throw() override final;
+        STDMETHOD(SetCompleted)(const UInt64 *completeValue) throw() override final;
         
         // IArchiveExtractCallback
-        STDMETHOD(GetStream)(UInt32 index, ISequentialOutStream **outStream, Int32 askExtractMode) override final;
-        STDMETHOD(PrepareOperation)(Int32 askExtractMode) override final;
-        STDMETHOD(SetOperationResult)(Int32 opRes) override final;
+        STDMETHOD(GetStream)(UInt32 index, ISequentialOutStream **outStream, Int32 askExtractMode) throw() override final;
+        STDMETHOD(PrepareOperation)(Int32 askExtractMode) throw() override final;
+        STDMETHOD(SetOperationResult)(Int32 opRes) throw() override final;
         
         // IArchiveExtractCallbackMessage2
-        STDMETHOD(ReportExtractResult)(UInt32 indexType, UInt32 index, Int32 opRes) override final;
+        STDMETHOD(ReportExtractResult)(UInt32 indexType, UInt32 index, Int32 opRes) throw() override final;
         
-        STDMETHOD(SetRatioInfo)(const UInt64 * inSize, const UInt64 * outSize) override final;;
+        STDMETHOD(SetRatioInfo)(const UInt64 * inSize, const UInt64 * outSize) throw() override final;
         
         // ICryptoGetTextPassword
-        STDMETHOD(CryptoGetTextPassword)(BSTR * password) override final;
+        STDMETHOD(CryptoGetTextPassword)(BSTR * password) throw() override final;
         
         // ICryptoGetTextPassword2
-        STDMETHOD(CryptoGetTextPassword2)(Int32 * passwordIsDefined, BSTR * password) override final;
+        STDMETHOD(CryptoGetTextPassword2)(Int32 * passwordIsDefined, BSTR * password) throw() override final;
         
         void process(const Int32 mode, const SharedPtr<ItemArray> & items, const Path & path, const bool itemsFullPath = true);
         void process(const Int32 mode, const Path & path, const bool itemsFullPath = true);
@@ -108,6 +108,7 @@ namespace plzma {
         void process(const Int32 mode, const SharedPtr<ItemArray> & items);
         void process(const Int32 mode);
         void abort();
+        
         ExtractCallback(const CMyComPtr<IInArchive> & archive,
 #if !defined(LIBPLZMA_NO_CRYPTO)
                         const String & passwd,

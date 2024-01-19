@@ -596,6 +596,7 @@ namespace pathUtils {
         return (::_wutime(path, &timeBuff) == 0);
 #else
         assert(0);
+        return false;
 #endif
     }
     

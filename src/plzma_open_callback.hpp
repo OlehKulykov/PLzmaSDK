@@ -65,14 +65,14 @@ namespace plzma {
         Z7_COM_UNKNOWN_IMP_3(IArchiveOpenCallback, ICryptoGetTextPassword, ICryptoGetTextPassword2)
         
         // IArchiveOpenCallback
-        STDMETHOD(SetTotal)(const UInt64 * files, const UInt64 * bytes) override final;
-        STDMETHOD(SetCompleted)(const UInt64 * files, const UInt64 * bytes) override final;
+        STDMETHOD(SetTotal)(const UInt64 * files, const UInt64 * bytes) throw() override final;
+        STDMETHOD(SetCompleted)(const UInt64 * files, const UInt64 * bytes) throw() override final;
         
         // ICryptoGetTextPassword
-        STDMETHOD(CryptoGetTextPassword)(BSTR * password) override final;
+        STDMETHOD(CryptoGetTextPassword)(BSTR * password) throw() override final;
         
         // ICryptoGetTextPassword2
-        STDMETHOD(CryptoGetTextPassword2)(Int32 * passwordIsDefined, BSTR * password) override final;
+        STDMETHOD(CryptoGetTextPassword2)(Int32 * passwordIsDefined, BSTR * password) throw() override final;
         
         CMyComPtr<IInArchive> archive() const noexcept;
         bool open();
@@ -80,6 +80,7 @@ namespace plzma {
         plzma_size_t itemsCount() noexcept;
         SharedPtr<Item> itemAt(const plzma_size_t index);
         SharedPtr<ItemArray> allItems();
+        
         OpenCallback(const CMyComPtr<InStreamBase> & stream,
 #if !defined(LIBPLZMA_NO_CRYPTO)
                      const String & passwd,

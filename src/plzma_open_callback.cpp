@@ -32,19 +32,19 @@
 
 namespace plzma {
     
-    STDMETHODIMP OpenCallback::SetTotal(const UInt64 * files, const UInt64 * bytes) {
+    STDMETHODIMP OpenCallback::SetTotal(const UInt64 * files, const UInt64 * bytes) throw() {
         return S_OK; // unused
     }
     
-    STDMETHODIMP OpenCallback::SetCompleted(const UInt64 * files, const UInt64 * bytes) {
+    STDMETHODIMP OpenCallback::SetCompleted(const UInt64 * files, const UInt64 * bytes) throw() {
         return S_OK; // unused
     }
     
-    STDMETHODIMP OpenCallback::CryptoGetTextPassword(BSTR * password) {
+    STDMETHODIMP OpenCallback::CryptoGetTextPassword(BSTR * password) throw() {
         return getTextPassword(nullptr, password);
     }
     
-    STDMETHODIMP OpenCallback::CryptoGetTextPassword2(Int32 * passwordIsDefined, BSTR * password) {
+    STDMETHODIMP OpenCallback::CryptoGetTextPassword2(Int32 * passwordIsDefined, BSTR * password) throw() {
         return getTextPassword(passwordIsDefined, password);
     }
     

@@ -83,9 +83,9 @@ namespace plzma {
     public:
         Z7_COM_UNKNOWN_IMP_1(IOutStream)
         
-        STDMETHOD(Write)(const void * data, UInt32 size, UInt32 * processedSize) override final;
-        STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) override final;
-        STDMETHOD(SetSize)(UInt64 newSize) override final;
+        STDMETHOD(Write)(const void * data, UInt32 size, UInt32 * processedSize) throw() override final;
+        STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) throw() override final;
+        STDMETHOD(SetSize)(UInt64 newSize) throw() override final;
         
         virtual void setTimestamp(const plzma_path_timestamp & timestamp) final;
         virtual void open() final;
@@ -113,9 +113,9 @@ namespace plzma {
     public:
         Z7_COM_UNKNOWN_IMP_1(IOutStream)
         
-        STDMETHOD(Write)(const void * data, UInt32 size, UInt32 * processedSize) override final;
-        STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) override final;
-        STDMETHOD(SetSize)(UInt64 newSize) override final;
+        STDMETHOD(Write)(const void * data, UInt32 size, UInt32 * processedSize) throw() override final;
+        STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) throw() override final;
+        STDMETHOD(SetSize)(UInt64 newSize) throw() override final;
         
         virtual void setTimestamp(const plzma_path_timestamp & timestamp) final { }
         virtual void open() final;
@@ -139,9 +139,9 @@ namespace plzma {
     public:
         Z7_COM_UNKNOWN_IMP_1(IOutStream)
         
-        STDMETHOD(Write)(const void * data, UInt32 size, UInt32 * processedSize) override final;
-        STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) override final;
-        STDMETHOD(SetSize)(UInt64 newSize) override final;
+        STDMETHOD(Write)(const void * data, UInt32 size, UInt32 * processedSize) throw() override final;
+        STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) throw() override final;
+        STDMETHOD(SetSize)(UInt64 newSize) throw() override final;
         
         virtual void setTimestamp(const plzma_path_timestamp & timestamp) final { }
         virtual void open() final;
@@ -181,9 +181,9 @@ namespace plzma {
     public:
         Z7_COM_UNKNOWN_IMP_1(IOutStream)
         
-        STDMETHOD(Write)(const void * data, UInt32 size, UInt32 * processedSize) override final;
-        STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) override final;
-        STDMETHOD(SetSize)(UInt64 newSize) override final;
+        STDMETHOD(Write)(const void * data, UInt32 size, UInt32 * processedSize) throw() override final;
+        STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) throw() override final;
+        STDMETHOD(SetSize)(UInt64 newSize) throw() override final;
         
         virtual void setTimestamp(const plzma_path_timestamp & timestamp) final { }
         virtual void open() final;

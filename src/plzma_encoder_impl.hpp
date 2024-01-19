@@ -138,22 +138,22 @@ namespace plzma {
         Z7_COM_UNKNOWN_IMP_3(IArchiveUpdateCallback2, ICryptoGetTextPassword, ICryptoGetTextPassword2)
         
         // IProgress
-        STDMETHOD(SetTotal)(UInt64 size) override final;
-        STDMETHOD(SetCompleted)(const UInt64 * completeValue) override final;
+        STDMETHOD(SetTotal)(UInt64 size) throw() override final;
+        STDMETHOD(SetCompleted)(const UInt64 * completeValue) throw() override final;
         
         // IUpdateCallback2
-        STDMETHOD(GetUpdateItemInfo)(UInt32 index, Int32 * newData, Int32 * newProperties, UInt32 * indexInArchive) override final;
-        STDMETHOD(GetProperty)(UInt32 index, PROPID propID, PROPVARIANT * value) override final;
-        STDMETHOD(GetStream)(UInt32 index, ISequentialInStream ** inStream) override final;
-        STDMETHOD(SetOperationResult)(Int32 operationResult) override final;
-        STDMETHOD(GetVolumeSize)(UInt32 index, UInt64 * size) override final;
-        STDMETHOD(GetVolumeStream)(UInt32 index, ISequentialOutStream ** volumeStream) override final;
+        STDMETHOD(GetUpdateItemInfo)(UInt32 index, Int32 * newData, Int32 * newProperties, UInt32 * indexInArchive) throw() override final;
+        STDMETHOD(GetProperty)(UInt32 index, PROPID propID, PROPVARIANT * value) throw() override final;
+        STDMETHOD(GetStream)(UInt32 index, ISequentialInStream ** inStream) throw() override final;
+        STDMETHOD(SetOperationResult)(Int32 operationResult) throw() override final;
+        STDMETHOD(GetVolumeSize)(UInt32 index, UInt64 * size) throw() override final;
+        STDMETHOD(GetVolumeStream)(UInt32 index, ISequentialOutStream ** volumeStream) throw() override final;
         
         // ICryptoGetTextPassword
-        STDMETHOD(CryptoGetTextPassword)(BSTR * password) override final;
+        STDMETHOD(CryptoGetTextPassword)(BSTR * password) throw() override final;
         
         // ICryptoGetTextPassword2
-        STDMETHOD(CryptoGetTextPassword2)(Int32 * passwordIsDefined, BSTR * password) override final;
+        STDMETHOD(CryptoGetTextPassword2)(Int32 * passwordIsDefined, BSTR * password) throw() override final;
         
         virtual void setPassword(const wchar_t * password) override final;
         virtual void setPassword(const char * password) override final;
