@@ -3,3 +3,7 @@
 
 * **[apodrugin](https://github.com/apodrugin)**
   * Improve SDK interface.
+
+
+* **[ArthurAlvarez](https://github.com/ArthurAlvarez)**
+  * Adding Privacy Manifest.
