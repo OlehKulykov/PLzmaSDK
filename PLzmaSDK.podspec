@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   s.subspec 'libplzma' do |libplzma|
     libplzma.source_files = 'libplzma.h', 'libplzma.hpp', 'src/**/*.{c,cpp,h,hpp}'
     libplzma.public_header_files = 'libplzma.h'
-    libplzma.compiler_flags = '-DLIBPLZMA_VERSION_BUILD=624'
+    libplzma.compiler_flags = '-DLIBPLZMA_VERSION_BUILD=673'
     libplzma.libraries = 'c++'
   end
   
