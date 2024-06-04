@@ -67,11 +67,17 @@ set(LIBPLZMA_TESTS
 )
 
 foreach(LIBPLZMA_TEST ${LIBPLZMA_TESTS})
-#  No dynamic tests for now
+  # No dynamic tests for now
   add_executable(${LIBPLZMA_TEST} ${LIBPLZMA_TEST}.cpp plzma_public_tests.hpp)
   target_link_libraries(${LIBPLZMA_TEST} plzma)
   set_property(TARGET ${LIBPLZMA_TEST} APPEND PROPERTY COMPILE_FLAGS -DLIBPLZMA_SHARED)
   add_test(${LIBPLZMA_TEST} ${LIBPLZMA_TEST})
+  
+  # Copy DLL(s) to test executable.
+  add_custom_command(TARGET ${LIBPLZMA_TEST} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy -t $<TARGET_FILE_DIR:${LIBPLZMA_TEST}> $<TARGET_RUNTIME_DLLS:${LIBPLZMA_TEST}>
+    COMMAND_EXPAND_LISTS
+  )
 
   add_executable("${LIBPLZMA_TEST}_static" ${LIBPLZMA_TEST}.cpp plzma_public_tests.hpp)
   target_link_libraries("${LIBPLZMA_TEST}_static" plzma_static)
@@ -83,8 +89,8 @@ foreach(LIBPLZMA_TEST ${LIBPLZMA_TESTS})
     target_link_libraries(${LIBPLZMA_TEST} ws2_32)
     target_link_libraries("${LIBPLZMA_TEST}_static" ws2_32)
   endif()
-#  do not install test binaries, no one needs them
-#  install(TARGETS ${LIBPLZMA_TEST} DESTINATION bin)
-#  install(TARGETS "${LIBPLZMA_TEST}_static" DESTINATION bin)
+  # Do not install test binaries, no one needs them
+  # install(TARGETS ${LIBPLZMA_TEST} DESTINATION bin)
+  # install(TARGETS "${LIBPLZMA_TEST}_static" DESTINATION bin)
 endforeach()
 

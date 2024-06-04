@@ -1,7 +1,7 @@
-version: 1.4.2.{build}
+version: 1.4.3.{build}
 
 
-os: Visual Studio 2015
+os: Visual Studio 2019
 
 
 # Do not build on tags (GitHub only)
@@ -25,10 +25,10 @@ branches:
 environment:
   matrix:
   - platform: x86
-    CMAKE_ARGS: -G"Visual Studio 14" -DCMAKE_INSTALL_PREFIX:PATH=c:\dev\libplzma\libplzma-install-win-%PLATFORM% -DCMAKE_BUILD_TYPE=Release -DLIBPLZMA_OPT_BUILD_NUMBER=%APPVEYOR_BUILD_NUMBER%
+    CMAKE_ARGS: -A Win32 -DCMAKE_INSTALL_PREFIX:PATH=c:\dev\libplzma\libplzma-install-win-%PLATFORM% -DCMAKE_BUILD_TYPE=Release -DLIBPLZMA_OPT_BUILD_NUMBER=%APPVEYOR_BUILD_NUMBER%
 
   - platform: x64
-    CMAKE_ARGS: -G"Visual Studio 14 Win64" -DCMAKE_INSTALL_PREFIX:PATH=c:\dev\libplzma\libplzma-install-win-%PLATFORM% -DCMAKE_BUILD_TYPE=Release -DLIBPLZMA_OPT_BUILD_NUMBER=%APPVEYOR_BUILD_NUMBER%
+    CMAKE_ARGS: -A x64 -DCMAKE_INSTALL_PREFIX:PATH=c:\dev\libplzma\libplzma-install-win-%PLATFORM% -DCMAKE_BUILD_TYPE=Release -DLIBPLZMA_OPT_BUILD_NUMBER=%APPVEYOR_BUILD_NUMBER%
 
 
 configuration: Release
@@ -50,12 +50,12 @@ build:
 
 
 build_script:
+  - cmake --version
   - cd c:\dev\libplzma
   - md build
   - cd build
   - cmake %CMAKE_ARGS% ..
   - cmake --build . --config Release --parallel 4
-  - copy C:\dev\libplzma\build\Release\libplzma.dll C:\dev\libplzma\build\cmake_tests\Release\libplzma.dll
   - ctest --verbose
   - cmake --build . --config Release --target Install
   - cd ..

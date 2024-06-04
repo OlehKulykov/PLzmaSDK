@@ -23,7 +23,7 @@
 # THE SOFTWARE.
 
 
-cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.21 FATAL_ERROR)
 
 project(libplzma LANGUAGES C CXX)
 
@@ -33,15 +33,13 @@ set(PACKAGE "libplzma")
 set(CPACK_PACKAGE_NAME "${PACKAGE}")
 set(CPACK_PACKAGE_VERSION_MAJOR "1")
 set(CPACK_PACKAGE_VERSION_MINOR "4")
-set(CPACK_PACKAGE_VERSION_PATCH "2")
+set(CPACK_PACKAGE_VERSION_PATCH "3")
 set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}")
 set(CPACK_PACKAGE_VENDOR "olehkulykov@gmail.com")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PACKAGE} ${PACKAGE_VERSION}")
-set(SOVERSION "1.4.2")
+set(SOVERSION "1.4.3")
 set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
 set(VERSION "${CPACK_PACKAGE_VERSION}")
-
-message("Install path: ${CMAKE_INSTALL_PREFIX}")
 
 include(CheckLibraryExists)
 include(CheckFunctionExists)
@@ -50,6 +48,13 @@ include(CheckCCompilerFlag)
 include(CheckCXXCompilerFlag)
 include(FindThreads)
 include(CheckIncludeFile)
+
+message("CMake version: ${CMAKE_VERSION}")
+message("Install path: ${CMAKE_INSTALL_PREFIX}")
+message("Binary directory: ${CMAKE_BINARY_DIR}")
+message("Library output directory: ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
+message("Runtime output directory: ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+message("CTest binary directory: ${CTEST_BINARY_DIRECTORY}")
 
 # COMMAND LINE OPTIONS
 option(LIBPLZMA_OPT_SHARED "Build shared lib." ON)
@@ -93,6 +98,7 @@ More info: https://docs.microsoft.com/en-us/cpp/build/reference/md-mt-ld-use-run
 
 # ---- definitions ----
 if(WIN32)
+  message("WIN32")
   add_definitions(-DWIN32)
   add_definitions(-D_WIN32)
   add_definitions(-DUNICODE)
@@ -100,6 +106,7 @@ if(WIN32)
 endif()
 
 if(MSVC)
+  message("MSVC")
   if(LIBPLZMA_OPT_MSVC_MULTITHREAD_STATIC)
     if(CMAKE_BUILD_TYPE MATCHES Debug)
       set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /MTd")
@@ -264,10 +271,7 @@ set(LIBPLZMA_PUBLIC_HEADERS
 # ---- internal headers ----
 set(LIBPLZMA_INTERNAL_HEADERS
   src/C/7z.h
-  src/C/7zAlloc.h
-  src/C/7zBuf.h
   src/C/7zCrc.h
-  src/C/7zFile.h
   src/C/7zTypes.h
   src/C/7zVersion.h
   src/C/7zWindows.h
@@ -284,7 +288,6 @@ set(LIBPLZMA_INTERNAL_HEADERS
   src/C/Lzma2Dec.h
   src/C/Lzma2DecMt.h
   src/C/Lzma2Enc.h
-  src/C/Lzma86.h
   src/C/LzmaDec.h
   src/C/LzmaEnc.h
   src/C/LzmaLib.h
@@ -656,7 +659,6 @@ source_group("C"
   src/C/7zCrc.c
   src/C/7zCrc.h
   src/C/7zCrcOpt.c
-  src/C/7zFile.h
   src/C/7zStream.c
   src/C/7zTypes.h
   src/C/7zVersion.h
@@ -690,7 +692,6 @@ source_group("C"
   src/C/Lzma2DecMt.h
   src/C/Lzma2Enc.c
   src/C/Lzma2Enc.h
-  src/C/Lzma86.h
   src/C/LzmaDec.c
   src/C/LzmaDec.h
   src/C/LzmaEnc.c
@@ -993,7 +994,8 @@ if(LIBPLZMA_OPT_SHARED)
   add_library(plzma SHARED ${LIBPLZMA_SOURCES} ${LIBPLZMA_PUBLIC_HEADERS} ${LIBPLZMA_INTERNAL_HEADERS})
   set_property(TARGET plzma APPEND PROPERTY COMPILE_FLAGS -DLIBPLZMA_SHARED)
   if(MSVC)
-    # msvc does not append 'lib' - do it here to have consistent name
+    message("Shared lib. MSVC")
+    # MSVC does not append 'lib' - do it here to have consistent name
     set_property(TARGET plzma PROPERTY PREFIX "lib")
     set_property(TARGET plzma PROPERTY IMPORT_PREFIX "lib")
   endif()
@@ -1009,7 +1011,7 @@ if(LIBPLZMA_OPT_STATIC)
   add_library(plzma_static STATIC ${LIBPLZMA_SOURCES} ${LIBPLZMA_PUBLIC_HEADERS} ${LIBPLZMA_INTERNAL_HEADERS})
   set_property(TARGET plzma_static APPEND PROPERTY COMPILE_FLAGS -DLIBPLZMA_STATIC)
   if(MSVC)
-    # msvc does not append 'lib' - do it here to have consistent name
+    # MSVC does not append 'lib' - do it here to have consistent name
     set_target_properties(plzma_static PROPERTIES PREFIX "lib")
   endif()
   install(TARGETS plzma_static DESTINATION lib)
