@@ -28,7 +28,6 @@ jobs:
           - os: macos-latest
             c_compiler: clang
             cpp_compiler: clang++
-            architecture: [x64, aarch64]
           - os: windows-latest
             c_compiler: cl
             cpp_compiler: cl
