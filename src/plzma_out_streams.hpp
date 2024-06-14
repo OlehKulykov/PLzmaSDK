@@ -78,6 +78,7 @@ namespace plzma {
         FILE * _file = nullptr;
         plzma_path_timestamp _timestamp{0, 0, 0};
         
+    protected:
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(OutFileStream)
         
     public:
@@ -158,7 +159,6 @@ namespace plzma {
     class OutMultiStreamBase : public OutStreamBase, public OutMultiStream {
     private:
         friend struct SharedPtr<OutMultiStreamBase>;
-        LIBPLZMA_NON_COPYABLE_NON_MOVABLE(OutMultiStreamBase)
         
     protected:
         Vector<SharedPtr<OutStreamBase> > _parts;
@@ -177,6 +177,8 @@ namespace plzma {
         virtual SharedPtr<OutStreamBase> addPart() = 0;
         virtual void checkPartsCount(const uint64_t partsCount) const;
         void checkPartSize(const plzma_size_t partSize);
+        
+        LIBPLZMA_NON_COPYABLE_NON_MOVABLE(OutMultiStreamBase)
         
     public:
         Z7_COM_UNKNOWN_IMP_1(IOutStream)
@@ -209,12 +211,12 @@ namespace plzma {
         String _partExtension;
         plzma_plzma_multi_stream_part_name_format _format = plzma_plzma_multi_stream_part_name_format_name_ext_00x;
         
-        LIBPLZMA_NON_COPYABLE_NON_MOVABLE(OutMultiFileStream)
-        
     protected:
         virtual SharedPtr<OutStreamBase> addPart() final;
         virtual void checkPartsCount(const uint64_t partsCount) const final;
         void preparePath(const Path & path);
+        
+        LIBPLZMA_NON_COPYABLE_NON_MOVABLE(OutMultiFileStream)
         
     public:
         virtual bool erase(const plzma_erase eraseType = plzma_erase_none) final;
@@ -238,7 +240,6 @@ namespace plzma {
     class OutMultiMemStream final : public OutMultiStreamBase {
     private:
         friend struct SharedPtr<OutMultiMemStream>;
-        LIBPLZMA_NON_COPYABLE_NON_MOVABLE(OutMultiMemStream)
         
     protected:
         virtual SharedPtr<OutStreamBase> addPart() final {
@@ -246,6 +247,8 @@ namespace plzma {
             _parts.push(stream);
             return stream;
         }
+        
+        LIBPLZMA_NON_COPYABLE_NON_MOVABLE(OutMultiMemStream)
         
     public:
         OutMultiMemStream(const plzma_size_t partSize) : OutMultiStreamBase(partSize) {  }
