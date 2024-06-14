@@ -20,9 +20,3 @@ REGISTER_CODEC_E(PPMD,
     "PPMD")
 
 }}
-
-#if defined(LIBPLZMA_USING_REGISTRATORS)
-uint64_t plzma_registrator_13(void) {
-    return static_cast<uint64_t>(NCompress::NPpmd::g_CodecInfo_PPMD.Id);
-}
-#endif

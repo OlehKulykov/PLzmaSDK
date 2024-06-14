@@ -20,9 +20,3 @@ REGISTER_CODEC_E(LZMA,
     "LZMA")
 
 }}
-
-#if defined(LIBPLZMA_USING_REGISTRATORS)
-uint64_t plzma_registrator_10(void) {
-    return static_cast<uint64_t>(NCompress::NLzma::g_CodecInfo_LZMA.Id);
-}
-#endif

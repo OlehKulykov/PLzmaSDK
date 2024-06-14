@@ -15,9 +15,3 @@ REGISTER_FILTER_E(BCJ,
     0x3030103, "BCJ")
 
 }}
-
-#if defined(LIBPLZMA_USING_REGISTRATORS)
-uint64_t plzma_registrator_6(void) {
-    return static_cast<uint64_t>(NCompress::NBcj::g_CodecInfo_BCJ.Id);
-}
-#endif

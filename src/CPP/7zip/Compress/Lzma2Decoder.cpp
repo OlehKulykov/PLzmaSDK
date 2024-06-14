@@ -19,8 +19,8 @@ CDecoder::CDecoder():
     , _inProcessed(0)
     , _prop(0xFF)
     , _finishMode(false)
-    , _inBufSize(::plzma::kDecoderReadSize)
-    , _outStep(::plzma::kDecoderWriteSize)
+    , _inBufSize(1 << 20)
+    , _outStep(1 << 20)
     #ifndef Z7_ST
     , _tryMt(1)
     , _numThreads(1)

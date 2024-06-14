@@ -89,9 +89,3 @@ REGISTER_CODECS_VAR
 REGISTER_CODECS(ByteSwap)
 
 }}
-
-#if defined(LIBPLZMA_USING_REGISTRATORS)
-uint64_t plzma_registrator_8(void) {
-    return static_cast<uint64_t>(NCompress::NByteSwap::g_CodecsInfo[0].Id);
-}
-#endif

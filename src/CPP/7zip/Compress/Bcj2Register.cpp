@@ -22,9 +22,3 @@ REGISTER_CODEC_VAR(BCJ2)
 REGISTER_CODEC(BCJ2)
 
 }}
-
-#if defined(LIBPLZMA_USING_REGISTRATORS)
-uint64_t plzma_registrator_5(void) {
-    return static_cast<uint64_t>(NCompress::NBcj2::g_CodecInfo_BCJ2.Id);
-}
-#endif
