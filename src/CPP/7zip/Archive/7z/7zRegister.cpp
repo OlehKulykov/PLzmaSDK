@@ -25,3 +25,9 @@ REGISTER_ARC_IO_DECREMENT_SIG(
   , NULL)
 
 }}
+
+#if defined(LIBPLZMA_USING_REGISTRATORS)
+uint64_t plzma_registrator_1(void) {
+    return NArchive::N7z::g_ArcInfo.Flags;
+}
+#endif
