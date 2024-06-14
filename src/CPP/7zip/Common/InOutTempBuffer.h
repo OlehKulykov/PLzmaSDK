@@ -13,7 +13,7 @@
 
 #include "../IStream.h"
 
-class CInOutTempBuffer Z7_final
+class CInOutTempBuffer
 {
   UInt64 _size;
   void **_bufs;

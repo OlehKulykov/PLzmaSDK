@@ -5,7 +5,7 @@
 
 #include "../Archive/IArchive.h"
 
-struct CArcInfo Z7_final
+struct CArcInfo
 {
   UInt32 Flags;
   Byte Id;

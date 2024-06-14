@@ -9,7 +9,7 @@
 
 typedef void * (*CreateCodecP)();
 
-struct CCodecInfo Z7_final
+struct CCodecInfo
 {
   CreateCodecP CreateDecoder;
   CreateCodecP CreateEncoder;

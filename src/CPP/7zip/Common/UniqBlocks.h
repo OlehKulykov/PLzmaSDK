@@ -6,7 +6,7 @@
 #include "../../Common/MyBuffer.h"
 #include "../../Common/MyString.h"
 
-struct C_UInt32_UString_Map Z7_final
+struct C_UInt32_UString_Map
 {
   CRecordVector<UInt32> Numbers;
   UStringVector Strings;
@@ -22,7 +22,7 @@ struct C_UInt32_UString_Map Z7_final
 };
 
 
-struct CUniqBlocks Z7_final
+struct CUniqBlocks
 {
   CObjectVector<CByteBuffer> Bufs;
   CUIntVector Sorted;
