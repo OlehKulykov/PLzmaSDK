@@ -66,7 +66,7 @@ use_frameworks!
 platform :ios, '11.0'
 
 target '<REPLACE_WITH_YOUR_TARGET>' do
-    pod 'PLzmaSDK', '1.4.3'
+    pod 'PLzmaSDK', '1.5.0'
 end
 ```
 
@@ -76,7 +76,7 @@ use_frameworks!
 platform :ios, '9.0'
 
 target '<REPLACE_WITH_YOUR_TARGET>' do
-    pod 'PLzmaSDK-ObjC', '1.4.3'
+    pod 'PLzmaSDK-ObjC', '1.5.0'
 end
 ```
 
@@ -88,7 +88,7 @@ end
     "npm": ">=6.0.0"
   },
   "dependencies": {
-    "plzmasdk": "1.4.3"
+    "plzmasdk": "1.5.0"
   }
 }
 ```
