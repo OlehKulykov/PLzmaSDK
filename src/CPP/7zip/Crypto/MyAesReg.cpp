@@ -27,13 +27,3 @@ REGISTER_AES(CBC, "CBC")
 #endif
 
 }
-
-#if defined(LIBPLZMA_USING_REGISTRATORS)
-uint64_t plzma_registrator_15(void) {
-#ifdef _SFX
-    return 1;
-#else
-    return static_cast<uint64_t>(NCrypto::g_CodecInfo_AES256CBC.Id);
-#endif
-}
-#endif
