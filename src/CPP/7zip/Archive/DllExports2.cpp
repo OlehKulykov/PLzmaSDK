@@ -21,6 +21,65 @@
 
 #include "IArchive.h"
 
+
+#ifdef _WIN32
+
+#if defined(_UNICODE) && !defined(_WIN64) && !defined(UNDER_CE)
+#define NT_CHECK_FAIL_ACTION return FALSE;
+#endif
+
+static
+HINSTANCE g_hInstance;
+
+extern "C"
+BOOL WINAPI DllMain(
+  #ifdef UNDER_CE
+  HANDLE
+  #else
+  HINSTANCE
+  #endif
+  hInstance, DWORD dwReason, LPVOID /*lpReserved*/);
+
+extern "C"
+BOOL WINAPI DllMain(
+  #ifdef UNDER_CE
+  HANDLE
+  #else
+  HINSTANCE
+  #endif
+  hInstance, DWORD dwReason, LPVOID /*lpReserved*/)
+{
+  if (dwReason == DLL_PROCESS_ATTACH)
+  {
+    // OutputDebugStringA("7z.dll DLL_PROCESS_ATTACH");
+    g_hInstance = (HINSTANCE)hInstance;
+    NT_CHECK
+  }
+  /*
+  if (dwReason == DLL_PROCESS_DETACH)
+  {
+    OutputDebugStringA("7z.dll DLL_PROCESS_DETACH");
+  }
+  */
+  return TRUE;
+}
+
+#else //  _WIN32
+
+#include "../../Common/StringConvert.h"
+// #include <stdio.h>
+
+// STDAPI LibStartup();
+static __attribute__((constructor)) void Init_ForceToUTF8();
+static __attribute__((constructor)) void Init_ForceToUTF8()
+{
+  g_ForceToUTF8 = IsNativeUTF8();
+  // printf("\nDLLExports2.cpp::Init_ForceToUTF8 =%d\n", g_ForceToUTF8 ? 1 : 0);
+}
+
+#endif // _WIN32
+
+
 Z7_DEFINE_GUID(CLSID_CArchiveHandler,
     k_7zip_GUID_Data1,
     k_7zip_GUID_Data2,
