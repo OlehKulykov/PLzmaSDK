@@ -38,17 +38,13 @@ int my_chown(CFSTR path, uid_t owner, gid_t group);
 
 #endif
 
-#if !defined(LIBPLZMA)
 bool SetFileAttrib_PosixHighDetect(CFSTR path, DWORD attrib);
-#endif // !LIBPLZMA
 
 
 bool MyMoveFile(CFSTR existFileName, CFSTR newFileName);
 
 #ifndef UNDER_CE
-#if !defined(LIBPLZMA)
 bool MyCreateHardLink(CFSTR newFileName, CFSTR existFileName);
-#endif // !LIBPLZMA
 #endif
 
 bool RemoveDir(CFSTR path);
