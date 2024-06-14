@@ -1,4 +1,4 @@
-﻿1.  7z  Store
+1.  7z  Store
 2.  7z  Normal LZMA2 
 3.  7z  Ultra  LZMA2
 4.  7z  Ultra  LZMA
@@ -15,3 +15,4 @@
 15. tar Store
 16. tar.xz Ultra LZMA2 only, nopass only 
 17. shutuptakemoney.jpg.xz Ultra LZMA2 only, nopass only
+18. 7z  Ultra LZMA2 parts
