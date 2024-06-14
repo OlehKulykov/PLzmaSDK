@@ -2,7 +2,6 @@
 
 #include "StdAfx.h"
 
-#if !defined(LIBPLZMA_NO_TAR)
 // #include <stdio.h>
 
 #include "../../../Common/ComTry.h"
@@ -258,8 +257,8 @@ Z7_COM7F_IMF(CHandler::UpdateItems(ISequentialOutStream *outStream, UInt32 numIt
 
       RINOK(GetPropString(callback, i, kpidPath, ui.Name, codePage, utfFlags, true))
       if (ui.IsDir && !ui.Name.IsEmpty() && ui.Name.Back() != '/')
-        ui.Name += '/';
-      // ui.Name += '/'; // for debug
+        ui.Name.Add_Slash();
+      // ui.Name.Add_Slash(); // for debug
 
       if (_posixMode)
       {
@@ -331,5 +330,3 @@ Z7_COM7F_IMF(CHandler::UpdateItems(ISequentialOutStream *outStream, UInt32 numIt
 }
 
 }}
-
-#endif // !LIBPLZMA_NO_TAR

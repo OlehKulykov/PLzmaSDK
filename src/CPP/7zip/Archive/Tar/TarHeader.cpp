@@ -2,8 +2,6 @@
 
 #include "StdAfx.h"
 
-#if !defined(LIBPLZMA_NO_TAR)
-
 #include "TarHeader.h"
 
 namespace NArchive {
@@ -99,5 +97,3 @@ posix (pax) - POSIX.1-2001
 */
 
 }}}
-
-#endif // !LIBPLZMA_NO_TAR

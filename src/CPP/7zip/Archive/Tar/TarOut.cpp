@@ -2,8 +2,6 @@
 
 #include "StdAfx.h"
 
-#if !defined(LIBPLZMA_NO_TAR)
-
 #include "../../../../C/7zCrc.h"
 
 #include "../../../Common/IntToString.h"
@@ -234,7 +232,7 @@ static void AddPaxLine(AString &s, const char *name, const AString &val)
   s += n;
   s.Add_Space();
   s += name;
-  s += '=';
+  s.Add_Char('=');
   s += val;
   s.Add_LF();
 }
@@ -644,5 +642,3 @@ HRESULT COutArchive::WriteFinishHeader()
 }
 
 }}
-
-#endif // !LIBPLZMA_NO_TAR
