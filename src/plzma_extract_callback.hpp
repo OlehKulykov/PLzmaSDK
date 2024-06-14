@@ -77,6 +77,7 @@ namespace plzma {
         
         void process();
         
+    protected:
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(ExtractCallback)
         
     public:

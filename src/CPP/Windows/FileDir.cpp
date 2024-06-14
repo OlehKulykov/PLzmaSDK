@@ -16,7 +16,7 @@
 #include <sys/types.h>
 
 #include "../Common/StringConvert.h"
-#include "../Common/C_FileIO.h"
+//#include "../Common/C_FileIO.h" // empty header
 #endif
 
 #include "FileDir.h"

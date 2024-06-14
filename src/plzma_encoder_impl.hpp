@@ -132,6 +132,7 @@ namespace plzma {
         bool hasOption(const Option option) const;
         void setOption(const Option option, const bool set);
         
+    protected:
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(EncoderImpl)
         
     public:

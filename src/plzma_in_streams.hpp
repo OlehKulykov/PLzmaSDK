@@ -49,7 +49,6 @@ namespace plzma {
         public CMyUnknownImp {
     private:
         friend struct SharedPtr<InStreamBase>;
-        LIBPLZMA_NON_COPYABLE_NON_MOVABLE(InStreamBase)
         
     protected:
         LIBPLZMA_MUTEX(mutable _mutex)
@@ -57,6 +56,8 @@ namespace plzma {
         virtual void retain() override final;
         virtual void release() override final;
         virtual void * base() noexcept override final { return this; }
+        
+        LIBPLZMA_NON_COPYABLE_NON_MOVABLE(InStreamBase)
         
     public:
         virtual void open() = 0;

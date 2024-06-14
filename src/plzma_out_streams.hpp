@@ -47,7 +47,6 @@ namespace plzma {
         public CMyUnknownImp {
     private:
         friend struct SharedPtr<OutStreamBase>;
-        LIBPLZMA_NON_COPYABLE_NON_MOVABLE(OutStreamBase)
         
     protected:
         LIBPLZMA_MUTEX(mutable _mutex)
@@ -55,6 +54,8 @@ namespace plzma {
         virtual void retain();
         virtual void release();
         virtual void * base() noexcept { return this; }
+            
+        LIBPLZMA_NON_COPYABLE_NON_MOVABLE(OutStreamBase)
         
     public:
         virtual void setTimestamp(const plzma_path_timestamp & timestamp) = 0;
@@ -109,6 +110,7 @@ namespace plzma {
         uint64_t _offset = 0;
         bool _opened = false;
         
+    protected:
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(OutMemStream)
         
     public:
@@ -135,6 +137,7 @@ namespace plzma {
     private:
         bool _opened;
         
+    protected:
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(OutTestStream)
     
     public:
