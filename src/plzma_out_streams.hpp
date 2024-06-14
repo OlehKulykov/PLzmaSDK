@@ -84,7 +84,8 @@ namespace plzma {
         
     public:
         Z7_COM_UNKNOWN_IMP_1(IOutStream)
-        
+    
+    public:
         STDMETHOD(Write)(const void * data, UInt32 size, UInt32 * processedSize) throw() override final;
         STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) throw() override final;
         STDMETHOD(SetSize)(UInt64 newSize) throw() override final;
@@ -116,6 +117,7 @@ namespace plzma {
     public:
         Z7_COM_UNKNOWN_IMP_1(IOutStream)
         
+    public:
         STDMETHOD(Write)(const void * data, UInt32 size, UInt32 * processedSize) throw() override final;
         STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) throw() override final;
         STDMETHOD(SetSize)(UInt64 newSize) throw() override final;
@@ -143,6 +145,7 @@ namespace plzma {
     public:
         Z7_COM_UNKNOWN_IMP_1(IOutStream)
         
+    public:
         STDMETHOD(Write)(const void * data, UInt32 size, UInt32 * processedSize) throw() override final;
         STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) throw() override final;
         STDMETHOD(SetSize)(UInt64 newSize) throw() override final;
@@ -186,6 +189,7 @@ namespace plzma {
     public:
         Z7_COM_UNKNOWN_IMP_1(IOutStream)
         
+    public:
         STDMETHOD(Write)(const void * data, UInt32 size, UInt32 * processedSize) throw() override final;
         STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) throw() override final;
         STDMETHOD(SetSize)(UInt64 newSize) throw() override final;
