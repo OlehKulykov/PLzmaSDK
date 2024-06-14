@@ -24,6 +24,7 @@ jobs:
         os: [macos-latest, ubuntu-latest, windows-latest]
         build_type: [Release]
         c_compiler: [gcc, clang, cl]
+        architecture: [x86_64, aarch64]
         include:
           - os: macos-latest
             c_compiler: clang
