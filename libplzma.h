@@ -1611,3 +1611,8 @@ LIBPLZMA_C_API(bool) plzma_encoder_compress(plzma_encoder * LIBPLZMA_NONNULL enc
 LIBPLZMA_C_API(void) plzma_encoder_release(plzma_encoder * LIBPLZMA_NONNULL encoder);
 
 #endif // !__LIBPLZMA_H__
+
+
+
+
+
