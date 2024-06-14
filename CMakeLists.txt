@@ -1026,3 +1026,4 @@ if(LIBPLZMA_OPT_TESTS)
   # This must always be last!
   include(CPack)
 endif(LIBPLZMA_OPT_TESTS)
+
