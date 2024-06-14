@@ -10,7 +10,7 @@
 namespace NArchive {
 namespace N7z {
 
-struct CBindInfoEx final : public NCoderMixer2::CBindInfo
+struct CBindInfoEx: public NCoderMixer2::CBindInfo
 {
   CRecordVector<CMethodId> CoderMethodIDs;
 
@@ -21,7 +21,7 @@ struct CBindInfoEx final : public NCoderMixer2::CBindInfo
   }
 };
 
-class CDecoder final
+class CDecoder
 {
   bool _bindInfoPrev_Defined;
   #ifdef USE_MIXER_ST

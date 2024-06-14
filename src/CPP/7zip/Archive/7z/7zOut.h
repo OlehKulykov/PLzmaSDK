@@ -16,39 +16,48 @@ namespace N7z {
 
 const unsigned k_StartHeadersRewriteSize = 32;
 
-class CWriteBufferLoc final
+class CWriteBufferLoc
 {
   Byte *_data;
-  size_t _size;
-  size_t _pos;
+  Byte *_dataLim;
+  Byte *_dataBase;
 public:
-  CWriteBufferLoc(): _size(0), _pos(0) {}
+  // CWriteBufferLoc(): _data(NULL), _dataLim(NULL), _dataBase(NULL) {}
   void Init(Byte *data, size_t size)
   {
     _data = data;
-    _size = size;
-    _pos = 0;
+    _dataBase = data;
+    _dataLim = data + size;
+  }
+  
+  Byte *GetDest_and_Update(size_t size)
+  {
+    Byte *dest = _data;
+    if (size > (size_t)(_dataLim - dest))
+      throw 1;
+    _data = dest + size;
+    return dest;
   }
   void WriteBytes(const void *data, size_t size)
   {
     if (size == 0)
       return;
-    if (size > _size - _pos)
-      throw 1;
-    memcpy(_data + _pos, data, size);
-    _pos += size;
+    Byte *dest = GetDest_and_Update(size);
+    memcpy(dest, data, size);
   }
   void WriteByte(Byte b)
   {
-    if (_size == _pos)
+    Byte *dest = _data;
+    if (dest == _dataLim)
       throw 1;
-    _data[_pos++] = b;
+    *dest++ = b;
+    _data = dest;
   }
-  size_t GetPos() const { return _pos; }
+  size_t GetPos() const { return (size_t)(_data - _dataBase); }
 };
 
 
-struct CHeaderOptions final
+struct CHeaderOptions
 {
   bool CompressMainHeader;
   /*
@@ -68,7 +77,7 @@ struct CHeaderOptions final
 };
 
 
-struct CFileItem2 final
+struct CFileItem2
 {
   UInt64 CTime;
   UInt64 ATime;
@@ -122,7 +131,7 @@ struct COutFolders
 };
 
 
-struct CArchiveDatabaseOut final : public COutFolders
+struct CArchiveDatabaseOut: public COutFolders
 {
   CRecordVector<UInt64> PackSizes;
   CUInt32DefVector PackCRCs;
@@ -240,7 +249,7 @@ struct CArchiveDatabaseOut final : public COutFolders
 };
 
 
-class COutArchive final
+class COutArchive
 {
   HRESULT WriteDirect(const void *data, UInt32 size) { return WriteStream(SeqStream, data, size); }
   
@@ -248,14 +257,20 @@ class COutArchive final
   void WriteBytes(const void *data, size_t size);
   void WriteBytes(const CByteBuffer &data) { WriteBytes(data, data.Size()); }
   void WriteByte(Byte b);
-  void WriteUInt32(UInt32 value);
-  void WriteUInt64(UInt64 value);
+  void WriteByte_ToStream(Byte b)
+  {
+    _outByte.WriteByte(b);
+    // _crc = CRC_UPDATE_BYTE(_crc, b);
+  }
+  // void WriteUInt32(UInt32 value);
+  // void WriteUInt64(UInt64 value);
   void WriteNumber(UInt64 value);
   void WriteID(UInt64 value) { WriteNumber(value); }
 
   void WriteFolder(const CFolder &folder);
   HRESULT WriteFileHeader(const CFileItem &itemInfo);
-  void WriteBoolVector(const CBoolVector &boolVector);
+  void Write_BoolVector(const CBoolVector &boolVector);
+  void Write_BoolVector_numDefined(const CBoolVector &boolVector, unsigned numDefined);
   void WritePropBoolVector(Byte id, const CBoolVector &boolVector);
 
   void WriteHashDigests(const CUInt32DefVector &digests);
@@ -277,7 +292,8 @@ class COutArchive final
 
   void SkipToAligned(unsigned pos, unsigned alignShifts);
   void WriteAlignedBools(const CBoolVector &v, unsigned numDefined, Byte type, unsigned itemSizeShifts);
-  void WriteUInt64DefVector(const CUInt64DefVector &v, Byte type);
+  void Write_UInt32DefVector_numDefined(const CUInt32DefVector &v, unsigned numDefined);
+  void Write_UInt64DefVector_type(const CUInt64DefVector &v, Byte type);
 
   HRESULT EncodeStream(
       DECL_EXTERNAL_CODECS_LOC_VARS
@@ -294,7 +310,7 @@ class COutArchive final
   #ifdef Z7_7Z_VOL
   bool _endMarker;
   #endif
-  UInt32 _crc;
+  // UInt32 _crc;
   size_t _countSize;
   CWriteBufferLoc _outByte2;
   COutBuffer _outByte;
@@ -310,7 +326,7 @@ class COutArchive final
 public:
   CMyComPtr<ISequentialOutStream> SeqStream;
 
-  COutArchive() { _outByte.Create(1 << 16); }
+  // COutArchive();
   HRESULT Create_and_WriteStartPrefix(ISequentialOutStream *stream /* , bool endMarker */);
   void Close();
   HRESULT WriteDatabase(

@@ -17,7 +17,7 @@ typedef UInt32 CNum;
 const CNum kNumMax     = 0x7FFFFFFF;
 const CNum kNumNoIndex = 0xFFFFFFFF;
 
-struct CCoderInfo final
+struct CCoderInfo
 {
   CMethodId MethodID;
   CByteBuffer Props;
@@ -27,7 +27,7 @@ struct CCoderInfo final
 };
 
 
-struct CBond final
+struct CBond
 {
   UInt32 PackIndex;
   UInt32 UnpackIndex;
@@ -90,7 +90,7 @@ public:
 };
 
 
-struct CUInt32DefVector final
+struct CUInt32DefVector
 {
   CBoolVector Defs;
   CRecordVector<UInt32> Vals;
@@ -129,7 +129,7 @@ struct CUInt32DefVector final
   bool CheckSize(unsigned size) const { return Defs.Size() == size || Defs.Size() == 0; }
 
   void SetItem(unsigned index, bool defined, UInt32 value);
-  void if_NonEmpty_FillResedue_with_false(unsigned numItems)
+  void if_NonEmpty_FillResidue_with_false(unsigned numItems)
   {
     if (Defs.Size() != 0 && Defs.Size() < numItems)
       SetItem(numItems - 1, false, 0);
@@ -137,7 +137,7 @@ struct CUInt32DefVector final
 };
 
 
-struct CUInt64DefVector final
+struct CUInt64DefVector
 {
   CBoolVector Defs;
   CRecordVector<UInt64> Vals;
@@ -171,7 +171,7 @@ struct CUInt64DefVector final
 };
 
 
-struct CFileItem final
+struct CFileItem
 {
   UInt64 Size;
   UInt32 Crc;
