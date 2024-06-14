@@ -1,10 +1,8 @@
 /* 7zTypes.h -- Basic types
-2023-04-02 : Igor Pavlov : Public domain */
+2024-01-24 : Igor Pavlov : Public domain */
 
 #ifndef ZIP7_7Z_TYPES_H
 #define ZIP7_7Z_TYPES_H
-
-#include "../plzma_private.h"
 
 #ifdef _WIN32
 /* #include <windows.h> */
@@ -44,7 +42,7 @@ EXTERN_C_BEGIN
 #define SZ_ERROR_ARCHIVE 16
 #define SZ_ERROR_NO_ARCHIVE 17
 
-typedef int32_t SRes;
+typedef int SRes;
 
 
 #ifdef _MSC_VER
@@ -66,7 +64,7 @@ typedef int32_t SRes;
 #ifdef _WIN32
 
 /* typedef DWORD WRes; */
-typedef uint32_t WRes;
+typedef unsigned WRes;
 #define MY_SRes_HRESULT_FROM_WRes(x) HRESULT_FROM_WIN32(x)
 
 // #define MY_HRES_ERROR_INTERNAL_ERROR  MY_SRes_HRESULT_FROM_WRes(ERROR_INTERNAL_ERROR)
@@ -74,7 +72,7 @@ typedef uint32_t WRes;
 #else // _WIN32
 
 // #define ENV_HAVE_LSTAT
-typedef int32_t WRes;
+typedef int WRes;
 
 // (FACILITY_ERRNO = 0x800) is 7zip's FACILITY constant to represent (errno) errors in HRESULT
 #define MY_FACILITY_ERRNO  0x800
@@ -170,18 +168,24 @@ typedef int32_t WRes;
 #define RINOK_WRes(x) { const WRes _result_ = (x); if (_result_ != 0) return _result_; }
 #endif
 
-typedef uint8_t Byte;
-typedef int16_t Int16;
-typedef uint16_t UInt16;
+typedef unsigned char Byte;
+typedef short Int16;
+typedef unsigned short UInt16;
 
-typedef int32_t Int32;
-typedef uint32_t UInt32;
+#ifdef Z7_DECL_Int32_AS_long
+typedef long Int32;
+typedef unsigned long UInt32;
+#else
+typedef int Int32;
+typedef unsigned int UInt32;
+#endif
+
 
 #ifndef _WIN32
 
-typedef int32_t INT;
+typedef int INT;
 typedef Int32 INT32;
-typedef uint32_t UINT;
+typedef unsigned int UINT;
 typedef UInt32 UINT32;
 typedef INT32 LONG;   // LONG, ULONG and DWORD must be 32-bit for _WIN32 compatibility
 typedef UINT32 ULONG;
@@ -197,10 +201,10 @@ typedef void *LPVOID;
 // typedef void VOID;
 // typedef ULONG_PTR DWORD_PTR, *PDWORD_PTR;
 // gcc / clang on Unix  : sizeof(long==sizeof(void*) in 32 or 64 bits)
-typedef intptr_t INT_PTR;
-typedef uintptr_t UINT_PTR;
-typedef intptr_t LONG_PTR;
-typedef uintptr_t DWORD_PTR;
+typedef          long  INT_PTR;
+typedef unsigned long  UINT_PTR;
+typedef          long  LONG_PTR;
+typedef unsigned long  DWORD_PTR;
 
 typedef size_t SIZE_T;
 
@@ -212,8 +216,8 @@ typedef size_t SIZE_T;
 
 #ifdef Z7_DECL_Int64_AS_long
 
-typedef int64_t Int64;
-typedef uint64_t UInt64;
+typedef long Int64;
+typedef unsigned long UInt64;
 
 #else
 
@@ -226,8 +230,8 @@ typedef unsigned __int64 UInt64;
 typedef int64_t Int64;
 typedef uint64_t UInt64;
 #else
-typedef int64_t Int64;
-typedef uint64_t UInt64;
+typedef long long int Int64;
+typedef unsigned long long int UInt64;
 // #define UINT64_CONST(n) n ## ULL
 #endif
 #endif
@@ -237,7 +241,11 @@ typedef uint64_t UInt64;
 #define UINT64_CONST(n) n
 
 
+#ifdef Z7_DECL_SizeT_AS_unsigned_int
+typedef unsigned int SizeT;
+#else
 typedef size_t SizeT;
+#endif
 
 /*
 #if (defined(_MSC_VER) && _MSC_VER <= 1200)
@@ -522,20 +530,20 @@ struct ISzAlloc
 #define Z7_CONTAINER_FROM_VTBL_CLS(ptr, type, m) Z7_CONTAINER_FROM_VTBL(ptr, type, m)
 */
 #if defined (__clang__) || defined(__GNUC__)
-#define Z7_DIAGNOSCTIC_IGNORE_BEGIN_CAST_QUAL \
+#define Z7_DIAGNOSTIC_IGNORE_BEGIN_CAST_QUAL \
   _Pragma("GCC diagnostic push") \
   _Pragma("GCC diagnostic ignored \"-Wcast-qual\"")
-#define Z7_DIAGNOSCTIC_IGNORE_END_CAST_QUAL \
+#define Z7_DIAGNOSTIC_IGNORE_END_CAST_QUAL \
   _Pragma("GCC diagnostic pop")
 #else
-#define Z7_DIAGNOSCTIC_IGNORE_BEGIN_CAST_QUAL
-#define Z7_DIAGNOSCTIC_IGNORE_END_CAST_QUAL
+#define Z7_DIAGNOSTIC_IGNORE_BEGIN_CAST_QUAL
+#define Z7_DIAGNOSTIC_IGNORE_END_CAST_QUAL
 #endif
 
 #define Z7_CONTAINER_FROM_VTBL_TO_DECL_VAR(ptr, type, m, p) \
-  Z7_DIAGNOSCTIC_IGNORE_BEGIN_CAST_QUAL \
+  Z7_DIAGNOSTIC_IGNORE_BEGIN_CAST_QUAL \
   type *p = Z7_CONTAINER_FROM_VTBL(ptr, type, m); \
-  Z7_DIAGNOSCTIC_IGNORE_END_CAST_QUAL
+  Z7_DIAGNOSTIC_IGNORE_END_CAST_QUAL
 
 #define Z7_CONTAINER_FROM_VTBL_TO_DECL_VAR_pp_vt_p(type) \
   Z7_CONTAINER_FROM_VTBL_TO_DECL_VAR(pp, type, vt, p)
