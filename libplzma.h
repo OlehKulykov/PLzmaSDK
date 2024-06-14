@@ -1612,7 +1612,3 @@ LIBPLZMA_C_API(void) plzma_encoder_release(plzma_encoder * LIBPLZMA_NONNULL enco
 
 #endif // !__LIBPLZMA_H__
 
-
-
-
-
