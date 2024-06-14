@@ -658,3 +658,4 @@ void plzma_print_memory(int line, const void * LIBPLZMA_NULLABLE mem, const size
     fflush(stdout);
 }
 #endif // #if 0
+
