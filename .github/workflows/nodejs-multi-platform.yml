@@ -1,1 +1,23 @@
 # https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Node.js CI
+
+on:
+  push:
+    branches: [ "master", "dev", "tmp" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: ['13.x', '16.x', '20.x']
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+      - run: npm ci
+      - run: npm run build --if-present
+      - run: npm test
