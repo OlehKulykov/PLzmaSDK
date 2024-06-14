@@ -4,7 +4,7 @@
 
 #include "../../../Common/StringToInt.h"
 
-//#include "../Common/ParseProperties.h" // Empty header
+#include "../Common/ParseProperties.h"
 
 #include "HandlerOut.h"
 
