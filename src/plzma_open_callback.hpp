@@ -59,6 +59,7 @@ namespace plzma {
         
         SharedPtr<Item> initialItemAt(const plzma_size_t index);
         
+    protected:
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(OpenCallback)
         
     public:

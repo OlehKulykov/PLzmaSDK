@@ -78,6 +78,7 @@ namespace plzma {
         Path _path;
         FILE * _file = nullptr;
         
+    protected:
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(InFileStream)
         
     public:
@@ -107,6 +108,7 @@ namespace plzma {
         UInt64 _offset = 0;
         bool _opened = false;
         
+    protected:
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(InMemStream)
         
     public:
@@ -136,6 +138,7 @@ namespace plzma {
         plzma_in_stream_read_callback _readCallback = nullptr;
         bool _opened = false;
         
+    protected:
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(InCallbackStream)
         
     public:
@@ -165,12 +168,12 @@ namespace plzma {
         CMultiStream _stream;
         bool _opened = false;
         
+    protected:
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(InMultiStream)
         
     public:
         Z7_COM_UNKNOWN_IMP_1(IInStream)
         
-    public:
         STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) throw() override final;
         STDMETHOD(Read)(void * data, UInt32 size, UInt32 * processedSize) throw() override final;
         
