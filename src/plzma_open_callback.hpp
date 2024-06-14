@@ -64,7 +64,8 @@ namespace plzma {
         
     public:
         Z7_COM_UNKNOWN_IMP_3(IArchiveOpenCallback, ICryptoGetTextPassword, ICryptoGetTextPassword2)
-        
+    
+    public:
         // IArchiveOpenCallback
         STDMETHOD(SetTotal)(const UInt64 * files, const UInt64 * bytes) throw() override final;
         STDMETHOD(SetCompleted)(const UInt64 * files, const UInt64 * bytes) throw() override final;

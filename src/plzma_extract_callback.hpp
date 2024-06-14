@@ -83,6 +83,7 @@ namespace plzma {
     public:
         Z7_COM_UNKNOWN_IMP_4(IArchiveExtractCallbackMessage2, ICryptoGetTextPassword, ICryptoGetTextPassword2, ICompressProgressInfo)
         
+    public:
         // IProgress
         STDMETHOD(SetTotal)(UInt64 total) throw() override final;
         STDMETHOD(SetCompleted)(const UInt64 *completeValue) throw() override final;
