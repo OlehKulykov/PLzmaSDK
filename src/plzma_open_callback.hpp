@@ -94,4 +94,3 @@ namespace plzma {
 } // namespace plzma
 
 #endif // !__PLZMA_OPEN_CALLBACK_HPP__
-
