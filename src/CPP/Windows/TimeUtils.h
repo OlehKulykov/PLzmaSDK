@@ -101,12 +101,14 @@ Int64 FileTime_To_UnixTime64_and_Quantums(const FILETIME &ft, UInt32 &quantums) 
 bool GetSecondsSince1601(unsigned year, unsigned month, unsigned day,
   unsigned hour, unsigned min, unsigned sec, UInt64 &resSeconds) throw();
 
+#if !defined(LIBPLZMA)
 void GetCurUtc_FiTime(CFiTime &ft) throw();
 #ifdef _WIN32
 #define GetCurUtcFileTime GetCurUtc_FiTime
 #else
 void GetCurUtcFileTime(FILETIME &ft) throw();
 #endif
+#endif // LIBPLZMA
 
 }}
 

@@ -267,6 +267,7 @@ bool GetSecondsSince1601(unsigned year, unsigned month, unsigned day,
 // #pragma message("ZIP7_USE_clock_gettime")
 #endif
 
+#if !defined(LIBPLZMA)
 void GetCurUtc_FiTime(CFiTime &ft) throw()
 {
  #ifdef _WIN32
@@ -314,6 +315,7 @@ void GetCurUtc_FiTime(CFiTime &ft) throw()
 
  #endif
 }
+#endif // LIBPLZMA
 
 #ifndef _WIN32
 void GetCurUtcFileTime(FILETIME &ft) throw()

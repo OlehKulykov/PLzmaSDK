@@ -109,7 +109,7 @@ void CFileInfoBase::ClearBase() throw()
  #endif
 }
 
-
+#if !defined(LIBPLZMA)
 bool CFileInfoBase::SetAs_StdInFile()
 {
   ClearBase();
@@ -188,6 +188,7 @@ bool CFileInfoBase::SetAs_StdInFile()
 
   return true;
 }
+#endif // LIBPLZMA
 
 bool CFileInfo::IsDots() const throw()
 {

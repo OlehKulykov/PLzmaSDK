@@ -99,7 +99,9 @@ public:
 
   CFileInfoBase() { ClearBase(); }
   void ClearBase() throw();
+#if !defined(LIBPLZMA)
   bool SetAs_StdInFile();
+#endif // LIBPLZMA
 
  #ifdef _WIN32
  
