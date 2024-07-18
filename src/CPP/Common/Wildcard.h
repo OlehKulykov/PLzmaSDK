@@ -30,7 +30,7 @@ bool IsDriveColonName(const wchar_t *s);
 unsigned GetNumPrefixParts_if_DrivePath(UStringVector &pathParts);
 #endif
 
-struct CItem Z7_final
+struct CItem
 {
   UStringVector PathParts;
   bool Recursive;
@@ -57,7 +57,7 @@ const Byte kMark_FileOrDir = 0;
 const Byte kMark_StrictFile = 1;
 const Byte kMark_StrictFile_IfWildcard = 2;
 
-struct CCensorPathProps Z7_final
+struct CCensorPathProps
 {
   bool Recursive;
   bool WildcardMatching;
@@ -170,7 +170,7 @@ enum ECensorPathMode
 };
 
 
-struct CCensorPath Z7_final
+struct CCensorPath
 {
   UString Path;
   bool Include;

@@ -6,7 +6,7 @@
 #include "MyBuffer.h"
 #include "MyString.h"
 
-struct CUtf8Check Z7_final
+struct CUtf8Check
 {
   // Byte MaxByte;     // in original src stream
   bool NonUtf;

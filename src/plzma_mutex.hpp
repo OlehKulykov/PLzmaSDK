@@ -61,6 +61,7 @@ namespace plzma {
 #elif defined(LIBPLZMA_POSIX)
         mutable pthread_mutex_t _mutex;
 #endif
+    protected:
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(Mutex)
         
     public:
@@ -118,6 +119,7 @@ namespace plzma {
         Mutex & _mutex;
         bool _locked = true;
         
+    protected:
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(LockGuard)
         
     public:
@@ -150,6 +152,7 @@ namespace plzma {
         HRESULT _res = S_OK;
         bool _locked = true;
         
+    protected:
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(FailableLockGuard)
         
     public:

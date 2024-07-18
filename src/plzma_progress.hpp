@@ -141,6 +141,7 @@ namespace plzma {
                               _progress);
         }
         
+    protected:
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(Progress)
         
     public:

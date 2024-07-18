@@ -109,21 +109,21 @@ public:
 
   CFilterCoder(bool encodeMode);
 
-  struct C_InStream_Releaser Z7_final
+  struct C_InStream_Releaser
   {
     CFilterCoder *FilterCoder;
     C_InStream_Releaser(): FilterCoder(NULL) {}
     ~C_InStream_Releaser() { if (FilterCoder) FilterCoder->ReleaseInStream(); }
   };
   
-  struct C_OutStream_Releaser Z7_final
+  struct C_OutStream_Releaser
   {
     CFilterCoder *FilterCoder;
     C_OutStream_Releaser(): FilterCoder(NULL) {}
     ~C_OutStream_Releaser() { if (FilterCoder) FilterCoder->ReleaseOutStream(); }
   };
 
-  struct C_Filter_Releaser Z7_final
+  struct C_Filter_Releaser
   {
     CFilterCoder *FilterCoder;
     C_Filter_Releaser(): FilterCoder(NULL) {}

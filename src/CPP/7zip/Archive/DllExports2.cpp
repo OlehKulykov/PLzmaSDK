@@ -21,6 +21,7 @@
 
 #include "IArchive.h"
 
+
 Z7_DEFINE_GUID(CLSID_CArchiveHandler,
     k_7zip_GUID_Data1,
     k_7zip_GUID_Data2,

@@ -28,7 +28,7 @@
 
 #ifdef Z7_EXTERNAL_CODECS
 
-struct CCodecInfoEx final
+struct CCodecInfoEx
 {
   CMethodId Id;
   AString Name;
@@ -40,7 +40,7 @@ struct CCodecInfoEx final
   CCodecInfoEx(): EncoderIsAssigned(false), DecoderIsAssigned(false), IsFilter(false) {}
 };
 
-struct CHasherInfoEx final
+struct CHasherInfoEx
 {
   CMethodId Id;
   AString Name;
@@ -58,7 +58,7 @@ struct CHasherInfoEx final
     return _externalCodecs.Load(); COM_TRY_END }
 #define IMPL_ISetCompressCodecsInfo  IMPL_ISetCompressCodecsInfo2(CHandler)
 
-struct CExternalCodecs final
+struct CExternalCodecs
 {
   CMyComPtr<ICompressCodecsInfo> GetCodecs;
   CMyComPtr<IHashers> GetHashers;

@@ -27,7 +27,7 @@ The difference for cases where Reading must be closed before Writing closing
   writer thread always will detect closing of reading in latest iteration after all data processing iterations
 */
 
-class CStreamBinder Z7_final
+class CStreamBinder
 {
   NWindows::NSynchronization::CAutoResetEvent _canRead_Event;
   // NWindows::NSynchronization::CAutoResetEvent _canWrite_Event;

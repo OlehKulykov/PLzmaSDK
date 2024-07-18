@@ -1,6 +1,6 @@
 
 #ifndef __CLZMA__TEST_FILES__CLZMA_TEST_FILES_H__
-#define __CLZMA__TEST_FILES__CLZMA_TEST_FILES_H__
+#define __CLZMA__TEST_FILES__CLZMA_TEST_FILES_H__ 1
 
 #include <stdio.h>
 #include <stddef.h>
@@ -38,4 +38,3 @@
 #include "file__names_txt.h"
 
 #endif
-

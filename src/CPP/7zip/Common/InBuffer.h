@@ -7,7 +7,7 @@
 #include "../IStream.h"
 
 #ifndef Z7_NO_EXCEPTIONS
-struct CInBufferException Z7_final : public CSystemException
+struct CInBufferException: public CSystemException
 {
   CInBufferException(HRESULT errorCode): CSystemException(errorCode) {}
 };
@@ -51,6 +51,7 @@ public:
   bool WasFinished() const { return _wasFinished; }
 
   void SetStream(ISequentialInStream *stream) { _stream = stream; }
+  void ClearStreamPtr() { _stream = NULL; }
   
   void SetBuf(Byte *buf, size_t bufSize, size_t end, size_t pos)
   {
@@ -94,11 +95,12 @@ public:
     return *_buf++;
   }
   
+  size_t ReadBytesPart(Byte *buf, size_t size);
   size_t ReadBytes(Byte *buf, size_t size);
   size_t Skip(size_t size);
 };
 
-class CInBuffer Z7_final : public CInBufferBase
+class CInBuffer: public CInBufferBase
 {
 public:
   ~CInBuffer() { Free(); }

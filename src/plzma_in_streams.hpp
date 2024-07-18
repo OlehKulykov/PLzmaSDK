@@ -49,7 +49,6 @@ namespace plzma {
         public CMyUnknownImp {
     private:
         friend struct SharedPtr<InStreamBase>;
-        LIBPLZMA_NON_COPYABLE_NON_MOVABLE(InStreamBase)
         
     protected:
         LIBPLZMA_MUTEX(mutable _mutex)
@@ -57,6 +56,8 @@ namespace plzma {
         virtual void retain() override final;
         virtual void release() override final;
         virtual void * base() noexcept override final { return this; }
+        
+        LIBPLZMA_NON_COPYABLE_NON_MOVABLE(InStreamBase)
         
     public:
         virtual void open() = 0;
@@ -77,11 +78,13 @@ namespace plzma {
         Path _path;
         FILE * _file = nullptr;
         
+    protected:
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(InFileStream)
         
     public:
         Z7_COM_UNKNOWN_IMP_1(IInStream)
-        
+    
+    public:
         STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) throw() override final;
         STDMETHOD(Read)(void * data, UInt32 size, UInt32 * processedSize) throw() override final;
         
@@ -106,11 +109,13 @@ namespace plzma {
         UInt64 _offset = 0;
         bool _opened = false;
         
+    protected:
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(InMemStream)
         
     public:
         Z7_COM_UNKNOWN_IMP_1(IInStream)
         
+    public:
         STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) throw() override final;
         STDMETHOD(Read)(void * data, UInt32 size, UInt32 * processedSize) throw() override final;
         
@@ -135,11 +140,13 @@ namespace plzma {
         plzma_in_stream_read_callback _readCallback = nullptr;
         bool _opened = false;
         
+    protected:
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(InCallbackStream)
         
     public:
         Z7_COM_UNKNOWN_IMP_1(IInStream)
         
+    public:
         STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) throw() override final;
         STDMETHOD(Read)(void * data, UInt32 size, UInt32 * processedSize) throw() override final;
         
@@ -164,6 +171,7 @@ namespace plzma {
         CMultiStream _stream;
         bool _opened = false;
         
+    protected:
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(InMultiStream)
         
     public:

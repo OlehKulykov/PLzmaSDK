@@ -105,7 +105,7 @@ public:
 };
 
 
-class CSingleMethodProps final : public COneMethodInfo, public CCommonMethodProps
+class CSingleMethodProps: public COneMethodInfo, public CCommonMethodProps
 {
   UInt32 _level;
 
@@ -125,7 +125,7 @@ public:
 
 #endif
 
-struct CHandlerTimeOptions final
+struct CHandlerTimeOptions
 {
   CBoolPair Write_MTime;
   CBoolPair Write_ATime;

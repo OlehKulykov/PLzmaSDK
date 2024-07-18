@@ -1,0 +1,22 @@
+# https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Node.js
+
+on:
+  push:
+    branches: [ "master", "dev", "tmp" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: ['13.x', '16.x', '20.x'] # min, dev, latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+      - run: npm run install
+      - run: npm run test

@@ -27,7 +27,7 @@ struct CTreeFolder
 };
 */
 
-struct CUpdateItem final
+struct CUpdateItem
 {
   int IndexInArchive;
   unsigned IndexInClient;
@@ -86,7 +86,7 @@ struct CUpdateItem final
   // UString GetExtension() const;
 };
 
-struct CUpdateOptions final
+struct CUpdateOptions
 {
   const CCompressionMethodMode *Method;
   const CCompressionMethodMode *HeaderMethod;
@@ -111,6 +111,25 @@ struct CUpdateOptions final
 
   CHeaderOptions HeaderOptions;
 
+  CUIntVector DisabledFilterIDs;
+
+  void Add_DisabledFilter_for_id(UInt32 id,
+      const CUIntVector &enabledFilters)
+  {
+    if (enabledFilters.FindInSorted(id) < 0)
+      DisabledFilterIDs.AddToUniqueSorted(id);
+  }
+
+  void SetFilterSupporting_ver_enabled_disabled(
+      UInt32 compatVer,
+      const CUIntVector &enabledFilters,
+      const CUIntVector &disabledFilters)
+  {
+    DisabledFilterIDs = disabledFilters;
+    if (compatVer < 2300) Add_DisabledFilter_for_id(k_ARM64, enabledFilters);
+    if (compatVer < 2402) Add_DisabledFilter_for_id(k_RISCV, enabledFilters);
+  }
+
   CUpdateOptions():
       Method(NULL),
       HeaderMethod(NULL),
@@ -128,7 +147,9 @@ struct CUpdateOptions final
       Need_MTime(false),
       Need_Attrib(false)
       // , Need_Crc(true)
-    {}
+  {
+    DisabledFilterIDs.Add(k_RISCV);
+  }
 };
 
 HRESULT Update(

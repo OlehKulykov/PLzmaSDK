@@ -33,11 +33,11 @@ set(PACKAGE "libplzma")
 set(CPACK_PACKAGE_NAME "${PACKAGE}")
 set(CPACK_PACKAGE_VERSION_MAJOR "1")
 set(CPACK_PACKAGE_VERSION_MINOR "4")
-set(CPACK_PACKAGE_VERSION_PATCH "3")
+set(CPACK_PACKAGE_VERSION_PATCH "4")
 set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}")
 set(CPACK_PACKAGE_VENDOR "olehkulykov@gmail.com")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PACKAGE} ${PACKAGE_VERSION}")
-set(SOVERSION "1.4.3")
+set(SOVERSION "1.4.4")
 set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
 set(VERSION "${CPACK_PACKAGE_VERSION}")
 
@@ -393,6 +393,7 @@ set(LIBPLZMA_INTERNAL_HEADERS
   src/CPP/7zip/PropID.h
   src/CPP/Common/AutoPtr.h
   src/CPP/Common/Common.h
+  src/CPP/Common/Common0.h
   src/CPP/Common/ComTry.h
   src/CPP/Common/Defs.h
   src/CPP/Common/DynamicBuffer.h
@@ -759,6 +760,7 @@ source_group("CPP/Common"
   FILES
   src/CPP/Common/AutoPtr.h
   src/CPP/Common/Common.h
+  src/CPP/Common/Common0.h
   src/CPP/Common/ComTry.h
   src/CPP/Common/CRC.cpp
   src/CPP/Common/CrcReg.cpp

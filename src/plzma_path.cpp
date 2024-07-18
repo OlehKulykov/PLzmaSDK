@@ -104,8 +104,6 @@ namespace plzma {
             clearPaths();
         }
         
-        LIBPLZMA_NON_COPYABLE_NON_MOVABLE(PathIteratorMSC)
-    
     protected:
         virtual void retain() noexcept override final {
             LIBPLZMA_RETAIN_IMPL(_referenceCounter)
@@ -114,6 +112,8 @@ namespace plzma {
         virtual void release() noexcept override final {
             LIBPLZMA_RELEASE_IMPL(_referenceCounter)
         }
+        
+        LIBPLZMA_NON_COPYABLE_NON_MOVABLE(PathIteratorMSC)
         
     public:
         virtual void close() noexcept override final {
@@ -228,8 +228,6 @@ namespace plzma {
             clearPaths();
         }
         
-        LIBPLZMA_NON_COPYABLE_NON_MOVABLE(PathIteratorPosix)
-        
     protected:
         virtual void retain() noexcept override final {
             LIBPLZMA_RETAIN_IMPL(_referenceCounter)
@@ -238,6 +236,8 @@ namespace plzma {
         virtual void release() noexcept override final {
             LIBPLZMA_RELEASE_IMPL(_referenceCounter)
         }
+        
+        LIBPLZMA_NON_COPYABLE_NON_MOVABLE(PathIteratorPosix)
         
     public:
         virtual void close() noexcept override final {

@@ -132,11 +132,13 @@ namespace plzma {
         bool hasOption(const Option option) const;
         void setOption(const Option option, const bool set);
         
+    protected:
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(EncoderImpl)
         
     public:
         Z7_COM_UNKNOWN_IMP_3(IArchiveUpdateCallback2, ICryptoGetTextPassword, ICryptoGetTextPassword2)
         
+    public:
         // IProgress
         STDMETHOD(SetTotal)(UInt64 size) throw() override final;
         STDMETHOD(SetCompleted)(const UInt64 * completeValue) throw() override final;

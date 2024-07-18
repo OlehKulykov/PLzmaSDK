@@ -16,8 +16,8 @@ class CMyComPtr
 #endif
 public:
 #if defined(LIBPLZMA)
-    CMyComPtr() noexcept {}
-    CMyComPtr(CMyComPtr<T> && lp) noexcept : _p(lp._p) { lp._p = nullptr; }
+  CMyComPtr() noexcept {}
+  CMyComPtr(CMyComPtr<T> && lp) noexcept : _p(lp._p) { lp._p = nullptr; }
 #else
   CMyComPtr(): _p(NULL) {}
 #endif
@@ -26,6 +26,7 @@ public:
   ~CMyComPtr() { if (_p) _p->Release(); }
   void Release() { if (_p) { _p->Release(); _p = NULL; } }
   operator T*() const {  return (T*)_p;  }
+  T* Interface() const {  return (T*)_p;  }
   // T& operator*() const {  return *_p; }
   T** operator&() { return &_p; }
   T* operator->() const { return _p; }
@@ -76,6 +77,112 @@ public:
     return _p->QueryInterface(iid, (void**)pp);
   }
 };
+
+
+template <class iface, class cls>
+class CMyComPtr2
+{
+  cls* _p;
+  
+  CMyComPtr2(const CMyComPtr2<iface, cls>& lp);
+  CMyComPtr2(cls* p);
+  CMyComPtr2(iface* p);
+  iface* operator=(const CMyComPtr2<iface, cls>& lp);
+  iface* operator=(cls* p);
+  iface* operator=(iface* p);
+public:
+  CMyComPtr2(): _p(NULL) {}
+  ~CMyComPtr2()
+  {
+    if (_p)
+    {
+      iface *ip = _p;
+      ip->Release();
+    }
+  }
+  // void Release() { if (_p) { (iface *)_p->Release(); _p = NULL; } }
+  cls* operator->() const { return _p; }
+  cls* ClsPtr() const { return _p; }
+  operator iface*() const
+  {
+    iface *ip = _p;
+    return ip;
+  }
+  iface* Interface() const
+  {
+    iface *ip = _p;
+    return ip;
+  }
+  // operator bool() const {  return _p != NULL; }
+  bool IsDefined() const {  return _p != NULL; }
+  void Create_if_Empty()
+  {
+    if (!_p)
+    {
+      _p = new cls;
+      iface *ip = _p;
+      ip->AddRef();
+    }
+  }
+  iface* Detach()
+  {
+    iface *ip = _p;
+    _p = NULL;
+    return ip;
+  }
+  void SetFromCls(cls *src)
+  {
+    if (src)
+    {
+      iface *ip = src;
+      ip->AddRef();
+    }
+    if (_p)
+    {
+      iface *ip = _p;
+      ip->Release();
+    }
+    _p = src;
+  }
+};
+
+
+template <class iface, class cls>
+class CMyComPtr2_Create
+{
+  cls* _p;
+
+  CMyComPtr2_Create(const CMyComPtr2_Create<iface, cls>& lp);
+  CMyComPtr2_Create(cls* p);
+  CMyComPtr2_Create(iface* p);
+  iface* operator=(const CMyComPtr2_Create<iface, cls>& lp);
+  iface* operator=(cls* p);
+  iface* operator=(iface* p);
+public:
+  CMyComPtr2_Create(): _p(new cls)
+  {
+    iface *ip = _p;
+    ip->AddRef();
+  }
+  ~CMyComPtr2_Create()
+  {
+    iface *ip = _p;
+    ip->Release();
+  }
+  cls* operator->() const { return _p; }
+  cls* ClsPtr() const { return _p; }
+  operator iface*() const
+  {
+    iface *ip = _p;
+    return ip;
+  }
+  iface* Interface() const
+  {
+    iface *ip = _p;
+    return ip;
+  }
+};
+
 
 #define Z7_DECL_CMyComPtr_QI_FROM(i, v, unk) \
   CMyComPtr<i> v; (unk)->QueryInterface(IID_ ## i, (void **)&v);
@@ -181,7 +288,7 @@ private:
 };
 
 
-class CMyComBSTR_Wipe Z7_final : public CMyComBSTR
+class CMyComBSTR_Wipe: public CMyComBSTR
 {
   Z7_CLASS_NO_COPY(CMyComBSTR_Wipe)
 public:
@@ -207,7 +314,7 @@ public:
 class CMyUnknownImp
 {
   Z7_CLASS_NO_COPY(CMyUnknownImp)
-public:
+protected:
   ULONG _m_RefCount;
   CMyUnknownImp(): _m_RefCount(0) {}
 
@@ -221,7 +328,7 @@ public:
 
 
 #define Z7_COM_QI_BEGIN \
-  public: STDMETHOD(QueryInterface) (REFGUID iid, void **outObject) throw() Z7_override Z7_final \
+  private: STDMETHOD(QueryInterface) (REFGUID iid, void **outObject) throw() Z7_override Z7_final \
     { *outObject = NULL;
 
 #define Z7_COM_QI_ENTRY(i) \
@@ -243,16 +350,56 @@ public:
   Z7_COM_QI_ENTRY_UNKNOWN(i) \
   Z7_COM_QI_ENTRY(i)
 
-#define Z7_COM_QI_END \
+
+#define Z7_COM_ADDREF_RELEASE_MT \
+  private: \
+  STDMETHOD_(ULONG, AddRef)() Z7_override Z7_final \
+    { return (ULONG)InterlockedIncrement((LONG *)&_m_RefCount); } \
+  STDMETHOD_(ULONG, Release)() Z7_override Z7_final \
+    { const LONG v = InterlockedDecrement((LONG *)&_m_RefCount); \
+      if (v != 0) return (ULONG)v; \
+      delete this;  return 0; }
+
+#define Z7_COM_QI_END_MT \
   else return E_NOINTERFACE; \
-  ++_m_RefCount; /* AddRef(); */ return S_OK; }
+  InterlockedIncrement((LONG *)&_m_RefCount); /* AddRef(); */ return S_OK; }
+
+// you can define Z7_COM_USE_ATOMIC,
+// if you want to call Release() from different threads (for example, for .NET code)
+// #define Z7_COM_USE_ATOMIC
+
+#if defined(Z7_COM_USE_ATOMIC) && !defined(Z7_ST)
+
+#ifndef _WIN32
+#if 0
+#include "../../C/Threads.h"
+#else
+EXTERN_C_BEGIN
+LONG InterlockedIncrement(LONG volatile *addend);
+LONG InterlockedDecrement(LONG volatile *addend);
+EXTERN_C_END
+#endif
+#endif // _WIN32
+
+#define Z7_COM_ADDREF_RELEASE  Z7_COM_ADDREF_RELEASE_MT
+#define Z7_COM_QI_END          Z7_COM_QI_END_MT
+
+#else // !Z7_COM_USE_ATOMIC
 
 #define Z7_COM_ADDREF_RELEASE \
   public: \
   STDMETHOD_(ULONG, AddRef)() throw() Z7_override Z7_final \
     { return ++_m_RefCount; } \
   STDMETHOD_(ULONG, Release)() throw() Z7_override Z7_final \
-    { if (--_m_RefCount != 0) return _m_RefCount;  delete this;  return 0; } \
+    { if (--_m_RefCount != 0) return _m_RefCount; \
+      delete this;  return 0; }
+
+#define Z7_COM_QI_END \
+  else return E_NOINTERFACE; \
+  ++_m_RefCount; /* AddRef(); */ return S_OK; }
+
+#endif // !Z7_COM_USE_ATOMIC
+
 
 #define Z7_COM_UNKNOWN_IMP_SPEC(i) \
   Z7_COM_QI_BEGIN \
@@ -383,7 +530,7 @@ public:
   public i1, \
   public CMyUnknownImp { \
   Z7_IFACES_IMP_UNK_1(i1) \
-  public:
+  private:
 
 #define Z7_CLASS_IMP_COM_2(c, i1, i2) \
   Z7_class_final(c) : \

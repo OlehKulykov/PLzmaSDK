@@ -28,7 +28,7 @@ public:
 
 #ifndef Z7_EXTRACT_ONLY
 
-class CEncoder Z7_final :
+class CEncoder Z7_final:
   public ICompressCoder2,
   public ICompressSetCoderProperties,
   public ICompressSetBufSize,
@@ -56,7 +56,7 @@ public:
 
 
 
-class CBaseDecoder : public CBaseCoder
+class CBaseDecoder: public CBaseCoder
 {
 protected:
   HRESULT _readRes[BCJ2_NUM_STREAMS];
