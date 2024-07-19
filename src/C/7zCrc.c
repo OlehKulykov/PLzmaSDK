@@ -14,6 +14,21 @@
 #define Z7_CRC_HW_FORCE
 #endif
 
+#if defined(LIBPLZMA)
+#if defined(Z7_CRC_HW_FORCE)
+#undef Z7_CRC_HW_FORCE
+#endif // Z7_CRC_HW_FORCE
+#if defined(Z7_CRC_HW_USE)
+#undef Z7_CRC_HW_USE
+#endif // Z7_CRC_HW_USE
+#if defined(__ARM_FEATURE_CRC32)
+#undef __ARM_FEATURE_CRC32
+#endif // __ARM_FEATURE_CRC32
+#if defined(__ARM_ARCH)
+#undef __ARM_ARCH
+#endif // __ARM_ARCH
+#endif // LIBPLZMA
+
 // #define Z7_CRC_DEBUG_BE
 #ifdef Z7_CRC_DEBUG_BE
 #undef MY_CPU_LE
@@ -170,6 +185,21 @@ Z7_DIAGNOSTIC_IGNORE_END_RESERVED_MACRO_IDENTIFIER
 
 #endif // non-ARM*
 
+
+#if defined(LIBPLZMA)
+#if defined(Z7_CRC_HW_FORCE)
+#undef Z7_CRC_HW_FORCE
+#endif // Z7_CRC_HW_FORCE
+#if defined(Z7_CRC_HW_USE)
+#undef Z7_CRC_HW_USE
+#endif // Z7_CRC_HW_USE
+#if defined(__ARM_FEATURE_CRC32)
+#undef __ARM_FEATURE_CRC32
+#endif // __ARM_FEATURE_CRC32
+#if defined(__ARM_ARCH)
+#undef __ARM_ARCH
+#endif // __ARM_ARCH
+#endif // LIBPLZMA
 
 
 #if defined(Z7_CRC_HW_USE)

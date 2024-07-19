@@ -4,6 +4,27 @@
 
 #include "../../../C/CpuArch.h"
 
+#if defined(LIBPLZMA)
+#if defined(Z7_CRC_HW_FORCE)
+#undef Z7_CRC_HW_FORCE
+#endif // Z7_CRC_HW_FORCE
+#if defined(Z7_CRC_HW_USE)
+#undef Z7_CRC_HW_USE
+#endif // Z7_CRC_HW_USE
+#if defined(__ARM_FEATURE_CRC32)
+#undef __ARM_FEATURE_CRC32
+#endif // __ARM_FEATURE_CRC32
+#if defined(__ARM_ARCH)
+#undef __ARM_ARCH
+#endif // __ARM_ARCH
+#if defined(MY_CPU_X86_OR_AMD64)
+#undef MY_CPU_X86_OR_AMD64
+#endif // MY_CPU_X86_OR_AMD64
+#if defined(MY_CPU_ARM_OR_ARM64)
+#undef MY_CPU_ARM_OR_ARM64
+#endif // MY_CPU_ARM_OR_ARM64
+#endif // LIBPLZMA
+
 #include "MyAes.h"
 
 namespace NCrypto {

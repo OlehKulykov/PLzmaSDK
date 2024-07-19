@@ -315,7 +315,6 @@ void GetCurUtc_FiTime(CFiTime &ft) throw()
 
  #endif
 }
-#endif // LIBPLZMA
 
 #ifndef _WIN32
 void GetCurUtcFileTime(FILETIME &ft) throw()
@@ -345,7 +344,7 @@ void GetCurUtcFileTime(FILETIME &ft) throw()
   ft.dwHighDateTime = (DWORD)(v >> 32);
 }
 #endif
-
+#endif // LIBPLZMA
 
 }}
 
