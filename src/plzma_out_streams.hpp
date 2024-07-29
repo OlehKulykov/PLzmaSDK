@@ -41,7 +41,7 @@
 
 namespace plzma {
 
-    class OutStreamBase :
+    class LIBPLZMA_CPP_CLASS_API OutStreamBase :
         public OutStream,
         public IOutStream,
         public CMyUnknownImp {
@@ -51,9 +51,9 @@ namespace plzma {
     protected:
         LIBPLZMA_MUTEX(mutable _mutex)
         
-        virtual void retain();
-        virtual void release();
-        virtual void * base() noexcept { return this; }
+        virtual void retain() override;
+        virtual void release() override;
+        virtual void * base() noexcept override { return this; }
             
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(OutStreamBase)
         
@@ -90,13 +90,13 @@ namespace plzma {
         STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) throw() override final;
         STDMETHOD(SetSize)(UInt64 newSize) throw() override final;
         
-        virtual void setTimestamp(const plzma_path_timestamp & timestamp) final;
-        virtual void open() final;
-        virtual void close() final;
+        virtual void setTimestamp(const plzma_path_timestamp & timestamp) override final;
+        virtual void open() override final;
+        virtual void close() override final;
         
         virtual bool opened() const final;
-        virtual bool erase(const plzma_erase eraseType = plzma_erase_none) final;
-        virtual RawHeapMemorySize copyContent() const final;
+        virtual bool erase(const plzma_erase eraseType = plzma_erase_none) override final;
+        virtual RawHeapMemorySize copyContent() const override final;
         
         OutFileStream(const Path & path);
         OutFileStream(Path && path);
@@ -122,10 +122,10 @@ namespace plzma {
         STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) throw() override final;
         STDMETHOD(SetSize)(UInt64 newSize) throw() override final;
         
-        virtual void setTimestamp(const plzma_path_timestamp & timestamp) final { }
-        virtual void open() final;
-        virtual void close() final;
-        virtual Exception * takeException() noexcept final;
+        virtual void setTimestamp(const plzma_path_timestamp & timestamp) override final { }
+        virtual void open() override final;
+        virtual void close() override final;
+        virtual Exception * takeException() noexcept override final;
         
         virtual bool opened() const override final;
         virtual bool erase(const plzma_erase eraseType = plzma_erase_none) override final;
@@ -150,13 +150,13 @@ namespace plzma {
         STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) throw() override final;
         STDMETHOD(SetSize)(UInt64 newSize) throw() override final;
         
-        virtual void setTimestamp(const plzma_path_timestamp & timestamp) final { }
-        virtual void open() final;
-        virtual void close() final;
+        virtual void setTimestamp(const plzma_path_timestamp & timestamp) override final { }
+        virtual void open() override final;
+        virtual void close() override final;
         
-        virtual bool opened() const final;
-        virtual bool erase(const plzma_erase eraseType = plzma_erase_none) final;
-        virtual RawHeapMemorySize copyContent() const final;
+        virtual bool opened() const override final;
+        virtual bool erase(const plzma_erase eraseType = plzma_erase_none) override final;
+        virtual RawHeapMemorySize copyContent() const override final;
         
         OutTestStream() = default;
         virtual ~OutTestStream() noexcept { }
@@ -176,9 +176,9 @@ namespace plzma {
         
         void clear();
         
-        virtual void retain() final { OutStreamBase::retain(); }
-        virtual void release() final { OutStreamBase::release(); }
-        virtual void * base() noexcept final { return this; }
+        virtual void retain() override final { OutStreamBase::retain(); }
+        virtual void release() override final { OutStreamBase::release(); }
+        virtual void * base() noexcept override final { return this; }
         
         virtual SharedPtr<OutStreamBase> addPart() = 0;
         virtual void checkPartsCount(const uint64_t partsCount) const;
@@ -194,16 +194,16 @@ namespace plzma {
         STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 * newPosition) throw() override final;
         STDMETHOD(SetSize)(UInt64 newSize) throw() override final;
         
-        virtual void setTimestamp(const plzma_path_timestamp & timestamp) final { }
-        virtual void open() final;
-        virtual void close() final;
-        virtual Exception * takeException() noexcept final;
+        virtual void setTimestamp(const plzma_path_timestamp & timestamp) override final { }
+        virtual void open() override final;
+        virtual void close() override final;
+        virtual Exception * takeException() noexcept override final;
         
-        virtual bool opened() const final;
+        virtual bool opened() const override final;
         virtual bool erase(const plzma_erase eraseType = plzma_erase_none) override;
-        virtual RawHeapMemorySize copyContent() const final;
+        virtual RawHeapMemorySize copyContent() const override final;
         
-        virtual OutStreamArray streams() const final;
+        virtual OutStreamArray streams() const override final;
         
         OutMultiStreamBase(const plzma_size_t partSize);
         OutMultiStreamBase() = delete;
@@ -219,14 +219,14 @@ namespace plzma {
         plzma_plzma_multi_stream_part_name_format _format = plzma_plzma_multi_stream_part_name_format_name_ext_00x;
         
     protected:
-        virtual SharedPtr<OutStreamBase> addPart() final;
-        virtual void checkPartsCount(const uint64_t partsCount) const final;
+        virtual SharedPtr<OutStreamBase> addPart() override final;
+        virtual void checkPartsCount(const uint64_t partsCount) const override final;
         void preparePath(const Path & path);
         
         LIBPLZMA_NON_COPYABLE_NON_MOVABLE(OutMultiFileStream)
         
     public:
-        virtual bool erase(const plzma_erase eraseType = plzma_erase_none) final;
+        virtual bool erase(const plzma_erase eraseType = plzma_erase_none) override final;
         
         OutMultiFileStream(const Path & dirPath,
                            const String & partName,
@@ -249,7 +249,7 @@ namespace plzma {
         friend struct SharedPtr<OutMultiMemStream>;
         
     protected:
-        virtual SharedPtr<OutStreamBase> addPart() final {
+        virtual SharedPtr<OutStreamBase> addPart() override final {
             const SharedPtr<OutStreamBase> stream(new OutMemStream());
             _parts.push(stream);
             return stream;

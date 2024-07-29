@@ -48,18 +48,25 @@
 #define RAND_MAX 0x7fffffff
 #endif
 
-#if defined(__clang__)
-  #if __has_feature(cxx_rtti)
-    #define RTTI_ENABLED 1
-  #endif
-#elif defined(__GNUG__)
-  #if defined(__GXX_RTTI)
-    #define RTTI_ENABLED 1
-  #endif
-#elif defined(_MSC_VER)
-  #if defined(_CPPRTTI)
-    #define RTTI_ENABLED 1
-  #endif
+#if __has_feature(cxx_rtti)
+#  define RTTI_ENABLED 1
+#elif (defined(__GXX_RTTI) && (__GXX_RTTI > 0))
+#  define RTTI_ENABLED 1
+#elif (defined(__cpp_rtti) && (__cpp_rtti > 0))
+// MinGW
+#  define RTTI_ENABLED 1
+#elif (defined(_CPPRTTI) && (_CPPRTTI > 0))
+// Defined as 1 if the /GR (Enable Run-Time Type Information) compiler option is set. Otherwise, undefined.
+// When /GR is on, the compiler defines the _CPPRTTI preprocessor macro.
+// By default, /GR is on. /GR- disables run-time type information.
+// However, /GR increases the size of the .rdata sections of your image.
+// If your code does not use dynamic_cast or typeid, /GR- may produce a smaller image.
+// https://learn.microsoft.com/en-us/cpp/build/reference/gr-enable-run-time-type-information
+#  define RTTI_ENABLED 1
+#endif
+
+#if defined(RTTI_ENABLED) && defined(LIBPLZMA_NO_CPP_RTTI)
+#  error "CMake rtti configuration error."
 #endif
 
 plzma_path_timestamp plzma_path_timestamp_now(void) {
@@ -87,12 +94,12 @@ uint64_t plzma_max_size(void) {
 #elif defined(ULONG_MAX)
     return static_cast<uint64_t>(ULONG_MAX);
 #else
-#error "Max size not defined."
+#  error "Max size not defined."
 #endif
 }
 
 void * LIBPLZMA_NULLABLE plzma_malloc(size_t size) {
-    return malloc(size);
+    return ::malloc(size);
 }
 
 void * LIBPLZMA_NULLABLE plzma_malloc_zero(size_t size) {
@@ -202,60 +209,71 @@ const char * LIBPLZMA_NONNULL plzma_version(void) {
 #if defined(LIBPLZMA_VERSION_BUILD)
     " (" LIBPLZMA_TOSTRING(LIBPLZMA_VERSION_BUILD) ")"
 #endif
-    
+
 #if defined(LIBPLZMA_STATIC)
     " : static"
 #elif defined(LIBPLZMA_SHARED)
     " : shared"
 #endif
-    
+
 #if defined(DEBUG)
     " : debug"
 #endif
-    
+
 #if defined(COCOAPODS)
     " : CocoaPods"
 #endif
-    
+
 #if defined(SWIFT_PACKAGE)
     " : Swift Package"
 #endif
-    
+
 #if defined(LIBPLZMA_HAVE_STD)
     " : std"
 #endif
-    
+
 #if defined(RTTI_ENABLED)
     " : rtti"
 #elif defined(LIBPLZMA_NO_CPP_RTTI)
     " : no rtti"
 #endif
-    
+
 #if defined(__TIMESTAMP__)
     " : " __TIMESTAMP__
 #else
-#if defined(__DATE__)
+#  if defined(__DATE__)
     " : " __DATE__
-#endif
-#if defined(__TIME__)
+#  endif
+#  if defined(__TIME__)
     " : " __TIME__
+#  endif
 #endif
+
+#if defined(LIBPLZMA_MSC)
+// https://learn.microsoft.com/en-us/cpp/overview/compiler-versions
+#  if defined(_MSC_FULL_VER)
+    " : MSVC " LIBPLZMA_TOSTRING(_MSC_FULL_VER)
+#  elif defined(_MSC_VER)
+    " : MSVC " LIBPLZMA_TOSTRING(_MSC_VER)
+#  else
+    " : MSVC"
+#  endif
 #endif
-    
-#if defined(_MSC_FULL_VER)
-    " : " LIBPLZMA_TOSTRING(_MSC_FULL_VER)
-#elif defined(_MSC_VER)
-    " : " LIBPLZMA_TOSTRING(_MSC_VER)
-#endif
-    
+
 #if defined(__VERSION__)
-#if defined(__GNUC__) && !defined(__clang__)
+#  if defined(LIBPLZMA_MINGW)
+    " : MinGW " __VERSION__
+#  elif defined(__GNUC__) && !defined(__clang__)
     " : gcc " __VERSION__
-#else
+#  else
     " : " __VERSION__
+#  endif
 #endif
+
+#if defined(LIBPLZMA_POSIX)
+    " : posix"
 #endif
-    
+
 #if defined(LIBPLZMA_OS_WINDOWS) && !defined(LIBPLZMA_VERSION_OS_DETECTED)
     " : Windows"
 #define LIBPLZMA_VERSION_OS_DETECTED 1
@@ -631,10 +649,10 @@ void plzma_item_out_stream_array_release(plzma_item_out_stream_array * LIBPLZMA_
 
 #if 0
 void plzma_print_memory(int line, const void * LIBPLZMA_NULLABLE mem, const size_t len) {
-    fprintf(stdout, "PRINT MEMORY AT LINE: %i, LEN: %llu\n", line, (unsigned long long)len);
+    ::fprintf(stdout, "PRINT MEMORY AT LINE: %i, LEN: %llu\n", line, (unsigned long long)len);
     if (!mem) {
-        fprintf(stdout, "NULL\n");
-        fflush(stdout);
+        ::fprintf(stdout, "NULL\n");
+        ::fflush(stdout);
         return;
     }
     char buff[256];
@@ -642,19 +660,19 @@ void plzma_print_memory(int line, const void * LIBPLZMA_NULLABLE mem, const size
     const uint8_t * umem = reinterpret_cast<const uint8_t *>(mem);
     bool hasoutput = false;
     for (size_t i = 0, j = 0; i < len; i++, j++) {
-        int sp = sprintf(s, "0x%02x ", umem[i]);
+        int sp = ::sprintf(s, "0x%02x ", umem[i]);
         s += sp;
         hasoutput = true;
         if (j == 10) {
-            fprintf(stdout, "%s\n", buff);
+            ::fprintf(stdout, "%s\n", buff);
             j = 0;
             s = buff;
             hasoutput = false;
         }
     }
     if (hasoutput) {
-        fprintf(stdout, "%s\n", buff);
+        ::fprintf(stdout, "%s\n", buff);
     }
-    fflush(stdout);
+    ::fflush(stdout);
 }
 #endif // #if 0

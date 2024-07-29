@@ -33,11 +33,11 @@ set(PACKAGE "libplzma")
 set(CPACK_PACKAGE_NAME "${PACKAGE}")
 set(CPACK_PACKAGE_VERSION_MAJOR "1")
 set(CPACK_PACKAGE_VERSION_MINOR "4")
-set(CPACK_PACKAGE_VERSION_PATCH "4")
+set(CPACK_PACKAGE_VERSION_PATCH "5")
 set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}")
 set(CPACK_PACKAGE_VENDOR "olehkulykov@gmail.com")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PACKAGE} ${PACKAGE_VERSION}")
-set(SOVERSION "1.4.4")
+set(SOVERSION "1.4.5")
 set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
 set(VERSION "${CPACK_PACKAGE_VERSION}")
 
@@ -97,18 +97,34 @@ More info: https://docs.microsoft.com/en-us/cpp/build/reference/md-mt-ld-use-run
 
 
 # ---- definitions ----
-if(WIN32)
-  message("WIN32")
-  add_definitions(-DWIN32)
-  add_definitions(-D_WIN32)
-  add_definitions(-DUNICODE)
-  add_definitions(-D_UNICODE)
+if (WIN32 OR WIN64)
+  add_definitions(-DUNICODE=1)
+  add_definitions(-D_UNICODE=1)
+  
+  if (WIN64 OR CMAKE_SIZEOF_VOID_P EQUAL 8)
+    message("WIN 64")
+    add_definitions(-DWIN64=1)
+    add_definitions(-D_WIN64=1)
+  elseif (WIN32 OR CMAKE_SIZEOF_VOID_P EQUAL 4)
+    message("WIN 32")
+    add_definitions(-DWIN32=1)
+    add_definitions(-D_WIN32=1)
+  else()
+    message("WIN.. undefined")
+  endif()
+  
 endif()
 
-if(MSVC)
-  message("MSVC")
-  if(LIBPLZMA_OPT_MSVC_MULTITHREAD_STATIC)
-    if(CMAKE_BUILD_TYPE MATCHES Debug)
+if (MINGW)
+  add_definitions(-DLIBPLZMA_MINGW=1)
+  message("MinGW")
+endif()
+
+if (MSVC)
+  # Run-Time Library
+  # https://learn.microsoft.com/en-us/cpp/build/reference/md-mt-ld-use-run-time-library
+  if (LIBPLZMA_OPT_MSVC_MULTITHREAD_STATIC)
+    if (CMAKE_BUILD_TYPE MATCHES Debug)
       set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /MTd")
       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MTd")
     else()
@@ -116,7 +132,7 @@ if(MSVC)
       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MT")
     endif()
   else()
-    if(CMAKE_BUILD_TYPE MATCHES Debug)
+    if (CMAKE_BUILD_TYPE MATCHES Debug)
       set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /MDd")
       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MDd")
     else()
@@ -130,31 +146,39 @@ if(MSVC)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /utf-8")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8")
 
-  if(LIBPLZMA_OPT_DISABLE_RUNTIME_TYPE_INFORMATION)
+  if (LIBPLZMA_OPT_DISABLE_RUNTIME_TYPE_INFORMATION)
     # Disable Run-Time Type Information
+    # Defined as 1 if the /GR (Enable Run-Time Type Information) compiler option is set. Otherwise, undefined.
+    # When /GR is on, the compiler defines the _CPPRTTI preprocessor macro.
+    # By default, /GR is on. /GR- disables run-time type information.
+    # However, /GR increases the size of the .rdata sections of your image.
+    # If your code does not use dynamic_cast or typeid, /GR- may produce a smaller image.
+    # https://learn.microsoft.com/en-us/cpp/build/reference/gr-enable-run-time-type-information
     # https://docs.microsoft.com/en-us/cpp/build/reference/gr-enable-run-time-type-information
     # Check vs version: ?view=vs-2015
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /GR-")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /GR-")
+    add_definitions(-DLIBPLZMA_NO_CPP_RTTI=1)
   endif()
 
 else()
+
   # C with -fPIC
   check_c_compiler_flag("-fPIC" WITH_FPIC_C)
-  if(WITH_FPIC_C)
+  if (WITH_FPIC_C)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
   endif()
 
   # CXX with -fPIC
   check_cxx_compiler_flag("-fPIC" WITH_FPIC_CXX)
-  if(WITH_FPIC_CXX)
+  if (WITH_FPIC_CXX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
   endif()
 
-  if(LIBPLZMA_OPT_DISABLE_RUNTIME_TYPE_INFORMATION)
+  if (LIBPLZMA_OPT_DISABLE_RUNTIME_TYPE_INFORMATION)
     # CXX with -fno-rtti
     check_cxx_compiler_flag("-fno-rtti" WITH_FNO_RTTI_CXX)
-    if(WITH_FNO_RTTI_CXX)
+    if (WITH_FNO_RTTI_CXX)
       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
       add_definitions(-DLIBPLZMA_NO_CPP_RTTI=1)
     endif()
@@ -162,39 +186,40 @@ else()
 
 endif()
 
-if(LIBPLZMA_OPT_TESTS)
+
+if (LIBPLZMA_OPT_TESTS)
   add_definitions(-DCMAKE_BUILD_WITH_TESTS=1)
 endif()
 
-if(CMAKE_BUILD_TYPE MATCHES Debug)
+if (CMAKE_BUILD_TYPE MATCHES Debug)
   add_definitions(-DDEBUG=1)
 endif()
 
-if(LIBPLZMA_OPT_BUILD_NUMBER)
+if (LIBPLZMA_OPT_BUILD_NUMBER)
   add_definitions(-DLIBPLZMA_VERSION_BUILD=${LIBPLZMA_OPT_BUILD_NUMBER})
 endif()
 
-if(LIBPLZMA_OPT_NO_C_BINDINGS)
+if (LIBPLZMA_OPT_NO_C_BINDINGS)
   add_definitions(-DLIBPLZMA_NO_C_BINDINGS=1)
 endif()
 
-if(LIBPLZMA_OPT_NO_CRYPTO)
+if (LIBPLZMA_OPT_NO_CRYPTO)
   add_definitions(-DLIBPLZMA_NO_CRYPTO=1)
 endif()
 
-if(LIBPLZMA_OPT_HAVE_STD)
+if (LIBPLZMA_OPT_HAVE_STD)
   add_definitions(-DLIBPLZMA_HAVE_STD=1)
 endif()
 
-if(LIBPLZMA_OPT_NO_TAR)
+if (LIBPLZMA_OPT_NO_TAR)
   add_definitions(-DLIBPLZMA_NO_TAR=1)
 endif()
 
-if(LIBPLZMA_OPT_NO_PROGRESS)
+if (LIBPLZMA_OPT_NO_PROGRESS)
   add_definitions(-DLIBPLZMA_NO_PROGRESS=1)
 endif()
 
-if(LIBPLZMA_OPT_THREAD_UNSAFE)
+if (LIBPLZMA_OPT_THREAD_UNSAFE)
   add_definitions(-DLIBPLZMA_THREAD_UNSAFE=1)
 endif()
 
@@ -206,53 +231,77 @@ add_definitions(-DLIBPLZMA_BUILD=1)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
-if(LIBPLZMA_OPT_ANDROID)
+if (LIBPLZMA_OPT_ANDROID)
   find_library(log-lib log)
 endif()
 
 # ---- check include ----
 CHECK_INCLUDE_FILE("sys/types.h" LIBPLZMA_HAVE_SYS_TYPES_H)
-if(LIBPLZMA_HAVE_SYS_TYPES_H)
+if (LIBPLZMA_HAVE_SYS_TYPES_H)
   add_definitions(-DHAVE_SYS_TYPES_H=1)
 endif()
+
 CHECK_INCLUDE_FILE("sys/sys_types.h" LIBPLZMA_HAVE_SYS_SYS_TYPES_H)
-if(LIBPLZMA_HAVE_SYS_SYS_TYPES_H)
+if (LIBPLZMA_HAVE_SYS_SYS_TYPES_H)
   add_definitions(-DHAVE_SYS_SYS_TYPES_H=1)
 endif()
+
 CHECK_INCLUDE_FILE("sys/sysmacros.h" LIBPLZMA_HAVE_SYS_SYSMACROS_H)
-if(LIBPLZMA_HAVE_SYS_SYSMACROS_H)
+if (LIBPLZMA_HAVE_SYS_SYSMACROS_H)
   add_definitions(-DHAVE_SYS_SYSMACROS_H=1)
 endif()
+
 CHECK_INCLUDE_FILE("sys/utime.h" LIBPLZMA_HAVE_SYS_UTIME_H)
-if(LIBPLZMA_HAVE_SYS_UTIME_H)
+if (LIBPLZMA_HAVE_SYS_UTIME_H)
   add_definitions(-DHAVE_SYS_UTIME_H=1)
 endif()
+
 CHECK_INCLUDE_FILE("utime.h" LIBPLZMA_HAVE_UTIME_H)
-if(LIBPLZMA_HAVE_UTIME_H)
+if (LIBPLZMA_HAVE_UTIME_H)
   add_definitions(-DHAVE_UTIME_H=1)
+endif()
+
+CHECK_INCLUDE_FILE("semaphore.h" LIBPLZMA_SEMAPHORE_H)
+if (LIBPLZMA_SEMAPHORE_H)
+  add_definitions(-DHAVE_SEMAPHORE_H=1)
+endif()
+
+CHECK_INCLUDE_FILE("unistd.h" LIBPLZMA_UNISTD_H)
+if (LIBPLZMA_UNISTD_H)
+  add_definitions(-DHAVE_UNISTD_H=1)
+endif()
+
+CHECK_INCLUDE_FILE("pthread.h" LIBPLZMA_PTHREAD_H)
+if (LIBPLZMA_PTHREAD_H)
+  add_definitions(-DHAVE_PTHREAD_H=1)
+endif()
+
+CHECK_INCLUDE_FILE("android/api-level.h" LIBPLZMA_ANDROID_API_LEVEL_H)
+if (LIBPLZMA_ANDROID_API_LEVEL_H)
+  add_definitions(-DHAVE_ANDROID_API_LEVEL_H=1)
 endif()
 
 
 # ---- check functions ----
-if(MSVC)
+if (MSVC)
   check_symbol_exists(_wfopen_s "stdio.h" HAVE__WFOPEN_S)
-  if(NOT HAVE__WFOPEN_S)
+  if (NOT HAVE__WFOPEN_S)
     check_symbol_exists(_wfopen_s "wchar.h" HAVE__WFOPEN_S)
   endif()
-  if(HAVE__WFOPEN_S)
+  if (HAVE__WFOPEN_S)
     add_definitions(-DHAVE__WFOPEN_S=1)
   endif()
   
   check_symbol_exists(_wdupenv_s "stdlib.h" HAVE__WDUPENV_S)
-  if(NOT HAVE__WDUPENV_S)
+  if (NOT HAVE__WDUPENV_S)
     check_symbol_exists(_wdupenv_s "wchar.h" HAVE__WDUPENV_S)
   endif()
-  if(HAVE__WDUPENV_S)
+  if (HAVE__WDUPENV_S)
     add_definitions(-DHAVE__WDUPENV_S=1)
   endif()
   
   check_symbol_exists(_dupenv_s "stdlib.h" HAVE__DUPENV_S)
-  if(HAVE__DUPENV_S)
+  if (HAVE__DUPENV_S)
     add_definitions(-DHAVE__DUPENV_S=1)
   endif()
 endif(MSVC)
@@ -992,27 +1041,27 @@ source_group("CPP/7zip/Crypto"
   src/CPP/7zip/Crypto/StdAfx.h
 )
 
-if(LIBPLZMA_OPT_SHARED)
+if (LIBPLZMA_OPT_SHARED)
   add_library(plzma SHARED ${LIBPLZMA_SOURCES} ${LIBPLZMA_PUBLIC_HEADERS} ${LIBPLZMA_INTERNAL_HEADERS})
-  set_property(TARGET plzma APPEND PROPERTY COMPILE_FLAGS -DLIBPLZMA_SHARED)
-  if(MSVC)
+  set_property(TARGET plzma APPEND PROPERTY COMPILE_FLAGS -DLIBPLZMA_SHARED=1)
+  if (MSVC)
     message("Shared lib. MSVC")
     # MSVC does not append 'lib' - do it here to have consistent name
     set_property(TARGET plzma PROPERTY PREFIX "lib")
     set_property(TARGET plzma PROPERTY IMPORT_PREFIX "lib")
   endif()
   target_link_libraries(plzma Threads::Threads)
-  if(LIBPLZMA_OPT_ANDROID)
+  if (LIBPLZMA_OPT_ANDROID)
     target_link_libraries(plzma android)
     target_link_libraries(plzma ${log-lib})
   endif()
   install(TARGETS plzma DESTINATION lib)
 endif()
 
-if(LIBPLZMA_OPT_STATIC)
+if (LIBPLZMA_OPT_STATIC)
   add_library(plzma_static STATIC ${LIBPLZMA_SOURCES} ${LIBPLZMA_PUBLIC_HEADERS} ${LIBPLZMA_INTERNAL_HEADERS})
-  set_property(TARGET plzma_static APPEND PROPERTY COMPILE_FLAGS -DLIBPLZMA_STATIC)
-  if(MSVC)
+  set_property(TARGET plzma_static APPEND PROPERTY COMPILE_FLAGS -DLIBPLZMA_STATIC=1)
+  if (MSVC)
     # MSVC does not append 'lib' - do it here to have consistent name
     set_target_properties(plzma_static PROPERTIES PREFIX "lib")
   endif()
@@ -1021,7 +1070,7 @@ endif()
 
 install(FILES ${LIBPLZMA_PUBLIC_HEADERS} DESTINATION include)
 
-if(LIBPLZMA_OPT_TESTS)
+if (LIBPLZMA_OPT_TESTS)
   enable_testing()
   add_subdirectory(cmake_tests)
 

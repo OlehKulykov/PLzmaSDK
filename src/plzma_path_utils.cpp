@@ -32,7 +32,7 @@
 namespace plzma {
 namespace pathUtils {
 
-#if defined(LIBPLZMA_MSC)
+#if defined(LIBPLZMA_MSC) || defined(LIBPLZMA_MINGW)
     bool removeDir(Path & path, const bool skipErrors) {
         path.append(L"*");
         WIN32_FIND_DATAW findData;
@@ -118,12 +118,12 @@ namespace pathUtils {
                         continue;
                     }
                 } else {
-                    closedir(dir.dir);
+                    ::closedir(dir.dir);
                     dir.dir = nullptr;
                     const bool res = removeEmptyDir<char>(path.utf8());
                     return (res || skipErrors);
                 }
-            } while (readRes == 0 && dp);
+            } while ((readRes == 0) && dp);
             return true;
         }
         return skipErrors;

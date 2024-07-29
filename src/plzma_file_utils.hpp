@@ -40,8 +40,8 @@
 namespace plzma {
 namespace fileUtils {
     
-    inline int fileSeek(FILE * LIBPLZMA_NONNULL file, const int64_t offset, const int origin) noexcept {
-#if defined(LIBPLZMA_MSC)
+    inline int64_t fileSeek(FILE * LIBPLZMA_NONNULL file, const int64_t offset, const int origin) noexcept {
+#if defined(LIBPLZMA_MSC) || defined(LIBPLZMA_MINGW)
         return _fseeki64(file, offset, origin);
 #elif defined(LIBPLZMA_POSIX)
         return fseeko(file, offset, origin);
@@ -51,7 +51,7 @@ namespace fileUtils {
     }
     
     inline int64_t fileTell(FILE * LIBPLZMA_NONNULL file) noexcept {
-#if defined(LIBPLZMA_MSC)
+#if defined(LIBPLZMA_MSC) || defined(LIBPLZMA_MINGW)
         return _ftelli64(file);
 #elif defined(LIBPLZMA_POSIX)
         return ftello(file);

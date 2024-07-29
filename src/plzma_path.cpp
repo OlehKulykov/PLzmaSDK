@@ -31,6 +31,11 @@
 #include "plzma_private.hpp"
 #include "plzma_path_utils.hpp"
 
+#if defined(LIBPLZMA_MINGW)
+#  include <errno.h>
+#  include <windows.h>
+#endif
+
 namespace plzma {
 
     using namespace pathUtils;
@@ -80,7 +85,7 @@ namespace plzma {
             
     }
 
-#if defined(LIBPLZMA_MSC)
+#if defined(LIBPLZMA_MSC) || defined(LIBPLZMA_MINGW)
     class PathIteratorMSC final : public Path::Iterator {
     private:
         HANDLE _findHandle = INVALID_HANDLE_VALUE;
@@ -196,7 +201,7 @@ namespace plzma {
                 }
             } else {
                 _findHandle = subHandle.handle;
-				subHandle.handle = INVALID_HANDLE_VALUE;
+                subHandle.handle = INVALID_HANDLE_VALUE;
                 _flags |= PathIteratorFlagSkipFindNext;
             }
         }
@@ -253,7 +258,8 @@ namespace plzma {
             struct dirent d, * dp;
             int readRes;
             do {
-                if ( (readRes = ::readdir_r(_dir, &d, &dp)) == 0 && dp) {
+                readRes = ::readdir_r(_dir, &d, &dp);
+                if ((readRes == 0) && dp) {
                     if ((::strcmp(d.d_name, ".") == 0) || (::strcmp(d.d_name, "..") == 0)) { continue; }
                     bool isDir = false, isFile = false, isLink = false;
                     rootUtf8 = nullptr;
@@ -296,7 +302,7 @@ namespace plzma {
                         return true; // report dir
                     } else { continue; }
                 }
-                if (readRes == 0 && !dp && _stack.count() > 0) {
+                if ((readRes == 0) && !dp && (_stack.count() > 0)) {
                     _root.removeLastComponent();
                     _path.removeLastComponent();
                     ::closedir(_dir);
@@ -305,7 +311,7 @@ namespace plzma {
                     dp = &d;
                     continue;
                 }
-            } while (readRes == 0 && dp);
+            } while ((readRes == 0) && dp);
             
             _flags |= PathIteratorFlagDone;
             return false;
@@ -346,7 +352,7 @@ namespace plzma {
 #endif
     
     void Path::set(const String & str) {
-#if defined(LIBPLZMA_MSC)
+#if defined(LIBPLZMA_MSC) || defined(LIBPLZMA_MINGW)
         set(str.wide());
 #elif defined(LIBPLZMA_POSIX)
         set(str.utf8());
@@ -416,7 +422,7 @@ namespace plzma {
     }
     
     void Path::append(const Path & path) {
-#if defined(LIBPLZMA_MSC)
+#if defined(LIBPLZMA_MSC) || defined(LIBPLZMA_MINGW)
         append(path.wide());
 #elif defined(LIBPLZMA_POSIX)
         append(path.utf8());
@@ -442,7 +448,7 @@ namespace plzma {
     }
 
     void Path::appendRandomComponent() {
-#if defined(LIBPLZMA_MSC)
+#if defined(LIBPLZMA_MSC) || defined(LIBPLZMA_MINGW)
         syncWide();
         _cs.clear(plzma_erase_zero, sizeof(char) * _cslen);
         _size += appendRandComp<wchar_t>(_ws, _size);
@@ -463,7 +469,7 @@ namespace plzma {
 
     Path Path::lastComponent() const {
         Path res;
-#if defined(LIBPLZMA_MSC)
+#if defined(LIBPLZMA_MSC) || defined(LIBPLZMA_MINGW)
         syncWide();
         if (_ws && _size > 0) {
             const auto comp = lastComp<wchar_t>(_ws, _size);
@@ -489,7 +495,7 @@ namespace plzma {
     }
     
     void Path::removeLastComponent() {
-#if defined(LIBPLZMA_MSC)
+#if defined(LIBPLZMA_MSC) || defined(LIBPLZMA_MINGW)
         syncWide();
         if (_ws && _size > 0 && removeLastComp<wchar_t>(_ws, _size)) {
             _size = static_cast<plzma_size_t>(wcslen(_ws));
@@ -514,7 +520,7 @@ namespace plzma {
     }
     
     bool Path::exists(bool * LIBPLZMA_NULLABLE isDir /* = nullptr */) const {
-#if defined(LIBPLZMA_MSC)
+#if defined(LIBPLZMA_MSC) || defined(LIBPLZMA_MINGW)
         return (_size > 0) ? pathExists<wchar_t>(wide(), isDir) : false;
 #elif defined(LIBPLZMA_POSIX)
         return (_size > 0) ? pathExists<char>(utf8(), isDir) : false;
@@ -522,7 +528,7 @@ namespace plzma {
     }
     
     bool Path::readable() const {
-#if defined(LIBPLZMA_MSC)
+#if defined(LIBPLZMA_MSC) || defined(LIBPLZMA_MINGW)
         return (_size > 0) ? pathReadable<wchar_t>(wide()) : false;
 #elif defined(LIBPLZMA_POSIX)
         return (_size > 0) ? pathReadable<char>(utf8()) : false;
@@ -530,7 +536,7 @@ namespace plzma {
     }
     
     bool Path::writable() const {
-#if defined(LIBPLZMA_MSC)
+#if defined(LIBPLZMA_MSC) || defined(LIBPLZMA_MINGW)
         return (_size > 0) ? pathWritable<wchar_t>(wide()) : false;
 #elif defined(LIBPLZMA_POSIX)
         return (_size > 0) ? pathWritable<char>(utf8()) : false;
@@ -538,7 +544,7 @@ namespace plzma {
     }
     
     bool Path::readableAndWritable() const {
-#if defined(LIBPLZMA_MSC)
+#if defined(LIBPLZMA_MSC) || defined(LIBPLZMA_MINGW)
         return (_size > 0) ? pathReadableAndWritable<wchar_t>(wide()) : false;
 #elif defined(LIBPLZMA_POSIX)
         return (_size > 0) ? pathReadableAndWritable<char>(utf8()) : false;
@@ -546,7 +552,7 @@ namespace plzma {
     }
     
     plzma_path_stat Path::stat() const {
-#if defined(LIBPLZMA_MSC)
+#if defined(LIBPLZMA_MSC) || defined(LIBPLZMA_MINGW)
         return pathStat<wchar_t>(wide());
 #elif defined(LIBPLZMA_POSIX)
         return pathStat<char>(utf8());
@@ -554,7 +560,7 @@ namespace plzma {
     }
     
     bool Path::remove(const bool skipErrors) const {
-#if defined(LIBPLZMA_MSC)
+#if defined(LIBPLZMA_MSC) || defined(LIBPLZMA_MINGW)
         return (_size > 0) ? removePath<wchar_t>(wide(), skipErrors) : true;
 #elif defined(LIBPLZMA_POSIX)
         return (_size > 0) ? removePath<char>(utf8(), skipErrors) : true;
@@ -564,7 +570,7 @@ namespace plzma {
     bool Path::createDir(const bool withIntermediates) const {
         if (withIntermediates) {
             if (_size > 0) {
-#if defined(LIBPLZMA_MSC)
+#if defined(LIBPLZMA_MSC) || defined(LIBPLZMA_MINGW)
                 const wchar_t * w = wide(); // syncWide, changed '_size'
                 return createIntermediateDirs<wchar_t>(w, _size);
 #elif defined(LIBPLZMA_POSIX)
@@ -574,7 +580,7 @@ namespace plzma {
             }
             return false;
         }
-#if defined(LIBPLZMA_MSC)
+#if defined(LIBPLZMA_MSC) || defined(LIBPLZMA_MINGW)
         return (_size > 0) ? createSingleDir<wchar_t>(wide()) : false;
 #elif defined(LIBPLZMA_POSIX)
         return (_size > 0) ? createSingleDir<char>(utf8()) : false;
@@ -582,7 +588,7 @@ namespace plzma {
     }
     
     bool Path::applyFileTimestamp(const plzma_path_timestamp timestamp) {
-#if defined(LIBPLZMA_MSC)
+#if defined(LIBPLZMA_MSC) || defined(LIBPLZMA_MINGW)
         return setFileTimestamp<wchar_t>(wide(), timestamp);
 #elif defined(LIBPLZMA_POSIX)
         return setFileTimestamp<char>(utf8(), timestamp);
@@ -590,19 +596,19 @@ namespace plzma {
     }
     
     FILE * LIBPLZMA_NULLABLE Path::openFile(const char * LIBPLZMA_NONNULL mode) const {
-#if defined(LIBPLZMA_MSC)
+#if defined(LIBPLZMA_MSC) || defined(LIBPLZMA_MINGW)
         if (_size > 0) {
             wchar_t wmode[32] = { 0 }; // more than enough for a max mode: "w+b, ccs=UNICODE"
             for (size_t i = 0, n = ::strlen(mode); ((i < n) && (i < 31)); i++) {
                 wmode[i] = static_cast<wchar_t>(mode[i]);
             }
-#if defined(HAVE__WFOPEN_S)
+#  if defined(HAVE__WFOPEN_S)
             FILE * f = nullptr;
             const errno_t err = ::_wfopen_s(&f, wide(), wmode);
             return (err == 0) ? f : nullptr;
-#else
+#  else
             return _wfopen(wide(), wmode);
-#endif // !HAVE__WFOPEN_S
+#  endif
         }
         return nullptr;
 #elif defined(LIBPLZMA_POSIX)
@@ -611,7 +617,7 @@ namespace plzma {
     }
     
     SharedPtr<Path::Iterator> Path::openDir(const plzma_open_dir_mode_t mode /* = 0 */ ) const {
-#if defined(LIBPLZMA_MSC)
+#if defined(LIBPLZMA_MSC) || defined(LIBPLZMA_MINGW)
         return SharedPtr<Path::Iterator>(new PathIteratorMSC(*this, mode));
 #elif defined(LIBPLZMA_POSIX)
         return SharedPtr<Path::Iterator>(new PathIteratorPosix(*this, mode));
@@ -619,7 +625,7 @@ namespace plzma {
     }
     
     bool Path::operator == (const Path & path) const {
-#if defined(LIBPLZMA_MSC)
+#if defined(LIBPLZMA_MSC) || defined(LIBPLZMA_MINGW)
         const wchar_t * a = wide();       // syncWide
         const wchar_t * b = path.wide();  // syncWide
         return pathsAreEqual<wchar_t>(a, b, _size, path._size);
@@ -669,7 +675,7 @@ namespace plzma {
     }
     
 #if !defined(PATH_MAX)
-#define PATH_MAX 1024
+#  define PATH_MAX 1024
 #endif
     
     Path Path::tmpPath() {
@@ -677,14 +683,15 @@ namespace plzma {
 #if defined(__APPLE__) && defined(_CS_DARWIN_USER_TEMP_DIR)
         char buff[PATH_MAX];
         const size_t res = ::confstr(_CS_DARWIN_USER_TEMP_DIR, buff, PATH_MAX);
-        if (res > 0 && res < PATH_MAX && initializeTmpPath<char>(buff, "libplzma", path)) {
+        if ((res > 0) && (res < PATH_MAX) && initializeTmpPath<char>(buff, "libplzma", path)) {
             return path;
         }
 #endif
-#if defined(LIBPLZMA_MSC)
+        
+#if defined(LIBPLZMA_MSC) || defined(LIBPLZMA_MINGW)
         static const wchar_t * const wevs[4] = { L"TMPDIR", L"TEMPDIR", L"TEMP", L"TMP" };
         for (size_t i = 0; i < 4; i++) {
-#if defined(HAVE__WDUPENV_S)
+#  if defined(HAVE__WDUPENV_S)
             wchar_t * p = nullptr;
             size_t len = 0;
             const errno_t err = ::_wdupenv_s(&p, &len, wevs[i]);
@@ -695,18 +702,19 @@ namespace plzma {
             if (p) {
                 ::free(p);
             }
-#else
+#  else
             const wchar_t * p = ::_wgetenv(wevs[i]);
             if (p && initializeTmpPath<wchar_t>(p, L"libplzma", path)) {
                 return path;
             }
-#endif // !HAVE__WDUPENV_S
+#  endif
         }
 #endif
+        
         static const char * const cevs[4] = { "TMPDIR", "TEMPDIR", "TEMP", "TMP" };
         for (size_t i = 0; i < 4; i++) {
-#if defined(LIBPLZMA_MSC)
-#if defined(HAVE__DUPENV_S)
+#if defined(LIBPLZMA_MSC) || defined(LIBPLZMA_MINGW)
+#  if defined(HAVE__DUPENV_S)
             char * p = nullptr;
             size_t len = 0;
             const errno_t err = ::_dupenv_s(&p, &len, cevs[i]);
@@ -717,12 +725,12 @@ namespace plzma {
             if (p) {
                 ::free(p);
             }
-#else
+#  else
             char * p = ::getenv(cevs[i]);
             if (p && initializeTmpPath<char>(p, "libplzma", path)) {
                 return path;
             }
-#endif // !HAVE__DUPENV_S
+#  endif
 #else
             char * p = ::getenv(cevs[i]);
             if (p && initializeTmpPath<char>(p, "libplzma", path)) {

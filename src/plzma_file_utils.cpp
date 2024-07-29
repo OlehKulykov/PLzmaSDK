@@ -32,10 +32,12 @@
 namespace plzma {
 namespace fileUtils {
     
+#define LIBPLZMA_FILEUTILS_FILE_ERASE_BUFFSIZE 262144
+    
     bool fileErase(const Path & path, const plzma_erase eraseType) {
         if (eraseType == plzma_erase_zero) {
-            const size_t buffSize = 256 * 1024;
-            uint8_t buff[buffSize];
+            const size_t buffSize = LIBPLZMA_FILEUTILS_FILE_ERASE_BUFFSIZE;
+            uint8_t buff[LIBPLZMA_FILEUTILS_FILE_ERASE_BUFFSIZE];
             ::memset(buff, 0, buffSize);
             // "r+" | read/update: Open a file for update (both for input and output). The file must exist.
             FILE * f = path.openFile("r+b");
@@ -54,7 +56,7 @@ namespace fileUtils {
             }
             
             if (size > 0) {
-                for (uint64_t i = 0, n = static_cast<uint64_t>(size) / buffSize; i < n; i++) {
+                for (uint64_t i = 0, n = static_cast<uint64_t>(size) / static_cast<uint64_t>(buffSize); i < n; i++) {
                     const size_t w = ::fwrite(buff, 1, buffSize, f);
                     if (w != buffSize) {
                         ::fclose(f);

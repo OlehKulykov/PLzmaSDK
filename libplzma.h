@@ -44,60 +44,60 @@
 /// and all optional C bindings to the internal C++ part(Core) of the library.
 /// Everything what you need to use this library in C | Objective-C | Swift env. is here.
 
-/// @brief Manualy defined version of the library, i.e. 1.4.4
+/// @brief Manualy defined version of the library, i.e. 1.4.5
 /// The optinal \a LIBPLZMA_VERSION_BUILD might be befined by the CI or CMake or manualy.
 /// Conforms 'Semantic Versioning 2.0.0'.
 /// @link https://semver.org
 #define LIBPLZMA_VERSION_MAJOR 1
 #define LIBPLZMA_VERSION_MINOR 4
-#define LIBPLZMA_VERSION_PATCH 4
+#define LIBPLZMA_VERSION_PATCH 5
 
-// check windows
-#if defined(WIN32) || defined(_WIN32) || defined(WIN32_LEAN_AND_MEAN) || defined(_WIN64) || defined(WIN64)
-#define LIBPLZMA_OS_WINDOWS 1
+// Check Windows
+#if defined(WIN32) || defined(_WIN32) || defined(_WIN64) || defined(WIN64) || defined(WIN32_LEAN_AND_MEAN)
+#  define LIBPLZMA_OS_WINDOWS 1
 #endif
 
 // C extern
 #if defined(__cplusplus)
-#define LIBPLZMA_C_EXTERN extern "C"
-#define LIBPLZMA_CPP_EXTERN extern
+#  define LIBPLZMA_C_EXTERN extern "C"
+#  define LIBPLZMA_CPP_EXTERN extern
 #else
-#define LIBPLZMA_C_EXTERN extern
-#define LIBPLZMA_CPP_EXTERN extern "C++"
+#  define LIBPLZMA_C_EXTERN extern
+#  define LIBPLZMA_CPP_EXTERN extern "C++"
 #endif
 
-// attribute
-#if defined(__GNUC__) && (__GNUC__ >= 4)
-#define LIBPLZMA_ATTRIB __attribute__((visibility("default")))
-#define LIBPLZMA_ATTRIB_PRIVATE __attribute__((visibility("hidden")))
+// Attribute
+#if !defined(LIBPLZMA_OS_WINDOWS) && defined(__GNUC__) && (__GNUC__ >= 4)
+  #define LIBPLZMA_ATTRIB __attribute__((visibility("default")))
+  #define LIBPLZMA_ATTRIB_PRIVATE __attribute__((visibility("hidden")))
 #endif
 
-// check attrib and define empty if not defined
+// Check attrib and define empty if not defined
 #if !defined(LIBPLZMA_ATTRIB)
-#define LIBPLZMA_ATTRIB
-#define LIBPLZMA_ATTRIB_PRIVATE
+#  define LIBPLZMA_ATTRIB
+#  define LIBPLZMA_ATTRIB_PRIVATE
 #endif
 
-// if not using/building shared or static, then static
+// If not using/building shared or static, then static
 #if !defined(LIBPLZMA_SHARED) && !defined(LIBPLZMA_STATIC)
-#define LIBPLZMA_STATIC
+#  define LIBPLZMA_STATIC 1
 #endif
 
-// dll api
+// DLL api
 #if defined(LIBPLZMA_OS_WINDOWS) && defined(LIBPLZMA_SHARED)
-#if defined(LIBPLZMA_BUILD)
-#define LIBPLZMA_DYLIB_API __declspec(dllexport)
-#else
-#define LIBPLZMA_DYLIB_API __declspec(dllimport)
-#endif
+#  if defined(LIBPLZMA_BUILD)
+#    define LIBPLZMA_DYLIB_API __declspec(dllexport)
+#  else
+#    define LIBPLZMA_DYLIB_API __declspec(dllimport)
+#  endif
 #endif
 
-// check dll api and define empty if not defined
+// Check DLL api and define empty if not defined
 #if !defined(LIBPLZMA_DYLIB_API)
-#define LIBPLZMA_DYLIB_API
+#  define LIBPLZMA_DYLIB_API
 #endif
 
-// combined lib api
+// Combined lib API
 #define LIBPLZMA_C_API(RETURN_TYPE) LIBPLZMA_C_EXTERN LIBPLZMA_ATTRIB LIBPLZMA_DYLIB_API RETURN_TYPE
 #define LIBPLZMA_C_API_PRIVATE(RETURN_TYPE) LIBPLZMA_C_EXTERN LIBPLZMA_ATTRIB_PRIVATE RETURN_TYPE
 #define LIBPLZMA_CPP_API(RETURN_TYPE) LIBPLZMA_CPP_EXTERN LIBPLZMA_ATTRIB LIBPLZMA_DYLIB_API RETURN_TYPE
@@ -105,31 +105,35 @@
 #define LIBPLZMA_CPP_CLASS_API LIBPLZMA_ATTRIB LIBPLZMA_DYLIB_API
 
 #if defined(__clang__)
-#define LIBPLZMA_NULLABLE _Nullable
-#define LIBPLZMA_NONNULL _Nonnull
+#  define LIBPLZMA_NULLABLE _Nullable
+#  define LIBPLZMA_NONNULL _Nonnull
 #else
-#define LIBPLZMA_NULLABLE
-#define LIBPLZMA_NONNULL
+#  define LIBPLZMA_NULLABLE
+#  define LIBPLZMA_NONNULL
 #endif
 
 #if !defined(__has_include)
-#define __has_include(x) 0
+#  define __has_include(x) 0
 #endif
 
 #if !defined(__has_attribute)
-#define __has_attribute(x) 0
+#  define __has_attribute(x) 0
+#endif
+
+#if !defined(__has_feature)
+#  define __has_feature(x) 0
 #endif
 
 #if __has_attribute(sentinel)
-#define LIBPLZMA_REQUIRES_LAST_NULL_ARG __attribute__((sentinel))
+#  define LIBPLZMA_REQUIRES_LAST_NULL_ARG __attribute__((sentinel))
 #else
-#define LIBPLZMA_REQUIRES_LAST_NULL_ARG
+#  define LIBPLZMA_REQUIRES_LAST_NULL_ARG
 #endif
 
 #if __has_attribute(warn_unused_result)
-#define LIBPLZMA_WARN_UNUSED_RESULT __attribute__((warn_unused_result))
+#  define LIBPLZMA_WARN_UNUSED_RESULT __attribute__((warn_unused_result))
 #else
-#define LIBPLZMA_WARN_UNUSED_RESULT
+#  define LIBPLZMA_WARN_UNUSED_RESULT
 #endif
 
 /// Types

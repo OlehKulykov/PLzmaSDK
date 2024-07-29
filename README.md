@@ -55,7 +55,7 @@ All optional features are enabled by default, but they might be disabled during 
 -----------
 #### Swift Package Manager
 ```swift
-.package(url: "https://github.com/OlehKulykov/PLzmaSDK.git", .exact("1.4.4"))
+.package(url: "https://github.com/OlehKulykov/PLzmaSDK.git", .exact("1.4.5"))
 ```
 
 #### CocoaPods Podfile (Swift)
@@ -64,7 +64,7 @@ use_frameworks!
 platform :ios, '11.0'
 
 target '<REPLACE_WITH_YOUR_TARGET>' do
-    pod 'PLzmaSDK', '1.4.4'
+    pod 'PLzmaSDK', '1.4.5'
 end
 ```
 
@@ -74,7 +74,7 @@ use_frameworks!
 platform :ios, '9.0'
 
 target '<REPLACE_WITH_YOUR_TARGET>' do
-    pod 'PLzmaSDK-ObjC', '1.4.4'
+    pod 'PLzmaSDK-ObjC', '1.4.5'
 end
 ```
 
@@ -86,7 +86,7 @@ end
     "npm": ">=6.0.0"
   },
   "dependencies": {
-    "plzmasdk": "1.4.4"
+    "plzmasdk": "1.4.5"
   }
 }
 ```
@@ -106,12 +106,19 @@ cmake -DCMAKE_BUILD_TYPE=Release ..
 make -j4
 ```
 
-#### CMake Windows
+#### CMake Windows(MSVC)
 ```bash
 cd PLzmaSDK
 md build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Release ..
+cmake --build . --config Release --parallel 4
+```
+
+#### CMake Windows(MinGW)
+```bash
+...
+cmake -G"MinGW Makefiles" -DCMAKE_MAKE_PROGRAM=mingw32-make -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DCMAKE_BUILD_TYPE=Release ..
 cmake --build . --config Release --parallel 4
 ```
 
