@@ -70,6 +70,28 @@ if (MSVC)
   # https://docs.microsoft.com/en-us/cpp/build/reference/utf-8-set-source-and-executable-character-sets-to-utf-8
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /utf-8")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8")
+  
+else()
+
+  # C with -fPIC
+  check_c_compiler_flag("-fPIC" WITH_FPIC_C)
+  if (WITH_FPIC_C)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
+  endif()
+
+  # CXX with -fPIC
+  check_cxx_compiler_flag("-fPIC" WITH_FPIC_CXX)
+  if (WITH_FPIC_CXX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+  endif()
+  
+  # CXX with -fno-rtti
+  check_cxx_compiler_flag("-fno-rtti" WITH_FNO_RTTI_CXX)
+  if (WITH_FNO_RTTI_CXX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
+    add_definitions(-DLIBPLZMA_NO_CPP_RTTI=1)
+  endif()
+  
 endif()
 
 set(LIBPLZMA_TESTS
