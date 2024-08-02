@@ -56,5 +56,5 @@ build_script:
   - cmake %CMAKE_ARGS% ..
   - cmake --build . --config Release --parallel 4
   - ctest --verbose
-  - cmake --build . --config Release --target Install
+  - cmake --build . --config Release --target install
   - cd ..

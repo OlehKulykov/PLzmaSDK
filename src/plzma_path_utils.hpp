@@ -54,10 +54,10 @@
 #  include <sys/time.h>
 #  include <dirent.h>
 #  include <unistd.h>
-#  if __has_include(<direct.h>) || defined(LIBPLZMA_MINGW)
+#  if __has_include(<direct.h>) || defined(HAVE_DIRECT_H) || defined(LIBPLZMA_MINGW)
 #    include <direct.h>
 #  endif
-#  if __has_include(<io.h>) || defined(LIBPLZMA_MINGW)
+#  if __has_include(<io.h>) || defined(HAVE_IO_H) || defined(LIBPLZMA_MINGW)
 #    include <io.h>
 #  endif
 #  if defined(LIBPLZMA_MINGW)

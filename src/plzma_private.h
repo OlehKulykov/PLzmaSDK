@@ -48,10 +48,6 @@
 #  define LIBPLZMA_HAVE_STD 1
 #endif
 
-#if __has_include(<sys/types.h>) || defined(HAVE_SYS_TYPES_H)
-#  include <sys/types.h>
-#endif
-
 #if __has_include(<sys/sys_types.h>) || defined(HAVE_SYS_SYS_TYPES_H)
 #  include <sys/sys_types.h>
 #endif

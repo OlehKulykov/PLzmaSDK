@@ -34,7 +34,7 @@ remove_definitions(-DCMAKE_BUILD=1)
 remove_definitions(-DLIBPLZMA_BUILD=1)
 
 # ---- definitions ----
-if (WIN32 OR WIN64)
+if (WIN32)
   add_definitions(-DUNICODE=1)
   add_definitions(-D_UNICODE=1)
 endif()
