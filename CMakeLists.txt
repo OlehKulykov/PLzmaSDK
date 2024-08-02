@@ -97,22 +97,9 @@ More info: https://docs.microsoft.com/en-us/cpp/build/reference/md-mt-ld-use-run
 
 
 # ---- definitions ----
-if (WIN32 OR WIN64)
+if (WIN32)
   add_definitions(-DUNICODE=1)
   add_definitions(-D_UNICODE=1)
-  
-  if (WIN64 OR CMAKE_SIZEOF_VOID_P EQUAL 8)
-    message("WIN 64")
-    add_definitions(-DWIN64=1)
-    add_definitions(-D_WIN64=1)
-  elseif (WIN32 OR CMAKE_SIZEOF_VOID_P EQUAL 4)
-    message("WIN 32")
-    add_definitions(-DWIN32=1)
-    add_definitions(-D_WIN32=1)
-  else()
-    message("WIN.. undefined")
-  endif()
-  
 endif()
 
 if (MINGW)
@@ -284,27 +271,26 @@ endif()
 
 # ---- check functions ----
 if (MSVC)
-  check_symbol_exists(_wfopen_s "stdio.h" HAVE__WFOPEN_S)
-  if (NOT HAVE__WFOPEN_S)
-    check_symbol_exists(_wfopen_s "wchar.h" HAVE__WFOPEN_S)
-  endif()
+  set(LIBPLZMA_CHECK_SYMBOL_HEADERS
+    stdio.h
+    stdlib.h
+    wchar.h
+  )
+  check_symbol_exists(_wfopen_s ${LIBPLZMA_CHECK_SYMBOL_HEADERS} HAVE__WFOPEN_S)
   if (HAVE__WFOPEN_S)
     add_definitions(-DHAVE__WFOPEN_S=1)
   endif()
   
-  check_symbol_exists(_wdupenv_s "stdlib.h" HAVE__WDUPENV_S)
-  if (NOT HAVE__WDUPENV_S)
-    check_symbol_exists(_wdupenv_s "wchar.h" HAVE__WDUPENV_S)
-  endif()
+  check_symbol_exists(_wdupenv_s ${LIBPLZMA_CHECK_SYMBOL_HEADERS} HAVE__WDUPENV_S)
   if (HAVE__WDUPENV_S)
     add_definitions(-DHAVE__WDUPENV_S=1)
   endif()
   
-  check_symbol_exists(_dupenv_s "stdlib.h" HAVE__DUPENV_S)
+  check_symbol_exists(_dupenv_s ${LIBPLZMA_CHECK_SYMBOL_HEADERS} HAVE__DUPENV_S)
   if (HAVE__DUPENV_S)
     add_definitions(-DHAVE__DUPENV_S=1)
   endif()
-endif(MSVC)
+endif()
 
 
 # ---- include ----
