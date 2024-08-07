@@ -58,4 +58,3 @@ build_script:
   - ctest --verbose
   - cmake --build . --config Release --target install
   - cd ..
-
