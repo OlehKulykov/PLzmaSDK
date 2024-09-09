@@ -48,7 +48,6 @@ ALL_SOURCES := \
     ../../src/CPP/7zip/Archive/7z/7zOut.cpp \
     ../../src/CPP/7zip/Archive/7z/7zProperties.cpp \
     ../../src/CPP/7zip/Archive/7z/7zRegister.cpp \
-    ../../src/CPP/7zip/Archive/7z/7zSpecStream.cpp \
     ../../src/CPP/7zip/Archive/7z/7zUpdate.cpp \
     ../../src/CPP/7zip/Archive/ArchiveExports.cpp \
     ../../src/CPP/7zip/Archive/Common/CoderMixer2.cpp \
@@ -158,7 +157,7 @@ ALL_INCLUDES := $(LOCAL_PATH)/../../../
 ALL_CFLAGS := \
     -DLIBPLZMA_BUILD=1 \
     -DLIBPLZMA_SHARED=1 \
-    -DLIBPLZMA_VERSION_BUILD=1047 \
+    -DLIBPLZMA_VERSION_BUILD=1138 \
     -w
 
 

@@ -62,16 +62,16 @@ int test_plzma_encode_xz_from_file_to_file_and_stream(void) {
         inFilePath.appendRandomComponent();
         switch (i) {
             case 0:
-                PLZMA_TESTS_ASSERT(FILE__southpark_jpg_write_to_path(inFilePath.utf8()) == true)
+                PLZMA_TESTS_ASSERT(FILE__southpark_jpg_write_to_file(inFilePath.utf8()) == true)
                 break;
             case 1:
-                PLZMA_TESTS_ASSERT(FILE__shutuptakemoney_jpg_write_to_path(inFilePath.utf8()) == true)
+                PLZMA_TESTS_ASSERT(FILE__shutuptakemoney_jpg_write_to_file(inFilePath.utf8()) == true)
                 break;
             case 2:
-                PLZMA_TESTS_ASSERT(FILE__munchen_jpg_write_to_path(inFilePath.utf8()) == true)
+                PLZMA_TESTS_ASSERT(FILE__munchen_jpg_write_to_file(inFilePath.utf8()) == true)
                 break;
             case 3:
-                PLZMA_TESTS_ASSERT(FILE__zombies_jpg_write_to_path(inFilePath.utf8()) == true)
+                PLZMA_TESTS_ASSERT(FILE__zombies_jpg_write_to_file(inFilePath.utf8()) == true)
                 break;
             default:
                 break;

@@ -79,7 +79,7 @@ bool MyGetTempPath(FString &resultPath);
 
 bool CreateTempFile2(CFSTR prefix, bool addRandom, AString &postfix, NIO::COutFile *outFile);
 
-class CTempFile  MY_UNCOPYABLE
+class CTempFile Z7_final MY_UNCOPYABLE
 {
   bool _mustBeDeleted;
   FString _path;
@@ -96,7 +96,7 @@ public:
 
 
 #ifdef _WIN32
-class CTempDir  MY_UNCOPYABLE
+class CTempDir Z7_final MY_UNCOPYABLE
 {
   bool _mustBeDeleted;
   FString _path;
@@ -112,7 +112,7 @@ public:
 
 
 #if !defined(UNDER_CE)
-class CCurrentDirRestorer  MY_UNCOPYABLE
+class CCurrentDirRestorer Z7_final MY_UNCOPYABLE
 {
   FString _path;
 public:

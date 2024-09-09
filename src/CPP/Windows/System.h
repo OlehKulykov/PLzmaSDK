@@ -18,7 +18,7 @@ namespace NSystem {
 
 UInt32 CountAffinity(DWORD_PTR mask);
 
-struct CProcessAffinity
+struct CProcessAffinity Z7_final
 {
   // UInt32 numProcessThreads;
   // UInt32 numSysThreads;
@@ -57,7 +57,7 @@ struct CProcessAffinity
 
 #else // WIN32
 
-struct CProcessAffinity
+struct CProcessAffinity Z7_final
 {
   UInt32 numSysThreads;
 

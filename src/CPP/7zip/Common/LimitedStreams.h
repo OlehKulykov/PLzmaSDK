@@ -92,7 +92,7 @@ public:
 
 const UInt64 k_SeekExtent_Phy_Type_ZeroFill = (UInt64)(Int64)-1;
 
-struct CSeekExtent
+struct CSeekExtent Z7_final
 {
   UInt64 Virt;
   UInt64 Phy;

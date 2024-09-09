@@ -33,11 +33,11 @@ set(PACKAGE "libplzma")
 set(CPACK_PACKAGE_NAME "${PACKAGE}")
 set(CPACK_PACKAGE_VERSION_MAJOR "1")
 set(CPACK_PACKAGE_VERSION_MINOR "4")
-set(CPACK_PACKAGE_VERSION_PATCH "6")
+set(CPACK_PACKAGE_VERSION_PATCH "7")
 set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}")
 set(CPACK_PACKAGE_VENDOR "olehkulykov@gmail.com")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PACKAGE} ${PACKAGE_VERSION}")
-set(SOVERSION "1.4.6")
+set(SOVERSION "1.4.7")
 set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
 set(VERSION "${CPACK_PACKAGE_VERSION}")
 
@@ -532,7 +532,6 @@ set(LIBPLZMA_SOURCES
   src/CPP/7zip/Archive/7z/7zOut.cpp
   src/CPP/7zip/Archive/7z/7zProperties.cpp
   src/CPP/7zip/Archive/7z/7zRegister.cpp
-  src/CPP/7zip/Archive/7z/7zSpecStream.cpp
   src/CPP/7zip/Archive/7z/7zUpdate.cpp
   src/CPP/7zip/Archive/ArchiveExports.cpp
   src/CPP/7zip/Archive/Common/CoderMixer2.cpp
@@ -866,7 +865,6 @@ source_group("CPP/7zip/Archive/7z"
   src/CPP/7zip/Archive/7z/7zProperties.cpp
   src/CPP/7zip/Archive/7z/7zProperties.h
   src/CPP/7zip/Archive/7z/7zRegister.cpp
-  src/CPP/7zip/Archive/7z/7zSpecStream.cpp
   src/CPP/7zip/Archive/7z/7zSpecStream.h
   src/CPP/7zip/Archive/7z/7zUpdate.cpp
   src/CPP/7zip/Archive/7z/7zUpdate.h

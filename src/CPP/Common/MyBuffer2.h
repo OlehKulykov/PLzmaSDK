@@ -7,7 +7,7 @@
 
 #include "MyTypes.h"
 
-class CMidBuffer
+class CMidBuffer Z7_final
 {
   Byte *_data;
   size_t _size;
@@ -56,7 +56,7 @@ public:
 };
 
 
-class CAlignedBuffer1
+class CAlignedBuffer1 Z7_final
 {
   Byte *_data;
 
@@ -81,7 +81,7 @@ public:
 };
 
 
-class CAlignedBuffer
+class CAlignedBuffer Z7_final
 {
   Byte *_data;
   size_t _size;

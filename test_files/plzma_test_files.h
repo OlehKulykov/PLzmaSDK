@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <inttypes.h>
+#include <stdbool.h>
 
 // archives
 #include "file__1_7z.h"

@@ -16,7 +16,7 @@ namespace N7z {
 
 const unsigned k_StartHeadersRewriteSize = 32;
 
-class CWriteBufferLoc
+class CWriteBufferLoc Z7_final
 {
   Byte *_data;
   Byte *_dataLim;
@@ -57,7 +57,7 @@ public:
 };
 
 
-struct CHeaderOptions
+struct CHeaderOptions Z7_final
 {
   bool CompressMainHeader;
   /*
@@ -77,7 +77,7 @@ struct CHeaderOptions
 };
 
 
-struct CFileItem2
+struct CFileItem2 Z7_final
 {
   UInt64 CTime;
   UInt64 ATime;
@@ -131,7 +131,7 @@ struct COutFolders
 };
 
 
-struct CArchiveDatabaseOut: public COutFolders
+struct CArchiveDatabaseOut Z7_final: public COutFolders
 {
   CRecordVector<UInt64> PackSizes;
   CUInt32DefVector PackCRCs;
@@ -249,7 +249,7 @@ struct CArchiveDatabaseOut: public COutFolders
 };
 
 
-class COutArchive
+class COutArchive Z7_final
 {
   HRESULT WriteDirect(const void *data, UInt32 size) { return WriteStream(SeqStream, data, size); }
   

@@ -30,7 +30,7 @@ namespace N7z {
 #define Z7_7Z_DECODER_CRYPRO_VARS , getTextPassword, isEncrypted, passwordIsDefined, password
 #endif
 
-struct CParsedMethods
+struct CParsedMethods Z7_final
 {
   Byte Lzma2Prop;
   UInt32 LzmaDic;
@@ -175,7 +175,7 @@ struct CDatabase: public CFolders
 };
 
 
-struct CInArchiveInfo
+struct CInArchiveInfo Z7_final
 {
   CArchiveVersion Version;
   UInt64 StartPosition;               // in stream
@@ -195,7 +195,7 @@ struct CInArchiveInfo
 };
 
 
-struct CDbEx: public CDatabase
+struct CDbEx Z7_final: public CDatabase
 {
   CInArchiveInfo ArcInfo;
   
@@ -307,7 +307,7 @@ struct CDbEx: public CDatabase
 
 const unsigned kNumBufLevelsMax = 4;
 
-struct CInByte2
+struct CInByte2 Z7_final
 {
   const Byte *_buffer;
 public:
@@ -341,7 +341,7 @@ class CStreamSwitch;
 
 const UInt32 kHeaderSize = 32;
 
-class CInArchive
+class CInArchive Z7_final
 {
   friend class CStreamSwitch;
 

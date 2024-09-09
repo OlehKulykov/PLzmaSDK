@@ -29,7 +29,7 @@ struct CArchiveVersion
 
 const Byte kMajorVersion = 0;
 
-struct CStartHeader
+struct CStartHeader Z7_final
 {
   UInt64 NextHeaderOffset;
   UInt64 NextHeaderSize;

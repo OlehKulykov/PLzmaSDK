@@ -12,7 +12,7 @@
 namespace NArchive {
 namespace NTar {
 
-class COutArchive
+class COutArchive Z7_final
 {
   CMyComPtr<ISequentialOutStream> Stream;
 

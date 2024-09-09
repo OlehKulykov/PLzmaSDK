@@ -11,7 +11,7 @@
 namespace NArchive {
 namespace NTar {
 
-struct CSparseBlock
+struct CSparseBlock Z7_final
 {
   UInt64 Offset;
   UInt64 Size;
@@ -25,7 +25,7 @@ enum EPaxTimeRemoveZeroMode
   k_PaxTimeMode_RemoveZero_Always
 };
 
-struct CTimeOptions
+struct CTimeOptions Z7_final
 {
   EPaxTimeRemoveZeroMode RemoveZeroMode;
   unsigned NumDigitsMax;
@@ -39,7 +39,7 @@ struct CTimeOptions
 };
 
 
-struct CPaxTime
+struct CPaxTime Z7_final
 {
   Int32 NumDigits; // -1 means undefined
   UInt32 Ns;  // it's smaller than 1G. Even if (Sec < 0), larger (Ns) value means newer files.
@@ -260,7 +260,7 @@ struct CItem
 
 
 
-struct CEncodingCharacts
+struct CEncodingCharacts Z7_final
 {
   bool IsAscii;
   // bool Oem_Checked;
@@ -295,7 +295,7 @@ struct CEncodingCharacts
 };
 
 
-struct CPaxExtra
+struct CPaxExtra Z7_final
 {
   AString RecordPath;
   AString RawLines;
@@ -319,7 +319,7 @@ struct CPaxExtra
 };
 
 
-struct CItemEx: public CItem
+struct CItemEx Z7_final: public CItem
 {
   bool HeaderError;
   

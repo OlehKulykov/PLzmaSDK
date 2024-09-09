@@ -117,7 +117,7 @@ Z7_IFACE_CONSTR_STREAM(IOutStreamFinish, 0x07)
 Z7_IFACE_CONSTR_STREAM(IStreamGetProps, 0x08)
 
 
-struct CStreamFileProps
+struct CStreamFileProps Z7_final
 {
   UInt64 Size;
   UInt64 VolID;

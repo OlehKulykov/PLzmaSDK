@@ -68,7 +68,7 @@ public:
   
 namespace NCoderMixer2 {
 
-struct CBond
+struct CBond Z7_final
 {
   UInt32 PackIndex;
   UInt32 UnpackIndex;
@@ -78,7 +78,7 @@ struct CBond
 };
 
 
-struct CCoderStreamsInfo
+struct CCoderStreamsInfo Z7_final
 {
   UInt32 NumStreams;
 };
@@ -288,7 +288,7 @@ public:
 
 #ifdef USE_MIXER_ST
 
-struct CCoderST: public CCoder
+struct CCoderST Z7_final: public CCoder
 {
   bool CanRead;
   bool CanWrite;
@@ -297,7 +297,7 @@ struct CCoderST: public CCoder
 };
 
 
-struct CStBinderStream
+struct CStBinderStream Z7_final
 {
   CSequentialInStreamCalcSize *InStreamSpec;
   COutStreamCalcSize *OutStreamSpec;
@@ -307,7 +307,7 @@ struct CStBinderStream
 };
 
 
-class CMixerST:
+class CMixerST Z7_final:
   public IUnknown,
   public CMixer,
   public CMyUnknownImp
@@ -358,7 +358,7 @@ public:
 
 #ifdef USE_MIXER_MT
 
-class CCoderMT: public CCoder, public CVirtThread
+class CCoderMT Z7_final: public CCoder, public CVirtThread
 {
   Z7_CLASS_NO_COPY(CCoderMT)
   CRecordVector<ISequentialInStream*> InStreamPointers;
@@ -406,7 +406,7 @@ public:
 };
 
 
-class CMixerMT:
+class CMixerMT Z7_final:
   public IUnknown,
   public CMixer,
   public CMyUnknownImp

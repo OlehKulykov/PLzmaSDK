@@ -30,7 +30,7 @@ bool IsDriveColonName(const wchar_t *s);
 unsigned GetNumPrefixParts_if_DrivePath(UStringVector &pathParts);
 #endif
 
-struct CItem
+struct CItem Z7_final
 {
   UStringVector PathParts;
   bool Recursive;
@@ -57,7 +57,7 @@ const Byte kMark_FileOrDir = 0;
 const Byte kMark_StrictFile = 1;
 const Byte kMark_StrictFile_IfWildcard = 2;
 
-struct CCensorPathProps
+struct CCensorPathProps Z7_final
 {
   bool Recursive;
   bool WildcardMatching;
@@ -71,7 +71,7 @@ struct CCensorPathProps
 };
 
 
-class CCensorNode  MY_UNCOPYABLE
+class CCensorNode Z7_final MY_UNCOPYABLE
 {
   CCensorNode *Parent;
   
@@ -153,7 +153,7 @@ public:
 };
 
 
-struct CPair  MY_UNCOPYABLE
+struct CPair Z7_final MY_UNCOPYABLE
 {
   UString Prefix;
   CCensorNode Head;
@@ -170,7 +170,7 @@ enum ECensorPathMode
 };
 
 
-struct CCensorPath
+struct CCensorPath Z7_final
 {
   UString Path;
   bool Include;
@@ -182,7 +182,7 @@ struct CCensorPath
 };
 
 
-class CCensor  MY_UNCOPYABLE
+class CCensor Z7_final MY_UNCOPYABLE
 {
   int FindPairForPrefix(const UString &prefix) const;
 public:

@@ -17,7 +17,7 @@ const unsigned kKeySize = 32;
 const unsigned kSaltSizeMax = 16;
 const unsigned kIvSizeMax = 16; // AES_BLOCK_SIZE;
 
-class CKeyInfo
+class CKeyInfo Z7_final
 {
 public:
   unsigned NumCyclesPower;

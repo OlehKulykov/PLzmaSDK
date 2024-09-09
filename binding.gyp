@@ -3,7 +3,7 @@
     {
       'target_name': 'plzmasdk',
       'defines': [
-        'LIBPLZMA_VERSION_BUILD=1047',
+        'LIBPLZMA_VERSION_BUILD=1138',
         'LIBPLZMA_SHARED=1',
         'LIBPLZMA_NO_C_BINDINGS=1',
         'LIBPLZMA_HAVE_STD=1',
@@ -57,7 +57,6 @@
         'src/CPP/7zip/Archive/7z/7zOut.cpp',
         'src/CPP/7zip/Archive/7z/7zProperties.cpp',
         'src/CPP/7zip/Archive/7z/7zRegister.cpp',
-        'src/CPP/7zip/Archive/7z/7zSpecStream.cpp',
         'src/CPP/7zip/Archive/7z/7zUpdate.cpp',
         'src/CPP/7zip/Archive/ArchiveExports.cpp',
         'src/CPP/7zip/Archive/Common/CoderMixer2.cpp',

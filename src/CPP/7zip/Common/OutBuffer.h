@@ -14,7 +14,7 @@ struct COutBufferException: public CSystemException
 };
 #endif
 
-class COutBuffer
+class COutBuffer Z7_final
 {
 protected:
   Byte *_buf;

@@ -505,7 +505,7 @@ public:
 };
 
 
-class AString_Wipe: public AString
+class AString_Wipe Z7_final: public AString
 {
   Z7_CLASS_NO_COPY(AString_Wipe)
 public:
@@ -797,7 +797,7 @@ public:
 };
 
 
-class UString_Wipe: public UString
+class UString_Wipe Z7_final: public UString
 {
   Z7_CLASS_NO_COPY(UString_Wipe)
 public:
@@ -856,7 +856,7 @@ void operator-(const UString &s1, unsigned c);
 
 
 
-class UString2
+class UString2 Z7_final
 {
   wchar_t *_chars;
   unsigned _len;

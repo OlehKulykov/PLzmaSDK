@@ -149,7 +149,7 @@ bool operator!=(const CBuffer<T>& b1, const CBuffer<T>& b2)
 typedef CBuffer<Byte> CByteBuffer;
 
 
-class CByteBuffer_Wipe: public CByteBuffer
+class CByteBuffer_Wipe Z7_final: public CByteBuffer
 {
   Z7_CLASS_NO_COPY(CByteBuffer_Wipe)
 public:

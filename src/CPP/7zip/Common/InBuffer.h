@@ -100,7 +100,7 @@ public:
   size_t Skip(size_t size);
 };
 
-class CInBuffer: public CInBufferBase
+class CInBuffer Z7_final: public CInBufferBase
 {
 public:
   ~CInBuffer() { Free(); }

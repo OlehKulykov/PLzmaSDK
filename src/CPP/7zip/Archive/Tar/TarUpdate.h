@@ -10,7 +10,7 @@
 namespace NArchive {
 namespace NTar {
 
-struct CUpdateItem
+struct CUpdateItem Z7_final
 {
   int IndexInArc;
   unsigned IndexInClient;
@@ -43,7 +43,7 @@ struct CUpdateItem
 };
 
 
-struct CUpdateOptions
+struct CUpdateOptions Z7_final
 {
   UINT CodePage;
   unsigned UtfFlags;

@@ -41,8 +41,9 @@ void CAlignedMidBuffer::AllocAligned(size_t size)
      And ARMT filter can process    2 bytes less than sent size.
 */
 
-
+#if !defined(LIBPLZMA)
 static const UInt32 kBufSize = 1 << 21;
+#endif // !LIBPLZMA
 
 Z7_COM7F_IMF(CFilterCoder::SetInBufSize(UInt32 , UInt32 size)) { _inBufSize = size; return S_OK; }
 Z7_COM7F_IMF(CFilterCoder::SetOutBufSize(UInt32 , UInt32 size)) { _outBufSize = size; return S_OK; }
@@ -76,8 +77,8 @@ HRESULT CFilterCoder::Init_and_Alloc()
 
 CFilterCoder::CFilterCoder(bool encodeMode):
     _bufSize(0),
-    _inBufSize(kBufSize),
-    _outBufSize(kBufSize),
+    _inBufSize(::plzma::kStreamReadSize),
+    _outBufSize(::plzma::kStreamWriteSize),
     _encodeMode(encodeMode),
     _outSize_Defined(false),
     _outSize(0),

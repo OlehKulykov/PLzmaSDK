@@ -19,7 +19,7 @@ Z7_CLASS_IMP_IInStream(
 
 public:
 
-  struct CSubStreamInfo
+  struct CSubStreamInfo Z7_final
   {
     CMyComPtr<IInStream> Stream;
     UInt64 Size;

@@ -20,7 +20,7 @@
 
 #else
 
-class CRandomGenerator
+class CRandomGenerator Z7_final
 {
   Byte _buff[SHA256_DIGEST_SIZE];
   bool _needInit;

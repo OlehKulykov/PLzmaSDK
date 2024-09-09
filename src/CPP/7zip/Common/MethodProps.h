@@ -45,7 +45,7 @@ inline HRESULT ParseMtProp(const UString &name, const PROPVARIANT &prop, UInt32 
 }
 
 
-struct CProp
+struct CProp Z7_final
 {
   PROPID Id;
   bool IsOptional;

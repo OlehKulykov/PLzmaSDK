@@ -19,7 +19,7 @@ enum EErrorType
 };
 
 
-struct CTempBuffer
+struct CTempBuffer Z7_final
 {
   CByteBuffer Buffer;
   size_t StringSize; // num characters before zero Byte (StringSize <= item.PackSize)
@@ -42,7 +42,7 @@ struct CTempBuffer
 };
 
 
-class CArchive
+class CArchive Z7_final
 {
 public:
   bool _phySize_Defined;

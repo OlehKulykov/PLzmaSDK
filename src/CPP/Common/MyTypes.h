@@ -9,7 +9,7 @@
 // typedef int HRes;
 // typedef HRESULT HRes;
 
-struct CBoolPair
+struct CBoolPair Z7_final
 {
   bool Val;
   bool Def;

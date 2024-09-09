@@ -77,7 +77,7 @@ public:
 
 
 #ifndef Z7_EXTRACT_ONLY
-struct CAesCbcEncoder: public CAesCoder
+struct CAesCbcEncoder Z7_final: public CAesCoder
 {
   CAesCbcEncoder(unsigned keySize = 0): CAesCoder(keySize)
   {
@@ -88,7 +88,7 @@ struct CAesCbcEncoder: public CAesCoder
 };
 #endif
 
-struct CAesCbcDecoder: public CAesCoder
+struct CAesCbcDecoder Z7_final: public CAesCoder
 {
   CAesCbcDecoder(unsigned keySize = 0): CAesCoder(keySize)
   {

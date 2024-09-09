@@ -68,7 +68,7 @@ int test_plzma_multivolume_test1(void) {
     
     const Path secondPartPath = Path::tmpPath().appendingRandomComponent();
     PLZMA_TESTS_ASSERT(secondPartPath.exists() == false)
-    FILE__18_7z_002_write_to_path(secondPartPath.utf8());
+    FILE__18_7z_002_write_to_file(secondPartPath.utf8());
     PLZMA_TESTS_ASSERT(secondPartPath.exists() == true)
     streams.push(makeSharedInStream(secondPartPath));
     //streams.push(makeSharedInStream(FILE__18_7z_002_PTR, FILE__18_7z_002_SIZE));
@@ -153,7 +153,7 @@ int test_plzma_multivolume_test2(void) {
     PLZMA_TESTS_ASSERT(secondPartPath.exception == nullptr)
     PLZMA_TESTS_ASSERT(plzma_path_exists(&secondPartPath, nullptr) == false)
     PLZMA_TESTS_ASSERT(secondPartPath.exception == nullptr)
-    FILE__18_7z_002_write_to_path(plzma_path_utf8_string(&secondPartPath));
+    FILE__18_7z_002_write_to_file(plzma_path_utf8_string(&secondPartPath));
     PLZMA_TESTS_ASSERT(plzma_path_exists(&secondPartPath, nullptr) == true)
     tmpInStream = plzma_in_stream_create_with_path(&secondPartPath);
     PLZMA_TESTS_ASSERT(tmpInStream.exception == nullptr)
