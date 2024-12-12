@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
   
   s.source_files = 'libplzma.h', 'libplzma.hpp', 'src/**/*.{c,cpp,h,hpp}', 'objc/*.{mm,h,inl}'
   s.public_header_files = 'objc/*.h'
-  s.compiler_flags = '-fPIC -fno-rtti -DLIBPLZMA_VERSION_BUILD=1138', '-DLIBPLZMA_NO_C_BINDINGS=1'
+  s.compiler_flags = '-fPIC -fno-rtti -DLIBPLZMA_VERSION_BUILD=1174', '-DLIBPLZMA_NO_C_BINDINGS=1'
   s.libraries = 'c++'
   s.requires_arc = true
   

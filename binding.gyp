@@ -3,7 +3,7 @@
     {
       'target_name': 'plzmasdk',
       'defines': [
-        'LIBPLZMA_VERSION_BUILD=1138',
+        'LIBPLZMA_VERSION_BUILD=1174',
         'LIBPLZMA_SHARED=1',
         'LIBPLZMA_NO_C_BINDINGS=1',
         'LIBPLZMA_HAVE_STD=1',

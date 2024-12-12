@@ -22,7 +22,7 @@ android {
         versionName "1.4.8"
         externalNativeBuild {
             cmake {
-                arguments "-DANDROID_STL=c++_static", "-DANDROID_TOOLCHAIN=clang", "-DLIBCLZMA_OPT_ANDROID:BOOL=ON", "-DLIBCLZMA_OPT_STATIC:BOOL=OFF", "-DLIBCLZMA_OPT_TESTS:BOOL=OFF", "-DLIBCLZMA_OPT_BUILD_NUMBER=1138"
+                arguments "-DANDROID_STL=c++_static", "-DANDROID_TOOLCHAIN=clang", "-DLIBCLZMA_OPT_ANDROID:BOOL=ON", "-DLIBCLZMA_OPT_STATIC:BOOL=OFF", "-DLIBCLZMA_OPT_TESTS:BOOL=OFF", "-DLIBCLZMA_OPT_BUILD_NUMBER=1174"
                 cppFlags "-fexceptions"
             }
         }
