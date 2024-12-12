@@ -7,3 +7,7 @@
 
 * **[ArthurAlvarez](https://github.com/ArthurAlvarez)**
   * Adding Privacy Manifest.
+
+
+* **[jxd524](https://github.com/jxd524)**
+  * Adopt Pod Specs to use resource bundles.
