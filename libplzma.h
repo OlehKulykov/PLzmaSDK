@@ -44,13 +44,13 @@
 /// and all optional C bindings to the internal C++ part(Core) of the library.
 /// Everything what you need to use this library in C | Objective-C | Swift env. is here.
 
-/// @brief Manualy defined version of the library, i.e. 1.4.7
+/// @brief Manualy defined version of the library, i.e. 1.4.8
 /// The optinal \a LIBPLZMA_VERSION_BUILD might be befined by the CI or CMake or manualy.
 /// Conforms 'Semantic Versioning 2.0.0'.
 /// @link https://semver.org
 #define LIBPLZMA_VERSION_MAJOR 1
 #define LIBPLZMA_VERSION_MINOR 4
-#define LIBPLZMA_VERSION_PATCH 7
+#define LIBPLZMA_VERSION_PATCH 8
 
 // Check Windows
 #if defined(WIN32) || defined(_WIN32) || defined(_WIN64) || defined(WIN64) || defined(WIN32_LEAN_AND_MEAN)
@@ -1615,4 +1615,3 @@ LIBPLZMA_C_API(bool) plzma_encoder_compress(plzma_encoder * LIBPLZMA_NONNULL enc
 LIBPLZMA_C_API(void) plzma_encoder_release(plzma_encoder * LIBPLZMA_NONNULL encoder);
 
 #endif // !__LIBPLZMA_H__
-

@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = 'PLzmaSDK'
-  s.version = '1.4.7'
+  s.version = '1.4.8'
   s.summary = '(Portable, Patched, Package, cross-P-latform) Lzma SDK, libplzma'
   s.homepage = 'https://github.com/OlehKulykov/PLzmaSDK'
   s.source = { :git => s.homepage + '.git', :tag => s.version }
@@ -12,6 +12,9 @@ Pod::Spec.new do |s|
   s.osx.deployment_target = '10.13'
 #  s.tvos.deployment_target = '12.0'
 #  s.watchos.deployment_target = '2.0'
+  s.resource_bundles = {
+    'PLzmaSDK_Privacy' => ['resources/PrivacyInfo.xcprivacy'],
+  }
   
   s.subspec 'libplzma' do |libplzma|
     libplzma.source_files = 'libplzma.h', 'libplzma.hpp', 'src/**/*.{c,cpp,h,hpp}'
