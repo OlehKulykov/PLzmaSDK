@@ -186,4 +186,3 @@ final class Compress: XCTestCase, EncoderDelegate, DecoderDelegate {
         ("testMultiVolume", testMultiVolume)
     ]
 }
-

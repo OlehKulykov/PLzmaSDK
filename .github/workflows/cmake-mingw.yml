@@ -81,3 +81,4 @@ jobs:
       shell: bash
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
       run: tar -cJvf ${{ steps.strings.outputs.build-artifacts-name }}.tar.xz ${{ steps.strings.outputs.build-artifacts-name }}
+

@@ -25,19 +25,23 @@
 
 cmake_minimum_required(VERSION 3.21 FATAL_ERROR)
 
-project(libplzma LANGUAGES C CXX)
+if (WIN32)
+  project(libplzma LANGUAGES C CXX)
+else()
+  project(libplzma LANGUAGES ASM C CXX)
+endif()
 
 set(CMAKE_CXX_STANDARD 11)
 
 set(PACKAGE "libplzma")
 set(CPACK_PACKAGE_NAME "${PACKAGE}")
 set(CPACK_PACKAGE_VERSION_MAJOR "1")
-set(CPACK_PACKAGE_VERSION_MINOR "4")
-set(CPACK_PACKAGE_VERSION_PATCH "9")
+set(CPACK_PACKAGE_VERSION_MINOR "5")
+set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}")
 set(CPACK_PACKAGE_VENDOR "olehkulykov@gmail.com")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PACKAGE} ${PACKAGE_VERSION}")
-set(SOVERSION "1.4.9")
+set(SOVERSION "1.5.0")
 set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
 set(VERSION "${CPACK_PACKAGE_VERSION}")
 
@@ -632,6 +636,13 @@ if(NOT LIBPLZMA_OPT_NO_TAR)
   )
 endif()
 
+if (NOT WIN32)
+    list(APPEND LIBPLZMA_SOURCES
+      src/Asm/arm64/7zAsm.S
+      src/Asm/arm64/LzmaDecOpt.S
+    )
+endif()
+
 # ---- groups(headers and sources) ----
 # ---- grop: public headers and sources ----
 source_group("public"
@@ -681,6 +692,12 @@ source_group("src"
 )
 
 # ---- grop: Lzma C headers and sources ----
+source_group("Asm"
+  FILES
+  src/Asm/arm64/7zAsm.S
+  src/Asm/arm64/LzmaDecOpt.S
+)
+
 source_group("C"
   FILES
   src/C/7z.h

@@ -8,6 +8,10 @@
 /* #include "CpuArch.h" */
 #include "LzmaDec.h"
 
+#if (defined(__arm64__) && __arm64__) || (defined(__arm64) && __arm64)
+#define Z7_LZMA_DEC_OPT 1
+#endif
+
 // #define kNumTopBits 24
 #define kTopValue ((UInt32)1 << 24)
 

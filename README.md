@@ -10,7 +10,7 @@
 
 
 **P**LzmaSDK is (**P**ortable, **P**atched, **P**ackage, cross-**P**-latform) Lzma SDK.
-Based on original [LZMA SDK] version 24.08 and patched for unix platforms.
+Based on original [LZMA SDK] version 24.09 and patched for unix platforms.
 Available for all Apple's platforms(iOS, macOS, tvOS, watchOS), Android, Windows, Linux and any unix'es.
 
 
@@ -55,7 +55,7 @@ All optional features are enabled by default, but they might be disabled during 
 -----------
 #### Swift Package Manager
 ```swift
-.package(url: "https://github.com/OlehKulykov/PLzmaSDK.git", .exact("1.4.9"))
+.package(url: "https://github.com/OlehKulykov/PLzmaSDK.git", .exact("1.5.0"))
 ```
 
 #### CocoaPods Podfile (Swift)
@@ -64,7 +64,7 @@ use_frameworks!
 platform :ios, '11.0'
 
 target '<REPLACE_WITH_YOUR_TARGET>' do
-    pod 'PLzmaSDK', '1.4.9'
+    pod 'PLzmaSDK', '1.5.0'
 end
 ```
 
@@ -74,7 +74,7 @@ use_frameworks!
 platform :ios, '9.0'
 
 target '<REPLACE_WITH_YOUR_TARGET>' do
-    pod 'PLzmaSDK-ObjC', '1.4.9'
+    pod 'PLzmaSDK-ObjC', '1.5.0'
 end
 ```
 
@@ -86,7 +86,7 @@ end
     "npm": ">=6.0.0"
   },
   "dependencies": {
-    "plzmasdk": "1.4.9"
+    "plzmasdk": "1.5.0"
   }
 }
 ```

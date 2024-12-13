@@ -242,4 +242,3 @@ namespace plzma {
 #endif // LIBPLZMA_THREAD_UNSAFE
 
 #endif // !__PLZMA_MUTEX_HPP__
-

@@ -3,7 +3,7 @@
     {
       'target_name': 'plzmasdk',
       'defines': [
-        'LIBPLZMA_VERSION_BUILD=1174',
+        'LIBPLZMA_VERSION_BUILD=1198',
         'LIBPLZMA_SHARED=1',
         'LIBPLZMA_NO_C_BINDINGS=1',
         'LIBPLZMA_HAVE_STD=1',
@@ -11,6 +11,8 @@
       ],
       'sources': [
         'node/module.cpp',
+        'src/Asm/arm64/7zAsm.S',
+        'src/Asm/arm64/LzmaDecOpt.S',
         'src/C/7zCrc.c',
         'src/C/7zCrcOpt.c',
         'src/C/7zStream.c',

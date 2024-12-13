@@ -120,4 +120,3 @@ foreach(LIBPLZMA_TEST ${LIBPLZMA_TESTS})
   # install(TARGETS ${LIBPLZMA_TEST} DESTINATION bin)
   # install(TARGETS "${LIBPLZMA_TEST}_static" DESTINATION bin)
 endforeach()
-

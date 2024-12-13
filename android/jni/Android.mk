@@ -2,6 +2,8 @@ LOCAL_PATH:= $(call my-dir)
 
 
 ALL_SOURCES := \
+	../../src/Asm/arm64/7zAsm.S \
+	../../src/Asm/arm64/LzmaDecOpt.S \
     ../../src/C/7zCrc.c \
     ../../src/C/7zCrcOpt.c \
     ../../src/C/7zStream.c \
@@ -157,7 +159,7 @@ ALL_INCLUDES := $(LOCAL_PATH)/../../../
 ALL_CFLAGS := \
     -DLIBPLZMA_BUILD=1 \
     -DLIBPLZMA_SHARED=1 \
-    -DLIBPLZMA_VERSION_BUILD=1174 \
+    -DLIBPLZMA_VERSION_BUILD=1198 \
     -w
 
 

@@ -480,14 +480,14 @@ extension plzma_path_timestamp {
     }
 }
 
-extension plzma_path_timestamp: CustomStringConvertible {
+extension plzma_path_timestamp: Swift.CustomStringConvertible {
     
     public var description: String {
         return "Creation: \(creationDate)\nLast access: \(lastAccessDate)\nLast modification: \(lastModificationDate)"
     }
 }
 
-extension plzma_path_timestamp: CustomDebugStringConvertible {
+extension plzma_path_timestamp: Swift.CustomDebugStringConvertible {
     
     public var debugDescription: String {
         return self.description
@@ -512,14 +512,14 @@ extension plzma_path_stat {
     }
 }
 
-extension plzma_path_stat: CustomStringConvertible {
+extension plzma_path_stat: Swift.CustomStringConvertible {
     
     public var description: String {
         return "Size: \(size)\n\(timestamp.description)"
     }
 }
 
-extension plzma_path_stat: CustomDebugStringConvertible {
+extension plzma_path_stat: Swift.CustomDebugStringConvertible {
     
     public var debugDescription: String {
         return self.description
