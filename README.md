@@ -57,7 +57,7 @@ All optional features are enabled by default, but they might be disabled during 
 ```swift
 // swift-tools-version: 6.1
 // Min: 5.9
-.package(url: "https://github.com/OlehKulykov/PLzmaSDK.git", .from("1.5.1"))
+.package(url: "https://github.com/OlehKulykov/PLzmaSDK.git", .branch: "master")
 ```
 
 #### CocoaPods Podfile (Swift)
