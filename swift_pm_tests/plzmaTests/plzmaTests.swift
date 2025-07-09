@@ -1,7 +1,7 @@
 import XCTest
 @testable import PLzmaSDK
 @testable import libplzma
-@testable import plzma_test_files
+@testable @preconcurrency import plzma_test_files
 
 final class plzmaTests: XCTestCase, DecoderDelegate {
     let queue = OperationQueue()
@@ -88,7 +88,7 @@ final class plzmaTests: XCTestCase, DecoderDelegate {
         }
     }
     
-    static var allTests = [
+    static let allTests = [
         ("testExample", testExample),
         ("testOpen1", testOpen1),
         ("testEncoder", testEncoder)

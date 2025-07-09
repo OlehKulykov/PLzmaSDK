@@ -2002,7 +2002,7 @@ namespace nplzma {
                     stream = plzma::makeSharedOutMultiStream(partSize);
                     break;
                 case 2:
-                    stream = plzma::makeSharedOutMultiStream(std::move(dirPath), std::move(partName), std::move(partExtension), static_cast<plzma_plzma_multi_stream_part_name_format>(formatValue), partSize);
+                    stream = plzma::makeSharedOutMultiStream(std::move(dirPath), std::move(partName), std::move(partExtension), static_cast<plzma_multi_stream_part_name_format>(formatValue), partSize);
                     break;
                 default:
                     break;
@@ -3048,9 +3048,9 @@ namespace nplzma {
         openDirModeObject->DefineOwnProperty(context, String::NewFromUtf8(isolate, "followSymlinks").ToLocalChecked(), Uint32::NewFromUnsigned(isolate, plzma_open_dir_mode_follow_symlinks), static_cast<PropertyAttribute>(ReadOnly | DontDelete)).Check();
         exports->Set(context, String::NewFromUtf8(isolate, "OpenDirMode").ToLocalChecked(), openDirModeObject).FromJust();
         
-        // plzma_plzma_multi_stream_part_name_format
+        // plzma_multi_stream_part_name_format
         Local<Object> multiStreamPartNameFormatObject = Object::New(isolate);
-        multiStreamPartNameFormatObject->DefineOwnProperty(context, String::NewFromUtf8(isolate, "nameExt00x").ToLocalChecked(), Uint32::NewFromUnsigned(isolate, plzma_plzma_multi_stream_part_name_format_name_ext_00x), static_cast<PropertyAttribute>(ReadOnly | DontDelete)).Check();
+        multiStreamPartNameFormatObject->DefineOwnProperty(context, String::NewFromUtf8(isolate, "nameExt00x").ToLocalChecked(), Uint32::NewFromUnsigned(isolate, plzma_multi_stream_part_name_format_name_ext_00x), static_cast<PropertyAttribute>(ReadOnly | DontDelete)).Check();
         exports->Set(context, String::NewFromUtf8(isolate, "MultiStreamPartNameFormat").ToLocalChecked(), multiStreamPartNameFormatObject).FromJust();
         
         // module properties

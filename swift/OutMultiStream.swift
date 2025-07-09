@@ -31,7 +31,7 @@ import libplzma
 #endif
 
 /// The out file or memory or multi stream.
-public final class OutMultiStream: OutStream {
+public final class OutMultiStream: OutStream, @unchecked Sendable {
  
     internal override var isMulti: Bool {
         return true

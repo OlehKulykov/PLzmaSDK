@@ -40,7 +40,7 @@ public protocol EncoderDelegate: AnyObject {
 }
 
 /// The encoder for compressing the archive items.
-public final class Encoder {
+public final class Encoder: Sendable {
     
     private final class Context {
         weak var encoder: Encoder?

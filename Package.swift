@@ -1,4 +1,4 @@
-// swift-tools-version:5.4
+// swift-tools-version: 6.1
 
 import PackageDescription
 
@@ -13,11 +13,11 @@ let package = Package(
         .target(name: "libplzma",
                 path: "src",
                 cSettings: [
-                    .define("LIBPLZMA_VERSION_BUILD", to: "1198"),
+                    .define("LIBPLZMA_VERSION_BUILD", to: "1356"),
                     .unsafeFlags(["-fPIC"])
                 ],
                 cxxSettings: [
-                    .define("LIBPLZMA_VERSION_BUILD", to: "1198"),
+                    .define("LIBPLZMA_VERSION_BUILD", to: "1356"),
                     .unsafeFlags(["-fPIC", "-fno-rtti"])
                 ]),
         .target(name: "PLzmaSDK",
@@ -45,7 +45,7 @@ let package = Package(
             ],
             path: "swift_pm_tests")
     ],
-    swiftLanguageVersions: [.v5],
+    swiftLanguageModes: [.v5, .v6],
     cLanguageStandard: .c11,
     cxxLanguageStandard: .cxx11
 )

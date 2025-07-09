@@ -1,7 +1,7 @@
 import XCTest
 @testable import PLzmaSDK
 @testable import libplzma
-@testable import plzma_test_files
+@testable @preconcurrency import plzma_test_files
 
 final class Compress: XCTestCase, EncoderDelegate, DecoderDelegate {
     
@@ -182,7 +182,7 @@ final class Compress: XCTestCase, EncoderDelegate, DecoderDelegate {
         }
     }
     
-    static var allTests = [
+    static let allTests = [
         ("testMultiVolume", testMultiVolume)
     ]
 }

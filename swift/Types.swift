@@ -33,6 +33,10 @@ import libplzma
 /// Limited to 32 bit unsigned integer.
 public typealias Size = plzma_size_t
 
+extension plzma_object: @retroactive @unchecked Sendable {
+    
+}
+
 public protocol Enum {
     
     associatedtype EType: RawRepresentable
@@ -48,7 +52,7 @@ extension Enum where Self: RawRepresentable, Self.RawValue: BinaryInteger, EType
 }
 
 /// Exception error codes.
-public enum ErrorCode: UInt8, Enum {
+public enum ErrorCode: UInt8, Enum, Sendable {
     
     public typealias EType = plzma_error_code
     
@@ -73,13 +77,13 @@ public enum ErrorCode: UInt8, Enum {
     case `internal` = 4
 }
 
-extension plzma_error_code: Enum {
+extension plzma_error_code: Enum, @retroactive @unchecked Sendable {
     
     public typealias EType = ErrorCode
 }
 
 /// The type of erasing the content.
-public enum Erase: UInt8, Enum {
+public enum Erase: UInt8, Enum, Sendable {
     
     public typealias EType = plzma_erase
     
@@ -90,13 +94,13 @@ public enum Erase: UInt8, Enum {
     case zero = 1
 }
 
-extension plzma_erase: Enum {
+extension plzma_erase: Enum, @retroactive @unchecked Sendable {
     
     public typealias EType = Erase
 }
 
 /// The type of the file, stream, data buffer, etc.
-public enum FileType: UInt8, Enum {
+public enum FileType: UInt8, Enum, Sendable {
     
     public typealias EType = plzma_file_type
     
@@ -123,13 +127,13 @@ public enum FileType: UInt8, Enum {
     case tar = 3
 }
 
-extension plzma_file_type: Enum {
+extension plzma_file_type: Enum, @retroactive @unchecked Sendable {
     
     public typealias EType = FileType
 }
 
 /// Compression method.
-public enum Method: UInt8, Enum {
+public enum Method: UInt8, Enum, Sendable {
 
     public typealias EType = plzma_method
     
@@ -146,14 +150,14 @@ public enum Method: UInt8, Enum {
     case PPMd = 3
 }
 
-extension plzma_method: Enum {
+extension plzma_method: Enum, @retroactive @unchecked Sendable {
     
     public typealias EType = Method
 }
 
 /// The enumeration with bitmask options for opening directory path.
 /// Currently uses for defining behavior of directory iteration.
-public struct OpenDirMode: OptionSet {
+public struct OpenDirMode: OptionSet, Sendable {
     
     public typealias RawValue = plzma_open_dir_mode_t
     
@@ -170,15 +174,15 @@ public struct OpenDirMode: OptionSet {
     public static let followSymlinks = OpenDirMode(rawValue: 1 << 0)
 }
 
-public enum MultiStreamPartNameFormat: UInt8, Enum {
+public enum MultiStreamPartNameFormat: UInt8, Enum, Sendable {
 
-    public typealias EType = plzma_plzma_multi_stream_part_name_format
+    public typealias EType = plzma_multi_stream_part_name_format
     
     /// "File"."Extension"."002". The maximum number of parts is 999.
     case nameExt00x = 1
 }
 
-extension plzma_plzma_multi_stream_part_name_format: Enum {
+extension plzma_multi_stream_part_name_format: Enum, @retroactive @unchecked Sendable {
     
     public typealias EType = MultiStreamPartNameFormat
 }

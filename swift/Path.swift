@@ -35,7 +35,7 @@ import libplzma
 /// During the manipulation of the path's string presentation:
 /// - The path separator will be automatically replaced with the platform specific one.
 /// - The previous content will be erased with `.zero`, i.e. zero-filled.
-public final class Path {
+public final class Path: Sendable {
     
     internal let object: plzma_path
     

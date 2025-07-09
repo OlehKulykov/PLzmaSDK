@@ -31,9 +31,9 @@ import libplzma
 #endif
 
 /// The archive item.
-public final class Item {
+public final class Item: Sendable {
     
-    private var _path: Path?
+    nonisolated(unsafe) private var _path: Path?
     internal let object: plzma_item
     
     /// The item's path inside the archive.

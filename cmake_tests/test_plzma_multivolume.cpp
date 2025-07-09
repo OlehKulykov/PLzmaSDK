@@ -320,7 +320,7 @@ int test_plzma_multivolume_test4(void) {
         switch (testCase) {
             case Test4CaseFileNoPassword:
             case Test4CaseFileWithPassword:
-                multiStream = makeSharedOutMultiStream(path, "file", "7z", plzma_plzma_multi_stream_part_name_format_name_ext_00x, partSize);
+                multiStream = makeSharedOutMultiStream(path, "file", "7z", plzma_multi_stream_part_name_format_name_ext_00x, partSize);
                 break;
             case Test4CaseMemNoPassword:
             case Test4CaseMemWithPassword:
@@ -476,9 +476,9 @@ int test_plzma_multivolume_test5(void) {
             case Test4CaseFileNoPassword:
             case Test4CaseFileWithPassword:
 #if defined(LIBPLZMA_OS_WINDOWS)
-                multiStream = plzma_out_multi_stream_create_with_directory_path_wide_name_ext_format_part_size(&path, L"file", L"7z", plzma_plzma_multi_stream_part_name_format_name_ext_00x, partSize);
+                multiStream = plzma_out_multi_stream_create_with_directory_path_wide_name_ext_format_part_size(&path, L"file", L"7z", plzma_multi_stream_part_name_format_name_ext_00x, partSize);
 #else
-                multiStream = plzma_out_multi_stream_create_with_directory_path_utf8_name_ext_format_part_size(&path, "file", "7z", plzma_plzma_multi_stream_part_name_format_name_ext_00x, partSize);
+                multiStream = plzma_out_multi_stream_create_with_directory_path_utf8_name_ext_format_part_size(&path, "file", "7z", plzma_multi_stream_part_name_format_name_ext_00x, partSize);
 #endif
                 break;
             case Test4CaseMemNoPassword:

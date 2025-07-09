@@ -1008,7 +1008,7 @@ namespace plzma {
     LIBPLZMA_CPP_API(SharedPtr<OutMultiStream>) makeSharedOutMultiStream(const Path & dirPath,
                                                                          const String & partName,
                                                                          const String & partExtension,
-                                                                         const plzma_plzma_multi_stream_part_name_format format,
+                                                                         const plzma_multi_stream_part_name_format format,
                                                                          const plzma_size_t partSize);
 
 
@@ -1027,7 +1027,7 @@ namespace plzma {
     LIBPLZMA_CPP_API(SharedPtr<OutMultiStream>) makeSharedOutMultiStream(Path && dirPath,
                                                                          String && partName,
                                                                          String && partExtension,
-                                                                         const plzma_plzma_multi_stream_part_name_format format,
+                                                                         const plzma_multi_stream_part_name_format format,
                                                                          const plzma_size_t partSize);
 
 

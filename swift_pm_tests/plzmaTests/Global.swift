@@ -23,7 +23,7 @@ final class Global: XCTestCase {
         XCTAssertTrue(PLzmaSDK.decoderWriteSize == 3456, "Wrong 'streamReadSize' value after update.")
     }
     
-    static var allTests = [
+    static let allTests = [
         ("Retrieve and change global properties", testReadWriteGlobalProperties)
     ]
 }

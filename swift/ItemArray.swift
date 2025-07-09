@@ -31,7 +31,7 @@ import libplzma
 #endif
 
 /// The array of the archive items.
-public final class ItemArray {
+public final class ItemArray: Sendable {
     
     internal let object: plzma_item_array
     

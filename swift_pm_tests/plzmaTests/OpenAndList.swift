@@ -1,7 +1,7 @@
 import XCTest
 @testable import PLzmaSDK
 @testable import libplzma
-@testable import plzma_test_files
+@testable @preconcurrency import plzma_test_files
 
 final class OpenAndList: XCTestCase, DecoderDelegate {
 
@@ -132,7 +132,7 @@ final class OpenAndList: XCTestCase, DecoderDelegate {
         }
     }
     
-    static var allTests = [
+    static let allTests = [
         ("testOpen", testOpen),
         ("testMultivolume", testMultiVolume)
     ]

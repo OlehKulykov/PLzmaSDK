@@ -60,7 +60,7 @@ final class TypesTests: XCTestCase {
         XCTAssertEqual(FileType.tar, plzma_file_type(rawValue: UInt32(FileType.tar.rawValue)).type)
     }
     
-    static var allTests = [
+    static let allTests = [
         ("ErrorCode enum tests", testErrorCode),
         ("Erase enum tests", testErase),
         ("FileType enum tests", testFileType)

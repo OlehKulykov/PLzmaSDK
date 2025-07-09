@@ -64,7 +64,7 @@
     const auto multiStream = plzma::makeSharedOutMultiStream(plzma::Path(directoryPath.UTF8String),
                                                              plzma::String(partName.UTF8String),
                                                              plzma::String(partExtension ? partExtension.UTF8String : nullptr),
-                                                             static_cast<const plzma_plzma_multi_stream_part_name_format>(format),
+                                                             static_cast<const plzma_multi_stream_part_name_format>(format),
                                                              partSize);
     outStream = multiStream.cast<plzma::OutStream>();
     PLZMASDKOBJC_CATCH_RETHROW

@@ -31,7 +31,7 @@ import libplzma
 #endif
 
 /// The array of item/out-stream pairs.
-public final class ItemOutStreamArray {
+public final class ItemOutStreamArray: Sendable {
     
     internal let object: plzma_item_out_stream_array
 

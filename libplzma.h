@@ -44,13 +44,13 @@
 /// and all optional C bindings to the internal C++ part(Core) of the library.
 /// Everything what you need to use this library in C | Objective-C | Swift env. is here.
 
-/// @brief Manualy defined version of the library, i.e. 1.5.0
+/// @brief Manualy defined version of the library, i.e. 1.5.1
 /// The optinal \a LIBPLZMA_VERSION_BUILD might be befined by the CI or CMake or manualy.
 /// Conforms 'Semantic Versioning 2.0.0'.
 /// @link https://semver.org
 #define LIBPLZMA_VERSION_MAJOR 1
 #define LIBPLZMA_VERSION_MINOR 5
-#define LIBPLZMA_VERSION_PATCH 0
+#define LIBPLZMA_VERSION_PATCH 1
 
 // Check Windows
 #if defined(WIN32) || defined(_WIN32) || defined(_WIN64) || defined(WIN64) || defined(WIN32_LEAN_AND_MEAN)
@@ -226,10 +226,10 @@ typedef enum plzma_open_dir_mode {
 } plzma_open_dir_mode;
 
 
-typedef enum plzma_plzma_multi_stream_part_name_format {
+typedef enum plzma_multi_stream_part_name_format {
     /// @brief "File"."Extension"."002". The maximum number of parts is 999.
-    plzma_plzma_multi_stream_part_name_format_name_ext_00x   = 1
-} plzma_plzma_multi_stream_part_name_format;
+    plzma_multi_stream_part_name_format_name_ext_00x   = 1
+} plzma_multi_stream_part_name_format;
 
 
 /// @brief Contains unix timestamps of the path.
@@ -1104,7 +1104,7 @@ LIBPLZMA_C_API(void) plzma_out_stream_release(plzma_out_stream * LIBPLZMA_NONNUL
 LIBPLZMA_C_API(plzma_out_multi_stream) plzma_out_multi_stream_create_with_directory_path_utf8_name_ext_format_part_size(const plzma_path * LIBPLZMA_NONNULL dir_path,
                                                                                                                         const char * LIBPLZMA_NONNULL part_name,
                                                                                                                         const char * LIBPLZMA_NULLABLE part_extension,
-                                                                                                                        const plzma_plzma_multi_stream_part_name_format format,
+                                                                                                                        const plzma_multi_stream_part_name_format format,
                                                                                                                         const plzma_size_t part_size);
 
 
@@ -1124,7 +1124,7 @@ LIBPLZMA_C_API(plzma_out_multi_stream) plzma_out_multi_stream_create_with_direct
 LIBPLZMA_C_API(plzma_out_multi_stream) plzma_out_multi_stream_create_with_directory_path_wide_name_ext_format_part_size(const plzma_path * LIBPLZMA_NONNULL dir_path,
                                                                                                                         const wchar_t * LIBPLZMA_NONNULL part_name,
                                                                                                                         const wchar_t * LIBPLZMA_NULLABLE part_extension,
-                                                                                                                        const plzma_plzma_multi_stream_part_name_format format,
+                                                                                                                        const plzma_multi_stream_part_name_format format,
                                                                                                                         const plzma_size_t part_size);
 
 

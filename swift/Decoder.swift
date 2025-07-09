@@ -40,7 +40,7 @@ public protocol DecoderDelegate: AnyObject {
 }
 
 /// The Decoder for extracting or testing the archive items.
-public final class Decoder {
+public final class Decoder: Sendable {
     
     private final class Context {
         weak var decoder: Decoder?

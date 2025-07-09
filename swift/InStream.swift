@@ -33,7 +33,7 @@ import libplzma
 /// The input stream.
 ///
 /// The stream could be initialized with path or memory data.
-public final class InStream {
+public final class InStream: Sendable {
     
     private final class DataNoCopyContext {
         let data: Data

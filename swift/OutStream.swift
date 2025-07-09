@@ -31,7 +31,7 @@ import libplzma
 #endif
 
 /// The out file or memory or multi stream.
-public class OutStream {
+public class OutStream: @unchecked Sendable {
     
     internal let object: plzma_out_stream
     
