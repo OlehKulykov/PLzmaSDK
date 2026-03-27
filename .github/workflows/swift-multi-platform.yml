@@ -11,8 +11,8 @@ jobs:
     name: Swift
     strategy:
       matrix:
-        os: [ubuntu-latest]
-        swift: ["5.x"]
+        os: [macos-latest]
+        swift: ["6.x", "5.x"]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: swift-actions/setup-swift@65540b95f51493d65f5e59e97dcef9629ddf11bf
