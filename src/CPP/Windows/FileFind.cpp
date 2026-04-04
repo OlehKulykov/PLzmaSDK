@@ -732,7 +732,7 @@ bool CFileInfo::Find(CFSTR path, bool followLink)
             bool isOK = false;
             if (finder.FindFirst(s, *this))
             {
-              if (Name == FTEXT("."))
+              if (Name.IsEqualTo("."))
               {
                 Name = path + prefixSize;
                 return true;
@@ -770,6 +770,13 @@ bool CFileInfo::Find(CFSTR path, bool followLink)
 
   // return FollowReparse(path, IsDir());
   return Fill_From_ByHandleFileInfo(path);
+/*
+  // Fill_From_ByHandleFileInfo returns false (with Access Denied error),
+  // if there is reparse link file (not directory reparse item).
+  if (Fill_From_ByHandleFileInfo(path))
+    return true;
+  return HasReparsePoint();
+*/
 }
 
 bool CFileInfoBase::Fill_From_ByHandleFileInfo(CFSTR path)
@@ -1156,6 +1163,15 @@ void CFileInfoBase::SetFrom_stat(const struct stat &st)
   MTime = st.st_mtimespec;
   ATime = st.st_atimespec;
 
+  #elif defined(__QNXNTO__) && defined(__ARM__) && !defined(__aarch64__)
+  
+  // CTime = ST_CTIME(st);
+  // MTime = ST_MTIME(st);
+  // ATime = ST_ATIME(st);
+  CTime.tv_sec = st.st_ctime;  CTime.tv_nsec = 0;
+  MTime.tv_sec = st.st_mtime;  MTime.tv_nsec = 0;
+  ATime.tv_sec = st.st_atime;  ATime.tv_nsec = 0;
+
   #else
   // timespec_To_FILETIME(st.st_ctim, CTime, &CTime_ns100);
   // timespec_To_FILETIME(st.st_mtim, MTime, &MTime_ns100);
@@ -1306,7 +1322,7 @@ bool CDirEntry::IsDots() const throw()
   /* some systems (like CentOS 7.x on XFS) have (Type == DT_UNKNOWN)
      we can call fstatat() for that case, but we use only (Name) check here */
 
-#if !defined(_AIX) && !defined(__sun)
+#if !defined(_AIX) && !defined(__sun) && !defined(__QNXNTO__)
   if (Type != DT_DIR && Type != DT_UNKNOWN)
     return false;
 #endif
@@ -1346,7 +1362,7 @@ bool CEnumerator::NextAny(CDirEntry &fi, bool &found)
 
   fi.iNode = de->d_ino;
   
-#if !defined(_AIX) && !defined(__sun)
+#if !defined(_AIX) && !defined(__sun) && !defined(__QNXNTO__)
   fi.Type = de->d_type;
   /* some systems (like CentOS 7.x on XFS) have (Type == DT_UNKNOWN)
      we can set (Type) from fstatat() in that case.
@@ -1437,7 +1453,7 @@ bool CEnumerator::Fill_FileInfo(const CDirEntry &de, CFileInfo &fileInfo, bool f
   fileInfo.Name = de.Name;
   return true;
 }
-#endif // LIBPLZMA
+#endif // !LIBPLZMA
 
 #endif // _WIN32
 

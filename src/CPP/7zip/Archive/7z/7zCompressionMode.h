@@ -59,6 +59,7 @@ struct CCompressionMethodMode Z7_final
   bool NumThreads_WasForced;
   bool MultiThreadMixer;
   UInt32 NumThreads;
+  UInt32 NumThreadGroups;
   #endif
 
   UString Password; // _Wipe
@@ -74,6 +75,7 @@ struct CCompressionMethodMode Z7_final
       , NumThreads_WasForced(false)
       , MultiThreadMixer(true)
       , NumThreads(1)
+      , NumThreadGroups(0)
       #endif
       , MemoryUsageLimit((UInt64)1 << 30)
   {}

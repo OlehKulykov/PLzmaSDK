@@ -1,6 +1,9 @@
 (Portable, Patched, Package, cross-P-latform) Lzma SDK, libplzma
 
-1.5.1: (current):
+1.6.0: (current):
+- Update of the underlying code.
+
+1.5.1:
 - C/C++(core): rename 'plzma_plzma_multi_stream_part_name_format' into shorter 'plzma_multi_stream_part_name_format'
                in a public header. Should not be a huge problem.
 - Swift Package Manager: set latests version(6.1) of Swift tools, updated 'Package.swift' syntax and added Swift language version 6.

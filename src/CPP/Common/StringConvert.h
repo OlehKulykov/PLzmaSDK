@@ -95,7 +95,7 @@ AString SystemStringToOemString(const CSysString &src);
 #endif
 
 #if defined(LIBPLZMA) && defined(ENV_HAVE_LOCALE)
-#undef ENV_HAVE_LOCALE
+#  undef ENV_HAVE_LOCALE
 #endif
 
 #ifdef ENV_HAVE_LOCALE
@@ -104,9 +104,9 @@ const char *GetLocale(void);
 #endif
 
 #if !defined(_WIN32) || defined(ENV_HAVE_LOCALE)
-#if !defined(LIBPLZMA)
+#  if !defined(LIBPLZMA)
 bool IsNativeUTF8();
-#endif // !LIBPLZMA
+#  endif // !LIBPLZMA
 #endif
 
 #ifndef _WIN32

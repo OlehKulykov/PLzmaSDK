@@ -12,13 +12,13 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest]
-        swift: ["5.x"]
+        swift: ["6.1"]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: swift-actions/setup-swift@65540b95f51493d65f5e59e97dcef9629ddf11bf
+      - uses: swift-actions/setup-swift@v3
         with:
           swift-version: ${{ matrix.swift }}
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Get swift version
         run: swift --version
       - name: Build
