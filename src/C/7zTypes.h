@@ -243,11 +243,7 @@ typedef uint64_t UInt64;
 #define UINT64_CONST(n) n
 
 
-#ifdef Z7_DECL_SizeT_AS_unsigned_int
 typedef size_t SizeT;
-#else
-typedef size_t SizeT;
-#endif
 
 /*
 #if (defined(_MSC_VER) && _MSC_VER <= 1200)

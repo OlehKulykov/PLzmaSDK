@@ -392,7 +392,6 @@ static void UnicodeStringToMultiByte2_Native(AString &dest, const UString &src)
 }
 #endif // !LIBPLZMA
 
-
 static void UnicodeStringToMultiByte2(AString &dest, const UString &src2, UINT codePage, char defaultChar, bool &defaultCharWasUsed)
 {
   // if (codePage == 1234567) // for debug purposes

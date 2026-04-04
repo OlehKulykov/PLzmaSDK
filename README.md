@@ -88,7 +88,7 @@ end
     "npm": ">=6.0.0"
   },
   "dependencies": {
-    "plzmasdk": "1.5.1"
+    "plzmasdk": "1.6.0"
   }
 }
 ```

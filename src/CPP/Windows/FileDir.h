@@ -18,8 +18,19 @@ bool GetSystemDir(FString &path);
 WIN32 API : SetFileTime() doesn't allow to set zero timestamps in file
 but linux : allows unix time = 0 in filesystem
 */
-
+/*
+SetDirTime() can be used to set time for file or for dir.
+If path is symbolic link, SetDirTime() will follow symbolic link,
+and it will set timestamps of symbolic link's target file or dir.
+*/
 bool SetDirTime(CFSTR path, const CFiTime *cTime, const CFiTime *aTime, const CFiTime *mTime);
+
+/*
+SetLinkFileTime() doesn't follow symbolic link,
+and it sets timestamps for symbolic link file itself.
+If (path) is not symbolic link, it still can work (at least in some new OS versions).
+*/
+bool SetLinkFileTime(CFSTR path, const CFiTime *cTime, const CFiTime *aTime, const CFiTime *mTime);
 
 
 #ifdef _WIN32
@@ -38,9 +49,8 @@ int my_chown(CFSTR path, uid_t owner, gid_t group);
 
 #endif
 
-#if !defined(LIBPLZMA)
 bool SetFileAttrib_PosixHighDetect(CFSTR path, DWORD attrib);
-#endif // !LIBPLZMA
+
 
 #ifndef _WIN32
 #define PROGRESS_CONTINUE   0
@@ -64,9 +74,9 @@ bool MyMoveFile_with_Progress(CFSTR oldFile, CFSTR newFile,
 
 
 #ifndef UNDER_CE
-#if !defined(LIBPLZMA)
+#  if !defined(LIBPLZMA)
 bool MyCreateHardLink(CFSTR newFileName, CFSTR existFileName);
-#endif // !LIBPLZMA
+#  endif // !LIBPLZMA
 #endif
 
 bool RemoveDir(CFSTR path);
@@ -81,6 +91,11 @@ bool CreateComplexDir(CFSTR path);
 
 bool DeleteFileAlways(CFSTR name);
 bool RemoveDirWithSubItems(const FString &path);
+#ifdef _WIN32
+bool RemoveDirAlways_if_Empty(const FString &path);
+#else
+#define RemoveDirAlways_if_Empty RemoveDir
+#endif
 
 bool MyGetFullPathName(CFSTR path, FString &resFullPath);
 bool GetFullPathAndSplit(CFSTR path, FString &resDirPrefix, FString &resFileName);
