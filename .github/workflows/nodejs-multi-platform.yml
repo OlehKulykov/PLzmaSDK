@@ -13,8 +13,8 @@ jobs:
     strategy:
       matrix:
         #os: [macos-latest, ubuntu-latest, windows-latest]
-        os: [macos-latest, ubuntu-latest]
-        node-version: ['13.x', '16.x', '20.x'] # min, dev, latest
+        os: [ubuntu-latest]
+        node-version: ['13.x', '16.x', '25.x'] # min, dev, latest
 
     steps:
       - uses: actions/checkout@v4
