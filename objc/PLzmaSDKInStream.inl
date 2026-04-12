@@ -37,3 +37,11 @@
 @property (nonatomic, assign, readonly) const plzma::SharedPtr<plzma::InStream> * inStreamSPtr;
 
 @end
+
+
+
+
+
+
+
+
