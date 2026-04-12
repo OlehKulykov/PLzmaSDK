@@ -41,10 +41,3 @@
 - (instancetype) initWithOutStreamMTh:(plzma::SharedPtr<plzma::OutStream> *) outStream;
 
 @end
-
-
-
-
-
-
-
