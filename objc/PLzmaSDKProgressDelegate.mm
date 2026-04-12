@@ -44,9 +44,3 @@ std::shared_ptr<PLzmaSDKProgressDelegate> PLzmaSDKProgressDelegate::create(void 
     delegate->_weakSelf = delegate;
     return delegate;
 }
-
-
-
-
-
-
