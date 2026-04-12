@@ -40,3 +40,8 @@
 @property (nonatomic, weak) id<PLzmaSDKDecoderDelegate> delegate;
 
 @end
+
+
+
+
+
