@@ -111,11 +111,3 @@ PLzmaSDKSize PLzmaSDKGetDecoderWriteSize(void) {
 void PLzmaSDKSetDecoderWriteSize(const PLzmaSDKSize size) {
     plzma_set_decoder_write_size(size);
 }
-
-
-
-
-
-
-
-
