@@ -176,3 +176,8 @@ FOUNDATION_EXPORT PLzmaSDKSize PLzmaSDKGetDecoderWriteSize(void);
 
 /// Set the current size in bytes of the decoder's internal buffer for holding decoded data.
 FOUNDATION_EXPORT void PLzmaSDKSetDecoderWriteSize(const PLzmaSDKSize size);
+
+
+
+
+
