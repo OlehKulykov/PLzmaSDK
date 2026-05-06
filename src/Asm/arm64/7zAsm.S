@@ -1,5 +1,11 @@
 // 7zAsm.S -- ASM macros for arm64
-// 2021-04-25 : Igor Pavlov : Public domain
+// : Igor Pavlov : Public domain
+
+#if defined(__clang_major__) && __clang_major__ >= 20
+  // clang21 : error: identifier 'and' conflicts with a C++ keyword [-Wc++-keyword]
+  // #pragma GCC diagnostic ignored "-Wc++-keyword" // clang 21
+  #pragma GCC diagnostic ignored "-Wc++-compat"  // clang 12+
+#endif
 
 #if (defined(__arm64__) && __arm64__) || (defined(__arm64) && __arm64)
 
@@ -106,7 +112,7 @@ arm64 and arm use reverted c flag after subs/cmp instructions:
   arm64-arm   :     x86
  b.lo / b.cc  :  jb  / jc
  b.hs / b.cs  :  jae / jnc
-*/ 
+*/
 
 .macro jmp lab:req
         b       \lab

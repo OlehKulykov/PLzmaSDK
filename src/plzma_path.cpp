@@ -607,7 +607,7 @@ namespace plzma {
             const errno_t err = ::_wfopen_s(&f, wide(), wmode);
             return (err == 0) ? f : nullptr;
 #  else
-            return _wfopen(wide(), wmode);
+            return ::_wfopen(wide(), wmode);
 #  endif
         }
         return nullptr;
