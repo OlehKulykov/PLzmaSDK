@@ -1454,7 +1454,6 @@ bool CEnumerator::Fill_FileInfo(const CDirEntry &de, CFileInfo &fileInfo, bool f
   return true;
 }
 #endif // !LIBPLZMA
-
 #endif // _WIN32
 
 }}}

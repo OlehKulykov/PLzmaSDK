@@ -33,7 +33,7 @@
 #include "../libplzma.hpp"
 #include "plzma_private.hpp"
 
-#include <stdio.h>
+#include <cstdio>
 
 #include "CPP/Common/Common.h"
 #include "CPP/Common/MyWindows.h"

@@ -85,7 +85,7 @@ namespace plzma {
     /// CDecoder default: 1 << 22
     LIBPLZMA_CPP_API_PRIVATE(plzma_size_t) kDecoderWriteSize;
     
-    LIBPLZMA_CPP_API_PRIVATE(void) initialize(void);
+    LIBPLZMA_CPP_API_PRIVATE(void) initialize(void) noexcept;
 
 } // namespace plzma
 

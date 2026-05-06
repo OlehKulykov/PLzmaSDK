@@ -515,7 +515,7 @@ plzma_size_t kDecoderReadSize = static_cast<unsigned int>(1) << 20;
 plzma_size_t kDecoderWriteSize = static_cast<unsigned int>(1) << 22;
 #endif // LIBPLZMA_PLATFORM_MOBILE
 
-    void initialize(void) {
+    void initialize(void) noexcept {
         static bool notInitalized = true;
         if (notInitalized) {
 #if defined(LIBPLZMA_USING_REGISTRATORS)

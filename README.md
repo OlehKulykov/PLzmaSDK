@@ -10,7 +10,7 @@
 
 
 **P**LzmaSDK is (**P**ortable, **P**atched, **P**ackage, cross-**P**-latform) Lzma SDK.
-Based on original [LZMA SDK] version 24.09 and patched for unix platforms.
+Based on original [LZMA SDK] version 26.01 and patched for unix platforms.
 Available for all Apple's platforms(iOS, macOS, tvOS, watchOS), Android, Windows, Linux and any unix'es.
 
 
@@ -88,7 +88,7 @@ end
     "npm": ">=6.0.0"
   },
   "dependencies": {
-    "plzmasdk": "1.6.0"
+    "plzmasdk": "1.6.1"
   }
 }
 ```
