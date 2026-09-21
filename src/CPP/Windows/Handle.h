@@ -7,7 +7,7 @@
 
 namespace NWindows {
 
-class CHandle Z7_final MY_UNCOPYABLE
+class CHandle  MY_UNCOPYABLE
 {
 protected:
   HANDLE _handle;

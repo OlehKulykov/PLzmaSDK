@@ -5,11 +5,11 @@
 
 #include "../../C/Threads.h"
 
-#include "Defs.h"
+#include "WinDefs.h"
 
 namespace NWindows {
 
-class CThread Z7_final MY_UNCOPYABLE
+class CThread  MY_UNCOPYABLE
 {
   ::CThread thread;
 public:

@@ -176,13 +176,8 @@ typedef uint8_t Byte;
 typedef int16_t Int16;
 typedef uint16_t UInt16;
 
-#ifdef Z7_DECL_Int32_AS_long
 typedef int32_t Int32;
 typedef uint32_t UInt32;
-#else
-typedef int32_t Int32;
-typedef uint32_t UInt32;
-#endif
 
 
 #ifndef _WIN32
@@ -554,6 +549,7 @@ struct ISzAlloc
 
 
 #define Z7_memset_0_ARRAY(a)  memset((a), 0, sizeof(a))
+#define Z7_memset_0_VAR(a)  memset(&(a), 0, sizeof(a))
 
 #ifndef Z7_ARRAY_SIZE
 #define Z7_ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))

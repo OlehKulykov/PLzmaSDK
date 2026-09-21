@@ -7,8 +7,8 @@
 #include <time.h>
 #endif
 
-#include "Defs.h"
 #include "TimeUtils.h"
+#include "WinDefs.h"
 
 namespace NWindows {
 namespace NTime {
@@ -268,7 +268,6 @@ bool GetSecondsSince1601(unsigned year, unsigned month, unsigned day,
 // #pragma message("ZIP7_USE_clock_gettime")
 #endif
 
-#if !defined(LIBPLZMA)
 void GetCurUtc_FiTime(CFiTime &ft) throw()
 {
  #ifdef _WIN32
@@ -345,7 +344,7 @@ void GetCurUtcFileTime(FILETIME &ft) throw()
   ft.dwHighDateTime = (DWORD)(v >> 32);
 }
 #endif
-#endif // !LIBPLZMA
+
 
 }}
 

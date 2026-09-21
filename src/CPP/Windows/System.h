@@ -49,7 +49,7 @@ struct CCpuGroups
 
 UInt32 CountAffinity(DWORD_PTR mask);
 
-struct CProcessAffinity Z7_final
+struct CProcessAffinity
 {
   // UInt32 numProcessThreads;
   // UInt32 numSysThreads;
@@ -135,7 +135,7 @@ struct CProcessAffinity Z7_final
 
 #else // WIN32
 
-struct CProcessAffinity Z7_final
+struct CProcessAffinity
 {
   UInt32 numSysThreads;
 

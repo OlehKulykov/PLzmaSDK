@@ -7,6 +7,5 @@
 #pragma warning(disable : 4464) // relative include path contains '..'
 #endif
 #include "../Common/Common.h"
-#include "../../plzma_private.hpp"
 
 #endif

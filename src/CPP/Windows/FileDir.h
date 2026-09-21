@@ -46,6 +46,7 @@ bool SetFileAttrib(CFSTR path, DWORD attrib);
 #else
 
 int my_chown(CFSTR path, uid_t owner, gid_t group);
+int my_chown_Link(CFSTR path, uid_t owner, gid_t group);
 
 #endif
 
@@ -74,9 +75,7 @@ bool MyMoveFile_with_Progress(CFSTR oldFile, CFSTR newFile,
 
 
 #ifndef UNDER_CE
-#  if !defined(LIBPLZMA)
 bool MyCreateHardLink(CFSTR newFileName, CFSTR existFileName);
-#  endif // !LIBPLZMA
 #endif
 
 bool RemoveDir(CFSTR path);
@@ -112,7 +111,7 @@ bool MyGetTempPath(FString &resultPath);
 
 bool CreateTempFile2(CFSTR prefix, bool addRandom, AString &postfix, NIO::COutFile *outFile);
 
-class CTempFile Z7_final MY_UNCOPYABLE
+class CTempFile  MY_UNCOPYABLE
 {
   bool _mustBeDeleted;
   FString _path;
@@ -131,7 +130,7 @@ public:
 
 
 #ifdef _WIN32
-class CTempDir Z7_final MY_UNCOPYABLE
+class CTempDir  MY_UNCOPYABLE
 {
   bool _mustBeDeleted;
   FString _path;
@@ -147,7 +146,7 @@ public:
 
 
 #if !defined(UNDER_CE)
-class CCurrentDirRestorer Z7_final MY_UNCOPYABLE
+class CCurrentDirRestorer  MY_UNCOPYABLE
 {
   FString _path;
 public:

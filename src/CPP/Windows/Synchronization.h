@@ -7,7 +7,7 @@
 
 #include "../Common/MyTypes.h"
 
-#include "Defs.h"
+#include "WinDefs.h"
 
 #ifdef _WIN32
 #include "Handle.h"
@@ -51,7 +51,7 @@ public:
   WRes Lock() { return Event_Wait(&_object); }
 };
 
-class CManualResetEvent Z7_final: public CBaseEvent
+class CManualResetEvent: public CBaseEvent
 {
 public:
   WRes Create(bool initiallyOwn = false)
@@ -72,7 +72,7 @@ public:
   #endif
 };
 
-class CAutoResetEvent Z7_final: public CBaseEvent
+class CAutoResetEvent: public CBaseEvent
 {
 public:
   WRes Create()
@@ -135,7 +135,7 @@ public:
 */
 
 
-class CSemaphore Z7_final MY_UNCOPYABLE
+class CSemaphore  MY_UNCOPYABLE
 {
   ::CSemaphore _object;
 public:
@@ -162,7 +162,7 @@ public:
   WRes Lock() { return Semaphore_Wait(&_object); }
 };
 
-class CCriticalSection Z7_final MY_UNCOPYABLE
+class CCriticalSection  MY_UNCOPYABLE
 {
   ::CCriticalSection _object;
 public:
@@ -208,7 +208,7 @@ inline DWORD WINAPI WaitForMultiObj_Any_Infinite(DWORD count, const CHandle_WFMO
 #define SYNC_PARAM_DECL(x) NWindows::NSynchronization::CSynchro *x
 #define SYNC_OBJ_DECL(x) NWindows::NSynchronization::CSynchro x;
 
-class CSynchro Z7_final MY_UNCOPYABLE
+class CSynchro  MY_UNCOPYABLE
 {
   pthread_mutex_t _mutex;
   pthread_cond_t _cond;
