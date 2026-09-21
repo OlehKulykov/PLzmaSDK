@@ -9,7 +9,7 @@
 
 namespace NWindows {
 
-class CThread  MY_UNCOPYABLE
+class CThread Z7_final MY_UNCOPYABLE
 {
   ::CThread thread;
 public:

@@ -109,7 +109,7 @@ void CFileInfoBase::ClearBase() throw()
  #endif
 }
 
-
+#if !defined(LIBPLZMA)
 bool CFileInfoBase::SetAs_StdInFile()
 {
   ClearBase();
@@ -188,6 +188,7 @@ bool CFileInfoBase::SetAs_StdInFile()
 
   return true;
 }
+#endif // LIBPLZMA
 
 bool CFileInfo::IsDots() const throw()
 {
@@ -1304,7 +1305,7 @@ bool DoesFileOrDirExist(CFSTR name)
   return true;
 }
 
-
+#if !defined(LIBPLZMA)
 CEnumerator::~CEnumerator()
 {
   if (_dir)
@@ -1452,7 +1453,7 @@ bool CEnumerator::Fill_FileInfo(const CDirEntry &de, CFileInfo &fileInfo, bool f
   fileInfo.Name = de.Name;
   return true;
 }
-
+#endif // !LIBPLZMA
 #endif // _WIN32
 
 }}}

@@ -18,11 +18,12 @@ inline void FILETIME_Clear(FILETIME &ft)
   ft.dwHighDateTime = 0;
 }
 
+#if !defined(LIBPLZMA)
 inline bool FILETIME_IsZero(const FILETIME &ft)
 {
   return (ft.dwHighDateTime == 0 && ft.dwLowDateTime == 0);
 }
-
+#endif // !LIBPLZMA
 
 #ifdef _WIN32
   #define CFiTime FILETIME
@@ -107,12 +108,14 @@ Int64 FileTime_To_UnixTime64_and_Quantums(const FILETIME &ft, UInt32 &quantums) 
 bool GetSecondsSince1601(unsigned year, unsigned month, unsigned day,
   unsigned hour, unsigned min, unsigned sec, UInt64 &resSeconds) throw();
 
+#if !defined(LIBPLZMA)
 void GetCurUtc_FiTime(CFiTime &ft) throw();
 #ifdef _WIN32
 #define GetCurUtcFileTime GetCurUtc_FiTime
 #else
 void GetCurUtcFileTime(FILETIME &ft) throw();
 #endif
+#endif // LIBPLZMA
 
 }}
 

@@ -46,7 +46,7 @@ inline void PropVarEm_Set_Bool(PROPVARIANT *p, bool b) throw()
 }
 
 
-class CPropVariant : public tagPROPVARIANT
+class CPropVariant Z7_final: public tagPROPVARIANT
 {
   // ---------- forbidden functions ----------
   CPropVariant(const char *s);

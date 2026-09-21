@@ -93,7 +93,7 @@ inline void FillLinkData(CByteBuffer &dest, const wchar_t *path, bool isSymLink,
 }
 #endif
 
-struct CReparseShortInfo
+struct CReparseShortInfo Z7_final
 {
   unsigned Offset;
   unsigned Size;
@@ -101,7 +101,7 @@ struct CReparseShortInfo
   bool Parse(const Byte *p, size_t size);
 };
 
-struct CReparseAttr
+struct CReparseAttr Z7_final
 {
   UInt32 Tag;
   UInt32 Flags;
@@ -247,7 +247,7 @@ struct my_DISK_GEOMETRY_EX
 };
 #endif
 
-class CInFile: public CFileBase
+class CInFile Z7_final: public CFileBase
 {
   #ifdef Z7_DEVICE_FILE
 
@@ -329,7 +329,7 @@ public:
   bool ReadFull(void *data, size_t size, size_t &processedSize) throw();
 };
 
-class COutFile: public CFileBase
+class COutFile Z7_final: public CFileBase
 {
   bool Open_Disposition(CFSTR fileName, DWORD creationDisposition);
 public:
@@ -423,7 +423,7 @@ public:
   */
 };
 
-class CInFile: public CFileBase
+class CInFile Z7_final: public CFileBase
 {
 public:
   bool Open(const char *name);

@@ -97,7 +97,9 @@ public:
 
   CFileInfoBase() { ClearBase(); }
   void ClearBase() throw();
+#if !defined(LIBPLZMA)
   bool SetAs_StdInFile();
+#endif // LIBPLZMA
 
  #ifdef _WIN32
  
@@ -155,7 +157,7 @@ public:
   }
 };
 
-struct CFileInfo: public CFileInfoBase
+struct CFileInfo Z7_final: public CFileInfoBase
 {
   FString Name;
   #if defined(_WIN32) && !defined(UNDER_CE)
@@ -207,7 +209,7 @@ struct CStreamInfo
   bool IsMainStream() const throw();
 };
 
-class CFindStream: public CFindFileBase
+class CFindStream Z7_final: public CFindFileBase
 {
 public:
   bool FindFirst(CFSTR filePath, CStreamInfo &streamInfo);
@@ -228,7 +230,7 @@ public:
 #endif // defined(_WIN32) && !defined(UNDER_CE)
 
 
-class CEnumerator  MY_UNCOPYABLE
+class CEnumerator Z7_final MY_UNCOPYABLE
 {
   CFindFile _findFile;
   FString _wildcard;
@@ -241,7 +243,7 @@ public:
 };
 
 
-class CFindChangeNotification  MY_UNCOPYABLE
+class CFindChangeNotification Z7_final MY_UNCOPYABLE
 {
   HANDLE _handle;
 public:
@@ -271,8 +273,8 @@ typedef CFileInfo CDirEntry;
 
 #else // WIN32
 
-
-struct CDirEntry
+#if !defined(LIBPLZMA)
+struct CDirEntry Z7_final
 {
   ino_t iNode;
 #if !defined(_AIX) && !defined(__sun) && !defined(__QNXNTO__)
@@ -293,7 +295,7 @@ struct CDirEntry
   bool IsDots() const throw();
 };
 
-class CEnumerator  MY_UNCOPYABLE
+class CEnumerator Z7_final MY_UNCOPYABLE
 {
   DIR *_dir;
   FString _wildcard;
@@ -322,6 +324,7 @@ public:
     return false; // change it
   }
 };
+#endif // !LIBPLZMA
 
 /*
 inline UInt32 Get_WinAttrib_From_PosixMode(UInt32 mode)
